@@ -20,21 +20,15 @@ public struct Buffer <T> {
     private var data:NSData
 
     public var length:Int {
-        get {
-            return data.length
-        }
+        return data.length
     }
 
     public var count:Int {
-        get {
-            return data.length / Buffer <T>.elementSize
-        }
+        return data.length / Buffer <T>.elementSize
     }
 
     public static var elementSize:Int {
-        get {
-            return min(sizeof(T), 1)
-        }
+        return max(sizeof(T), 1)
     }
 
     public init(data:NSData) {
@@ -52,14 +46,11 @@ public struct Buffer <T> {
     }
 
     public var pointer:UnsafePointer <T> {
-        get {
-            return UnsafePointer <T> (data.bytes)
-        }
+        return UnsafePointer <T> (data.bytes)
     }
 
     public var bufferPointer:UnsafeBufferPointer <T> {
-        get {
-            return UnsafeBufferPointer <T> (start:self.pointer, count:data.length / min(sizeof(T), 1))
-        }
+        let count = data.length / Buffer <T>.elementSize
+        return UnsafeBufferPointer <T> (start:self.pointer, count:count)
     }
 }

@@ -19,6 +19,8 @@
 		45E240271B0E8A950001F5B9 /* Inet+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */; };
 		45E240291B0E8AA10001F5B9 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E240281B0E8AA10001F5B9 /* Buffer.swift */; };
 		45E2402B1B0E8AB30001F5B9 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E2402A1B0E8AB30001F5B9 /* Utilities.swift */; };
+		45E289731B3C6CAB00EDBBAE /* DatagramReplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289721B3C6CAB00EDBBAE /* DatagramReplay.swift */; };
+		45E289741B3C6E8500EDBBAE /* DatagramReplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289721B3C6CAB00EDBBAE /* DatagramReplay.swift */; };
 		45E504751B39D509007AE307 /* TCPChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E504741B39D509007AE307 /* TCPChannel.swift */; };
 		45E504761B39D6B6007AE307 /* TCPChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E504741B39D509007AE307 /* TCPChannel.swift */; };
 /* End PBXBuildFile section */
@@ -33,6 +35,7 @@
 		45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Inet+Utilities.swift"; sourceTree = "<group>"; };
 		45E240281B0E8AA10001F5B9 /* Buffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
 		45E2402A1B0E8AB30001F5B9 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		45E289721B3C6CAB00EDBBAE /* DatagramReplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramReplay.swift; sourceTree = "<group>"; };
 		45E504741B39D509007AE307 /* TCPChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPChannel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +84,7 @@
 				45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */,
 				45E240281B0E8AA10001F5B9 /* Buffer.swift */,
 				45E2402A1B0E8AB30001F5B9 /* Utilities.swift */,
+				45E289721B3C6CAB00EDBBAE /* DatagramReplay.swift */,
 				45E240091B0E8A700001F5B9 /* Supporting Files */,
 			);
 			path = SwiftIO;
@@ -210,6 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45E289741B3C6E8500EDBBAE /* DatagramReplay.swift in Sources */,
 				45DEC6CF1B0E94CE00B7C234 /* Utilities.swift in Sources */,
 				45E504761B39D6B6007AE307 /* TCPChannel.swift in Sources */,
 				45DEC6CD1B0E94CE00B7C234 /* Inet+Utilities.swift in Sources */,
@@ -223,6 +228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45E289731B3C6CAB00EDBBAE /* DatagramReplay.swift in Sources */,
 				45E2402B1B0E8AB30001F5B9 /* Utilities.swift in Sources */,
 				45E504751B39D509007AE307 /* TCPChannel.swift in Sources */,
 				45E240271B0E8A950001F5B9 /* Inet+Utilities.swift in Sources */,

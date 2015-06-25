@@ -10,7 +10,7 @@ import Foundation
 
 import Darwin
 
-// MARK: -
+// TODO: This is a very very very very early WIP
 
 public class TCPChannel {
 
@@ -46,6 +46,9 @@ public class TCPChannel {
             handleError(.unknown, description: "TODO")
             return
         }
+
+//let flags = Darwin.fcntl(socket, F_GETFL, 0)
+//fcntl(socket, F_SETFL, flags | O_NONBLOCK)
 
         let sockaddr = address.addr
         let result = Darwin.connect(socket, sockaddr.pointer, socklen_t(sockaddr.length))
