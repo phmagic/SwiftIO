@@ -21,9 +21,15 @@ public struct Datagram {
     }
 }
 
+extension Datagram: CustomStringConvertible {
+    public var description: String {
+        return "Datagram(from:\(from), timestamp:\(timestamp): data:\(data.length) bytes)"
+    }
+}
+
 // MARK: -
 
-public var debugLog:(AnyObject? -> Void)? = println
+public var debugLog:(AnyObject? -> Void)? = print
 
 // MARK: -
 
@@ -62,7 +68,7 @@ public class UDPChannel {
 
         socket = Darwin.socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)
         if socket < 0 {
-            handleError(code:.unknown, description: "TODO")
+            handleError(.unknown, description: "TODO")
             return
         }
 
@@ -70,21 +76,21 @@ public class UDPChannel {
         let result = Darwin.setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &reuseSocketFlag, socklen_t(sizeof(Int)))
         if result != 0 {
             cleanup()
-            handleError(code:.unknown, description: "TODO")
+            handleError(.unknown, description: "TODO")
             return
         }
 
         queue = dispatch_queue_create("io.schwa.SwiftIO.UDP", DISPATCH_QUEUE_CONCURRENT)
         if queue == nil {
             cleanup()
-            handleError(code:.unknown, description: "TODO")
+            handleError(.unknown, description: "TODO")
             return
         }
 
         source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(socket), 0, queue)
         if queue == nil {
             cleanup()
-            handleError(code:.unknown, description: "TODO")
+            handleError(.unknown, description: "TODO")
             return
         }
 
@@ -104,7 +110,7 @@ public class UDPChannel {
 
             let result = Darwin.bind(self.socket, sockaddr.pointer, socklen_t(sockaddr.length))
             if result != 0 {
-                let error = self.makeError(code:.unknown, description: "TODO")
+                let error = self.makeError(.unknown, description: "TODO")
                 self.errorHandler?(error)
                 self.cancel()
                 return
@@ -133,16 +139,16 @@ public class UDPChannel {
             debugLog?("Send")
 
             let address:Address = address ?? self.address
-            var sockaddr = address.addr
-            var result = Darwin.sendto(self.socket, data.bytes, data.length, 0, sockaddr.pointer, socklen_t(sockaddr.length))
+            let sockaddr = address.addr
+            let result = Darwin.sendto(self.socket, data.bytes, data.length, 0, sockaddr.pointer, socklen_t(sockaddr.length))
             if result == data.length {
                 writeHandler?(true, nil)
             }
             else if result < 0 {
-                writeHandler?(false, self.makeError(code:.unknown, description: "TODO"))
+                writeHandler?(false, self.makeError(.unknown, description: "TODO"))
             }
             if result < data.length {
-                writeHandler?(false, self.makeError(code:.unknown, description: "TODO"))
+                writeHandler?(false, self.makeError(.unknown, description: "TODO"))
             }
         }
     }
@@ -157,7 +163,7 @@ public class UDPChannel {
 
             let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, addr, &addrlen)
             if result < 0 {
-                handleError(code:.unknown, description: "TODO")
+                handleError(.unknown, description: "TODO")
                 return
             }
             data.length = result
@@ -184,26 +190,7 @@ public class UDPChannel {
     }
 
     internal func handleError(code:ErrorCode = .unknown, description:String) {
-        let error = makeError(code:code, description:description)
+        let error = makeError(code, description:description)
         errorHandler?(error)
-    }
-}
-
-// MARK: -
-
-internal func loggingReadHandler(datagram:Datagram) {
-    debugLog?("READ")
-}
-
-internal func loggingErrorHandler(error:NSError) {
-    debugLog?("ERROR: \(error)")
-}
-
-internal func loggingWriteHandler(success:Bool, error:NSError?) {
-    if success {
-        debugLog?("WRITE")
-    }
-    else {
-        loggingErrorHandler(error!)
     }
 }

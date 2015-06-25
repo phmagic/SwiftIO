@@ -41,7 +41,7 @@ public enum ProtocolFamily {
 
 // MARK: -
 
-extension Address: Printable {
+extension Address: CustomStringConvertible {
     public var description: String {
         get {
             return "\(hostname!):\(service!)"
@@ -55,7 +55,7 @@ public extension Address {
         get {
             var hostname:String? = nil
             var service:String? = nil
-            getnameinfo(addr.pointer, socklen_t(addr.length), &hostname, &service, 0)
+            getnameinfo(addr.pointer, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
             return hostname
         }
     }
@@ -65,7 +65,7 @@ public extension Address {
         get {
             var hostname:String? = nil
             var service:String? = nil
-            getnameinfo(addr.pointer, socklen_t(addr.length), &hostname, &service, 0)
+            getnameinfo(addr.pointer, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
             return service
         }
     }
@@ -75,7 +75,7 @@ public extension Address {
         get {
             var hostname:String? = nil
             var service:String? = nil
-            getnameinfo(addr.pointer, socklen_t(addr.length), &hostname, &service, NI_NUMERICSERV)
+            getnameinfo(addr.pointer, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
             return Int16((service! as NSString).integerValue)
         }
     }

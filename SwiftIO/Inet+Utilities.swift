@@ -26,7 +26,7 @@ public extension in_addr {
     }
 }
 
-extension in_addr: Printable {
+extension in_addr: CustomStringConvertible {
     public var description: String {
         get {
             let buffer = inet_ntoa(self)

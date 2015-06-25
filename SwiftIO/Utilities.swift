@@ -21,6 +21,13 @@ public struct Timestamp {
     }
 }
 
+extension Timestamp: CustomStringConvertible {
+    public var description: String {
+        return "\(absoluteTime)"
+    }
+}
+
+
 // MARK: -
 
 public func convert <T, U>(pointer:UnsafeMutablePointer <T>) -> UnsafeMutablePointer <U> {
@@ -152,7 +159,7 @@ private extension UnsafeBufferPointer {
         get {
             let buffer:UnsafeBufferPointer <UInt8> = asUnsafeBufferPointer()
             let hex = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
-            return "".join(map(buffer) {
+            return "".join(buffer.map {
                 let hiNibble = Int($0) >> 4
                 let loNibble = Int($0) & 0b1111
                 return hex[hiNibble] + hex[loNibble]
