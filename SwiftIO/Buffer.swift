@@ -17,7 +17,7 @@ public struct Buffer <T> {
 
     // TODO: Add more UnsafeBufferPointer APIs and protocol adoptions
 
-    private var data:NSData
+    public var data:NSData
 
     public var length:Int {
         return data.length

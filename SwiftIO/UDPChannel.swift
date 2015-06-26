@@ -12,9 +12,9 @@ import Darwin
 public struct Datagram {
     public let from:Address
     public let timestamp:Timestamp
-    public let data:NSData
+    public let data:Buffer <Void>
 
-    public init(from:Address, timestamp:Timestamp = Timestamp(), data:NSData) {
+    public init(from:Address, timestamp:Timestamp = Timestamp(), data:Buffer <Void>) {
         self.from = from
         self.timestamp = timestamp
         self.data = data
@@ -169,7 +169,7 @@ public class UDPChannel {
             data.length = result
         }
 
-        let datagram = Datagram(from: address, timestamp: Timestamp(), data: data)
+        let datagram = Datagram(from: address, timestamp: Timestamp(), data: Buffer <Void> (data:data))
         readHandler?(datagram)
 
     }

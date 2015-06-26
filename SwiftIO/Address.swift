@@ -14,7 +14,7 @@ import Foundation
  *  sockaddr generally store IP address (either IPv4 or IPv6), port, protocol family and type.
  */
 public struct Address {
-    public let addr:Buffer <sockaddr>
+    public let addr:Buffer <sockaddr>!
 }
 
 // MARK: -
@@ -170,6 +170,16 @@ public extension Address {
         assert(result == 0)
 
         return addresses
+    }
+
+    init(string:String) {
+        // TODO: This is crude.
+
+        let components = string.componentsSeparatedByString(":")
+        let hostname = components[0]
+        let service = components[1]
+
+        self = Address.addresses(hostname, service: service).first!
     }
 }
 

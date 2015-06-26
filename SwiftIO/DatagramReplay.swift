@@ -8,12 +8,61 @@
 
 import Foundation
 
+public class MemoryStream: BinaryInputStream, BinaryOutputStream {
+    internal var mutableData:NSMutableData = NSMutableData()
+
+    var head:Int = 0
+    var remaining:Int {
+        return mutableData.length - head
+    }
+
+    init() {
+    }
+
+    init(buffer:Buffer <Void>) {
+        mutableData = NSMutableData(bytes: buffer.pointer, length: buffer.length)
+    }
+
+    public var buffer:Buffer <Void> {
+        return Buffer <Void> (data: mutableData)
+    }
+
+    public func read(length:Int) throws -> Buffer <Void> {
+        if length > remaining {
+            throw Error.generic("Not enough space.")
+        }
+
+        let result = Buffer <Void> (pointer:buffer.pointer.advancedBy(head), length:length)
+        head += length
+        return result
+
+    }
+
+
+    public func write(buffer:UnsafeBufferPointer <Void>) throws {
+        mutableData.appendBytes(buffer.baseAddress, length: buffer.count)
+        head = mutableData.length
+    }
+}
+
+
 enum Type: Int {
     case datagram
 }
 
-extension Type: BinaryStreamable {
-    func writeTo <T:OutputBinaryStream> (stream:T) throws {
+extension Type: BinaryInputStreamable, BinaryOutputStreamable {
+
+    static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Type {
+        let type:Int32 = try stream.read()
+        if let type = Type(rawValue:Int(type)) {
+            return type
+        }
+        else {
+            throw Error.generic("Could not create a type \(type)")
+        }
+    }
+
+    func writeTo <T:BinaryOutputStream> (stream:T) throws {
         let value = Int32(self.rawValue)
         try stream.write(value)
     }
@@ -22,21 +71,53 @@ extension Type: BinaryStreamable {
 public func loggingDatagramHandler() throws -> Datagram -> Void {
     let stream = FileStream(url: NSURL(fileURLWithPath: "/Users/schwa/Desktop/test.log"))
     try stream.open()
-
     return {
         (datagram:Datagram) -> Void in
+        try! stream.write(datagram)
+    }
+}
+
+extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
+
+    public static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Datagram {
+
+        let typedData:TypedData <Type> = try stream.read()
+        if typedData.type != .datagram {
+            throw Error.generic("Oops")
+        }
+
+        let payload = MemoryStream(buffer: typedData.buffer)
+
+        let jsonLength:Int32 = try payload.read()
+        let jsonBuffer:Buffer <Void> = try payload.read(Int(jsonLength))
+        let jsonData = jsonBuffer.data
+        let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String:AnyObject]
+
+        guard let from = json["from"] as? String else {
+            throw Error.generic("Could not get from address")
+        }
+
+        let dataLength:Int32 = try payload.read()
+        let data:Buffer <Void> = try payload.read(Int(dataLength))
+        let datagram = Datagram(from:Address(string: from), data: data)
+
+        return datagram
+    }
+
+
+    public func writeTo <Stream:BinaryOutputStream> (stream:Stream) throws {
 
         let payload = MemoryStream()
 
         let metadata:[String:AnyObject] = [
-            "from": String(datagram.from),
-            "timestamp": String(datagram.timestamp),
+            "from": String(from),
+            "timestamp": String(timestamp),
         ]
         let json = try! NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
         try! payload.write(Int32(json.length))
         try! payload.write(json)
 
-        let data = Buffer <Void> (pointer:datagram.data.bytes, length:datagram.data.length)
+
         try! payload.write(Int32(data.length))
         try! payload.write(data.bufferPointer)
 
@@ -46,165 +127,5 @@ public func loggingDatagramHandler() throws -> Datagram -> Void {
     }
 }
 
-// MARK: -
 
-// TODO: Make T not require BinaryStreamable and move it onto the typedData extension!
-public struct TypedData <T:BinaryStreamable> {
-    let type:T
-    let buffer:Buffer <Void>
-}
 
-extension TypedData: BinaryStreamable {
-    public func writeTo <Target:OutputBinaryStream> (stream:Target) throws {
-        try stream.write(type)
-        try stream.write(Int32(buffer.count))
-        try stream.write(buffer.bufferPointer)
-    }
-}
-
-// MARK: -
-
-public protocol OutputBinaryStream {
-   func write(buffer:UnsafeBufferPointer <Void>) throws
-}
-
-public protocol BinaryStreamable {
-    func writeTo <Target:OutputBinaryStream> (stream:Target) throws
-}
-
-public extension OutputBinaryStream {
-    func write <Target:BinaryStreamable> (value:Target) throws {
-        try value.writeTo(self)
-    }
-
-    func write(value:Int32) throws {
-        var value = value.bigEndian
-        let buffer = withUnsafePointer(&value) {
-            (pointer:UnsafePointer <Int32>) -> UnsafeBufferPointer <Void> in
-            return UnsafeBufferPointer(start: pointer, count: sizeof(Int32))
-        }
-        try write(buffer)
-    }
-
-    func write(string:String, appendNewline: Bool = false) throws {
-        let string = appendNewline == true ? string : string + "\n"
-        let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
-        let buffer = UnsafeBufferPointer <Void> (start:data.bytes, count:data.length)
-        try write(buffer)
-    }
-}
-
-// MARK: -
-
-extension NSData: BinaryStreamable {
-    public func writeTo <Target:OutputBinaryStream> (stream:Target) throws {
-        let buffer = UnsafeBufferPointer <Void> (start: bytes, count: length)
-        try stream.write(buffer)
-    }
-}
-
-// MARK: -
-
-public class MemoryStream: OutputBinaryStream {
-    private var data:NSMutableData = NSMutableData()
-
-    public var buffer:Buffer <Void> {
-        return Buffer <Void> (data: data)
-    }
-
-    public func write(buffer:UnsafeBufferPointer <Void>) throws {
-        data.appendBytes(buffer.baseAddress, length: buffer.count)
-    }
-}
-
-// MARK: -
-
-public class FileStream: OutputBinaryStream {
-
-    public let url:NSURL
-    public internal(set) var queue:dispatch_queue_t!
-    public internal(set) var channel:dispatch_io_t!
-    public internal(set) var isOpen:Bool = false
-
-    public init(url:NSURL) {
-        self.url = url
-    }
-
-    deinit {
-        if isOpen == true {
-            try! close()
-        }
-    }
-
-    public func open() throws {
-        do {
-            guard let path = url.path else {
-                throw Error.generic("Could not get path from url.")
-            }
-
-            queue = dispatch_queue_create("io.schwa.SwiftIO.FileStream.Serial", DISPATCH_QUEUE_SERIAL)
-
-            channel = path.withCString() {
-                return dispatch_io_create_with_path(DISPATCH_IO_STREAM, $0, O_RDWR | O_APPEND | O_CREAT, 0o644, queue) {
-                    (error:Int32) -> Void in
-                    // TODO: Cleanup
-                    let error = NSError(domain: NSPOSIXErrorDomain, code: Int(error), userInfo: nil)
-                    print("CLEANUP: \(error)")
-                    self.channel = nil
-                    self.queue = nil
-                    self.isOpen = false
-                }
-            }
-            guard channel != nil else {
-                throw Error.generic("Could not create channel")
-            }
-
-            isOpen = true
-        }
-        catch let error {
-            if queue != nil {
-                queue = nil
-            }
-            if channel != nil {
-                channel = nil
-            }
-            throw error
-        }
-    }
-
-    public func close() throws {
-        guard isOpen == true else {
-            return
-        }
-        assert(channel != nil)
-        assert(queue != nil)
-
-        dispatch_io_close(channel, 0)
-    }
-
-    public func write(buffer:UnsafeBufferPointer <Void>) throws {
-
-        guard isOpen == true else {
-            throw Error.generic("Stream not open")
-        }
-
-        assert(channel != nil)
-        assert(queue != nil)
-
-        let data = dispatch_data_create(buffer.baseAddress, buffer.count, nil, nil)
-        dispatch_io_write(channel, 0, data, queue) {
-            (success:Bool, data:dispatch_data_t!, error:Int32) -> Void in
-            if error != 0 {
-                let error = NSError(domain: NSPOSIXErrorDomain, code: Int(error), userInfo: nil)
-                print((success, data, error))
-            }
-        }
-    }
-}
-
-enum Error:ErrorType {
-    case none
-    case generic(String)
-    case dispatchIO(Int32)
-
-}
