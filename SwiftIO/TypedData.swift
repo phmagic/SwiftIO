@@ -29,8 +29,8 @@ extension TypedData: BinaryOutputStreamable {
 
 extension TypedData: BinaryInputStreamable {
     public static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> TypedData {
-        let type:T = try stream.read()
         let length:Int32 = try stream.read()
+        let type:T = try stream.read()
         let buffer:Buffer <Void> = try stream.read(Int(length))
         return TypedData(type:type, buffer:buffer)
     }

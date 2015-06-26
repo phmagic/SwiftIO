@@ -8,8 +8,30 @@
 
 import Foundation
 
-
 public class FileStream: BinaryInputStream, BinaryOutputStream {
+
+    public struct Mode: OptionSetType {
+        public let rawValue: Int
+        public init(rawValue: Int) { self.rawValue = rawValue }
+
+        public static let Read = Mode(rawValue: 1)
+        public static let Write = Mode(rawValue: 2)
+        public static let ReadWrite = Mode(rawValue: Read.rawValue | Write.rawValue)
+
+        func oflags() -> Int32 {
+            switch rawValue {
+                case Mode.Read.rawValue:
+                    return O_RDONLY
+                case Mode.Write.rawValue:
+                    return O_WRONLY
+                case Mode.ReadWrite.rawValue:
+                    return O_RDWR
+                default:
+                    preconditionFailure("Invalid flags")
+            }
+        }
+    }
+
 
     public let url:NSURL
     public internal(set) var isOpen:Bool = false
@@ -26,20 +48,23 @@ public class FileStream: BinaryInputStream, BinaryOutputStream {
 
     var fd:Int32!
 
-    public func open() throws {
+    public func open(mode:Mode = Mode.Read) throws {
         do {
             guard let path = url.path else {
                 throw Error.generic("Could not get path from url.")
             }
 
-            fd = path.withCString() {
-                return Darwin.open($0, O_RDWR | O_APPEND | O_CREAT, 0o644)
+            let flags:Int32 = mode.oflags() | O_APPEND | O_CREAT
+
+            let fd = path.withCString() {
+                return Darwin.open($0, flags, 0o644)
             }
             guard fd > 0 else {
-                throw Error.generic("Could not create channel")
+                throw Error.posix(errno, "Could not open file.")
             }
 
             isOpen = true
+            self.fd = fd
         }
         catch let error {
 

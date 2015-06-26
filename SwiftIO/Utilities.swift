@@ -178,7 +178,7 @@ public func nibbleAsHex(nibble:Int, lowercase:Bool = false) -> String {
 
 // Following all marked private because we can't make public extensions on generic types.
 
-private extension UnsafeBufferPointer {
+public extension UnsafeBufferPointer {
     var asHex:String {
         get {
             let buffer:UnsafeBufferPointer <UInt8> = asUnsafeBufferPointer()
@@ -192,7 +192,7 @@ private extension UnsafeBufferPointer {
     }
 }
 
-private extension UnsafeBufferPointer {
+public extension UnsafeBufferPointer {
     func asUnsafeBufferPointer <U>() -> UnsafeBufferPointer <U> {
         let start = UnsafePointer <U> (baseAddress)
         let count = (self.count * max(sizeof(T), 1)) / max(sizeof(U), 1)
@@ -200,7 +200,7 @@ private extension UnsafeBufferPointer {
     }
 }
 
-private extension UnsafeMutableBufferPointer {
+public extension UnsafeMutableBufferPointer {
     static func alloc(count:size_t) -> UnsafeMutableBufferPointer <T>? {
         let ptr = UnsafeMutablePointer <T> (calloc(count, sizeof(T)))
         if ptr == nil {
@@ -211,7 +211,7 @@ private extension UnsafeMutableBufferPointer {
     }
 }
 
-private extension UnsafeBufferPointer {
+public extension UnsafeBufferPointer {
     subscript (range:Range <Int>) -> UnsafeBufferPointer <T> {
         get {
             return UnsafeBufferPointer <T> (start: baseAddress + range.startIndex, count:range.endIndex - range.startIndex)

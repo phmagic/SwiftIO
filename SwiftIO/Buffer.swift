@@ -32,7 +32,7 @@ public struct Buffer <T> {
     }
 
     public init(data:NSData) {
-        assert(data.length >= Buffer <T>.elementSize)
+        assert(data.length == 0 || data.length >= Buffer <T>.elementSize)
         self.data = data
     }
 
