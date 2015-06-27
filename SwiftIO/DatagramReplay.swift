@@ -98,8 +98,8 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
         }
 
         let dataLength:Int32 = try payload.read()
-        let data:Buffer <Void> = try payload.read(Int(dataLength))
-        let datagram = Datagram(from:Address(string: from), data: data)
+        let buffer:Buffer <Void> = try payload.read(Int(dataLength))
+        let datagram = Datagram(from:Address(string: from), buffer: buffer)
 
         return datagram
     }
@@ -118,8 +118,8 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
         try! payload.write(json)
 
 
-        try! payload.write(Int32(data.length))
-        try! payload.write(data.bufferPointer)
+        try! payload.write(Int32(buffer.length))
+        try! payload.write(buffer.bufferPointer)
 
         let typedData = TypedData(type:Type.datagram, buffer:payload.buffer)
 

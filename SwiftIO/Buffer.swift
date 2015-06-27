@@ -19,6 +19,10 @@ public struct Buffer <T> {
 
     public var data:NSData
 
+    init() {
+        data = NSData()
+    }
+
     public var length:Int {
         return data.length
     }

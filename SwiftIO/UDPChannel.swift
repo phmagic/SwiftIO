@@ -12,18 +12,18 @@ import Darwin
 public struct Datagram {
     public let from:Address
     public let timestamp:Timestamp
-    public let data:Buffer <Void>
+    public let buffer:Buffer <Void>
 
-    public init(from:Address, timestamp:Timestamp = Timestamp(), data:Buffer <Void>) {
+    public init(from:Address, timestamp:Timestamp = Timestamp(), buffer:Buffer <Void>) {
         self.from = from
         self.timestamp = timestamp
-        self.data = data
+        self.buffer = buffer
     }
 }
 
 extension Datagram: CustomStringConvertible {
     public var description: String {
-        return "Datagram(from:\(from), timestamp:\(timestamp): data:\(data.length) bytes)"
+        return "Datagram(from:\(from), timestamp:\(timestamp): buffer:\(buffer.length) bytes)"
     }
 }
 
@@ -169,7 +169,7 @@ public class UDPChannel {
             data.length = result
         }
 
-        let datagram = Datagram(from: address, timestamp: Timestamp(), data: Buffer <Void> (data:data))
+        let datagram = Datagram(from: address, timestamp: Timestamp(), buffer: Buffer <Void> (data:data))
         readHandler?(datagram)
 
     }
