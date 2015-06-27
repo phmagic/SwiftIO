@@ -8,6 +8,8 @@
 
 import Foundation
 
+import SwiftUtilities
+
 public protocol BinaryInputStream {
     func read(length:Int) throws -> Buffer <Void>
 }

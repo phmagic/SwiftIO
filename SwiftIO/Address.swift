@@ -8,6 +8,8 @@
 
 import Foundation
 
+import SwiftUtilities
+
 /**
  *  A wrapper for a POSIX sockaddr structure.
  *
@@ -55,7 +57,7 @@ public extension Address {
         get {
             var hostname:String? = nil
             var service:String? = nil
-            getnameinfo(addr.pointer, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
+            getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
             return hostname
         }
     }
@@ -65,7 +67,7 @@ public extension Address {
         get {
             var hostname:String? = nil
             var service:String? = nil
-            getnameinfo(addr.pointer, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
+            getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
             return service
         }
     }
@@ -75,26 +77,26 @@ public extension Address {
         get {
             var hostname:String? = nil
             var service:String? = nil
-            getnameinfo(addr.pointer, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
+            getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
             return Int16((service! as NSString).integerValue)
         }
     }
 
     public var as_sockaddr_in:sockaddr_in? {
         get {
-            return protocolFamily == .INET ? UnsafePointer <sockaddr_in>(addr.pointer).memory : nil
+            return protocolFamily == .INET ? UnsafePointer <sockaddr_in>(addr.baseAddress).memory : nil
         }
     }
 
     public var as_sockaddr_in6:sockaddr_in6? {
         get {
-            return protocolFamily == .INET ? UnsafePointer <sockaddr_in6>(addr.pointer).memory : nil
+            return protocolFamily == .INET ? UnsafePointer <sockaddr_in6>(addr.baseAddress).memory : nil
         }
     }
 
     public var protocolFamily:ProtocolFamily? {
         get {
-            switch addr.pointer.memory.sa_family {
+            switch addr.baseAddress.memory.sa_family {
                 case sa_family_t(PF_INET):
                     return .INET
                 case sa_family_t(PF_INET6):

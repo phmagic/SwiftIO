@@ -8,6 +8,8 @@
 
 import Foundation
 
+import SwiftUtilities
+
 // MARK: -
 
 public typealias BinaryInputOutputStreamable = protocol <BinaryInputStreamable, BinaryOutputStreamable>

@@ -51,7 +51,7 @@ public class TCPChannel {
 //fcntl(socket, F_SETFL, flags | O_NONBLOCK)
 
         let sockaddr = address.addr
-        let result = Darwin.connect(socket, sockaddr.pointer, socklen_t(sockaddr.length))
+        let result = Darwin.connect(socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
         print(result)
         if result != 0 {
             cleanup()

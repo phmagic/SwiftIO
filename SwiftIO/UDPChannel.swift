@@ -9,6 +9,8 @@
 import Foundation
 import Darwin
 
+import SwiftUtilities
+
 public struct Datagram {
     public let from:Address
     public let timestamp:Timestamp
@@ -108,7 +110,7 @@ public class UDPChannel {
             debugLog?("Registration handler")
             let sockaddr = self.address.addr
 
-            let result = Darwin.bind(self.socket, sockaddr.pointer, socklen_t(sockaddr.length))
+            let result = Darwin.bind(self.socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
             if result != 0 {
                 let error = self.makeError(.unknown, description: "TODO")
                 self.errorHandler?(error)
@@ -140,7 +142,7 @@ public class UDPChannel {
 
             let address:Address = address ?? self.address
             let sockaddr = address.addr
-            let result = Darwin.sendto(self.socket, data.bytes, data.length, 0, sockaddr.pointer, socklen_t(sockaddr.length))
+            let result = Darwin.sendto(self.socket, data.bytes, data.length, 0, sockaddr.baseAddress, socklen_t(sockaddr.length))
             if result == data.length {
                 writeHandler?(true, nil)
             }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+import SwiftUtilities
+
 public class FileStream: BinaryInputStream, BinaryOutputStream {
 
     public struct Mode: OptionSetType {

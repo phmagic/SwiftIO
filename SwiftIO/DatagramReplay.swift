@@ -8,6 +8,8 @@
 
 import Foundation
 
+import SwiftUtilities
+
 public class MemoryStream: BinaryInputStream, BinaryOutputStream {
     internal var mutableData:NSMutableData = NSMutableData()
 
@@ -20,7 +22,7 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
     }
 
     init(buffer:Buffer <Void>) {
-        mutableData = NSMutableData(bytes: buffer.pointer, length: buffer.length)
+        mutableData = NSMutableData(bytes: buffer.baseAddress, length: buffer.length)
     }
 
     public var buffer:Buffer <Void> {
@@ -32,7 +34,7 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
             throw Error.generic("Not enough space.")
         }
 
-        let result = Buffer <Void> (pointer:buffer.pointer.advancedBy(head), length:length)
+        let result = Buffer <Void> (pointer:buffer.baseAddress.advancedBy(head), length:length)
         head += length
         return result
 
