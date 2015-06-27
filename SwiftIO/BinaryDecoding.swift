@@ -8,14 +8,7 @@
 
 import Foundation
 
-public enum Endianess {
-    case big
-    case little
-    static var current: Endianess {
-        return .little
-    }
-    static var network: Endianess = .big
-}
+import SwiftUtilities
 
 public protocol BinaryDecodable {
     static func decode(buffer:UnsafeBufferPointer <Void>, endianness:Endianess) throws -> Self
