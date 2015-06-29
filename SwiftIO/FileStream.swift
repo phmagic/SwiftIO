@@ -16,17 +16,17 @@ public class FileStream: BinaryInputStream, BinaryOutputStream {
         public let rawValue: Int
         public init(rawValue: Int) { self.rawValue = rawValue }
 
-        public static let Read = Mode(rawValue: 1)
-        public static let Write = Mode(rawValue: 2)
-        public static let ReadWrite = Mode(rawValue: Read.rawValue | Write.rawValue)
+        public static let read = Mode(rawValue: 1)
+        public static let write = Mode(rawValue: 2)
+        public static let readWrite = Mode(rawValue: read.rawValue | write.rawValue)
 
         func oflags() -> Int32 {
             switch rawValue {
-                case Mode.Read.rawValue:
+                case Mode.read.rawValue:
                     return O_RDONLY
-                case Mode.Write.rawValue:
+                case Mode.write.rawValue:
                     return O_WRONLY
-                case Mode.ReadWrite.rawValue:
+                case Mode.readWrite.rawValue:
                     return O_RDWR
                 default:
                     preconditionFailure("Invalid flags")
@@ -50,13 +50,16 @@ public class FileStream: BinaryInputStream, BinaryOutputStream {
 
     var fd:Int32!
 
-    public func open(mode:Mode = Mode.Read) throws {
+    public func open(mode mode:Mode = Mode.read, append:Bool = false, create:Bool = false) throws {
         do {
             guard let path = url.path else {
                 throw Error.generic("Could not get path from url.")
             }
 
-            let flags:Int32 = mode.oflags() | O_APPEND | O_CREAT
+            var flags:Int32 = mode.oflags()
+            if (mode.rawValue & Mode.write.rawValue) != 0 {
+                flags |= (append ? O_APPEND : 0) | (create ? O_CREAT : 0)
+            }
 
             let fd = path.withCString() {
                 return Darwin.open($0, flags, 0o644)

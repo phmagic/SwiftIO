@@ -34,10 +34,15 @@ extension Type: BinaryInputStreamable, BinaryOutputStreamable {
 
 public func loggingDatagramHandler() throws -> Datagram -> Void {
     let stream = FileStream(url: NSURL(fileURLWithPath: "/Users/schwa/Desktop/test.log"))
-    try stream.open()
+    try stream.open(mode:.readWrite)
     return {
         (datagram:Datagram) -> Void in
-        try! stream.write(datagram)
+        do {
+            return try stream.write(datagram)
+        }
+        catch let error {
+            fatalError(String(error))
+        }
     }
 }
 
@@ -78,16 +83,16 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             "timestamp": String(timestamp),
         ]
         let json = try! NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
-        try! payload.write(Int32(json.length))
-        try! payload.write(json)
+        try payload.write(Int32(json.length))
+        try payload.write(json)
 
 
-        try! payload.write(Int32(buffer.length))
-        try! payload.write(buffer.bufferPointer)
+        try payload.write(Int32(buffer.length))
+        try payload.write(buffer.bufferPointer)
 
         let typedData = TypedData(type:Type.datagram, buffer:payload.buffer)
 
-        try! stream.write(typedData)
+        try stream.write(typedData)
     }
 }
 
