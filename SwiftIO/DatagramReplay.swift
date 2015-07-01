@@ -34,7 +34,7 @@ extension Type: BinaryInputStreamable, BinaryOutputStreamable {
 
 public func loggingDatagramHandler() throws -> Datagram -> Void {
     let stream = FileStream(url: NSURL(fileURLWithPath: "/Users/schwa/Desktop/test.log"))
-    try stream.open(mode:.readWrite)
+    try stream.open(mode:.readWrite, create:true, append:true)
     return {
         (datagram:Datagram) -> Void in
         do {

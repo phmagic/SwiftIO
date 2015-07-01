@@ -52,10 +52,8 @@ public class TCPChannel {
 
         let sockaddr = address.addr
         let result = Darwin.connect(socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
-        print(result)
         if result != 0 {
             cleanup()
-            print(errno) // ECONNREFUSED 61
             handleError(.unknown, description: "TODO")
             return
         }
