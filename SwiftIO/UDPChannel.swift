@@ -31,7 +31,11 @@ extension Datagram: CustomStringConvertible {
 
 // MARK: -
 
-public var debugLog:(AnyObject? -> Void)? = print
+public var debugLog:(AnyObject? -> Void)? = {
+    if let value = $0 {
+        print(value)
+        }
+    }
 
 // MARK: -
 
@@ -107,7 +111,6 @@ public class UDPChannel {
         }
 
         dispatch_source_set_registration_handler(source) {
-            debugLog?("Registration handler")
             let sockaddr = self.address.addr
 
             let result = Darwin.bind(self.socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
@@ -119,7 +122,7 @@ public class UDPChannel {
             }
 
             self.resumed = true
-            debugLog?("We're good to go!")
+            debugLog?("Listening on \(self.address)")
         }
 
         dispatch_resume(source)
@@ -162,7 +165,6 @@ public class UDPChannel {
         let address = Address.with() {
             (addr:UnsafeMutablePointer<sockaddr>, inout addrlen:socklen_t) -> Void in
 
-
             let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, addr, &addrlen)
             if result < 0 {
                 handleError(.unknown, description: "TODO")
@@ -173,7 +175,6 @@ public class UDPChannel {
 
         let datagram = Datagram(from: address, timestamp: Timestamp(), buffer: Buffer <Void> (data:data))
         readHandler?(datagram)
-
     }
 
     internal func cleanup() {
