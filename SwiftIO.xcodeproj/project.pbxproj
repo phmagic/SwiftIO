@@ -142,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				45E240081B0E8A700001F5B9 /* SwiftIO */,
+				45DA8D691B3E2B1D001F739F /* Externals */,
 				45E240071B0E8A700001F5B9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -178,7 +179,6 @@
 		45E240091B0E8A700001F5B9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				45DA8D691B3E2B1D001F739F /* Externals */,
 				45E2400A1B0E8A700001F5B9 /* Info.plist */,
 			);
 			name = "Supporting Files";
