@@ -157,7 +157,7 @@ public class UDPChannel {
             (addr:UnsafeMutablePointer<sockaddr>, inout addrlen:socklen_t) -> Void in
 
             let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, addr, &addrlen)
-            guard result == 0 else {
+            guard result >= 0 else {
                 let error = Error.generic("recvfrom() failed")
                 errorHandler?(error)
                 return
