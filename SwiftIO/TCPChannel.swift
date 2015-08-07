@@ -14,13 +14,9 @@ import Darwin
 
 public class TCPChannel {
 
-    enum ErrorCode:Int {
-        case unknown = -1
-    }
-
     public var address:Address
     public var readHandler:(Void -> Void)? = nil
-    public var errorHandler:(NSError -> Void)? = loggingErrorHandler
+    public var errorHandler:(Error -> Void)? = loggingErrorHandler
 
     private var resumed:Bool = false
     private var queue:dispatch_queue_t!
@@ -43,7 +39,7 @@ public class TCPChannel {
 
         socket = Darwin.socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)
         if socket < 0 {
-            handleError(.unknown, description: "TODO")
+            errorHandler?(Error.generic("socket() failed"))
             return
         }
 
@@ -54,14 +50,14 @@ public class TCPChannel {
         let result = Darwin.connect(socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
         if result != 0 {
             cleanup()
-            handleError(.unknown, description: "TODO")
+            errorHandler?(Error.generic("connect() failed"))
             return
         }
 
         queue = dispatch_queue_create("io.schwa.SwiftIO.TCP", DISPATCH_QUEUE_CONCURRENT)
         if queue == nil {
             cleanup()
-            handleError(.unknown, description: "TODO")
+            errorHandler?(Error.generic("dispatch_queue_create() failed"))
             return
         }
 
@@ -70,7 +66,7 @@ public class TCPChannel {
     public func cancel() {
     }
 
-    public func send(data:NSData, address:Address! = nil, writeHandler:((Bool,NSError?) -> Void)? = loggingWriteHandler) {
+    public func send(data:NSData, address:Address! = nil, writeHandler:((Bool,Error?) -> Void)? = loggingWriteHandler) {
         // TODO
     }
 
@@ -86,17 +82,6 @@ public class TCPChannel {
         self.socket = nil
         self.queue = nil
     }
-
-    internal func makeError(code:ErrorCode = .unknown, description:String) -> NSError {
-        let userInfo = [ NSLocalizedDescriptionKey: description ]
-        let error = NSError(domain: "io.schwa.SwiftIO.Error", code: code.rawValue, userInfo: userInfo)
-        return error
-    }
-
-    internal func handleError(code:ErrorCode = .unknown, description:String) {
-        let error = makeError(code, description:description)
-        errorHandler?(error)
-    }
 }
 
 // MARK: -
@@ -105,11 +90,11 @@ internal func loggingReadHandler(datagram:Datagram) {
     debugLog?("READ")
 }
 
-internal func loggingErrorHandler(error:NSError) {
+internal func loggingErrorHandler(error:Error) {
     debugLog?("ERROR: \(error)")
 }
 
-internal func loggingWriteHandler(success:Bool, error:NSError?) {
+internal func loggingWriteHandler(success:Bool, error:Error?) {
     if success {
         debugLog?("WRITE")
     }
