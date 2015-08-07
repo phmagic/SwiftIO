@@ -120,10 +120,10 @@ public class UDPChannel {
     }
 
     public func cancel() throws {
-        assert(source != nil, "Cancel called with source = nil.")
-        assert(resumed == true)
-
-        dispatch_source_cancel(source)
+        if resumed == true {
+            assert(source != nil, "Cancel called with source = nil.")
+            dispatch_source_cancel(source)
+        }
     }
 
     public func send(data:NSData, address:Address! = nil, writeHandler:((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
