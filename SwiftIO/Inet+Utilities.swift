@@ -37,10 +37,10 @@ extension in_addr: CustomStringConvertible {
 
 // MARK: -
 
-public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout hostname:String?, inout service:String?, flags:Int32) -> Int32 {
+public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout hostname:String?, inout service:String?, flags:Int32) throws {
     var hostnameBuffer = [Int8](count: Int(NI_MAXHOST), repeatedValue: 0)
     var serviceBuffer = [Int8](count: Int(NI_MAXSERV), repeatedValue: 0)
-    return hostnameBuffer.withUnsafeMutableBufferPointer() {
+    let result = hostnameBuffer.withUnsafeMutableBufferPointer() {
         (inout hostnameBufferPtr:UnsafeMutableBufferPointer<Int8>) -> Int32 in
         serviceBuffer.withUnsafeMutableBufferPointer() {
             (inout serviceBufferPtr:UnsafeMutableBufferPointer<Int8>) -> Int32 in
@@ -56,6 +56,9 @@ public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout h
             return result
         }
     }
+    guard result == 0 else {
+        throw Error.posix(result, "getnameinfo() failed")
+    }
 }
 
 // MARK: -
@@ -63,18 +66,21 @@ public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout h
 //public func getaddrinfo(hostname:String, service:String, hints:addrinfo) throws -> addrinfo {
 //}
 
-public func getaddrinfo(hostname:String, service:String, hints:addrinfo, info:UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) -> Int32 {
+public func getaddrinfo(hostname:String, service:String, hints:addrinfo, info:UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) throws {
     var hints = hints
-    return hostname.withCString() {
+    let result = hostname.withCString() {
         (hostnameBuffer:UnsafePointer <Int8>) -> Int32 in
         return service.withCString() {
             (serviceBuffer:UnsafePointer <Int8>) -> Int32 in
             return getaddrinfo(hostnameBuffer, serviceBuffer, &hints, info)
         }
     }
+    guard result == 0 else {
+        throw Error.posix(result, "getaddrinfo() failed")
+    }
 }
 
-public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:UnsafePointer<addrinfo> -> Bool) -> Int32 {
+public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:UnsafePointer<addrinfo> -> Bool) throws {
     var hints = hints
     var info = UnsafeMutablePointer<addrinfo>()
     let result = hostname.withCString() {
@@ -84,15 +90,19 @@ public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:U
             return getaddrinfo(hostnameBuffer, serviceBuffer, &hints, &info)
         }
     }
-    if result == 0 {
-        var current = info
-        while current != nil {
-            if block(current) == false {
-                break
-            }
-            current = current.memory.ai_next
-        }
-        freeaddrinfo(info)
+    guard result == 0 else {
+        throw Error.posix(result, "getaddrinfo() failed")
     }
-    return result
+
+    var current = info
+    while current != nil {
+        if block(current) == false {
+            break
+        }
+        current = current.memory.ai_next
+    }
+    freeaddrinfo(info)
 }
+
+
+

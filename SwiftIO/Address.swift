@@ -27,7 +27,7 @@ public struct Address {
     public var hostname: String {
         var hostname:String? = nil
         var service:String? = nil
-        getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
+        try! getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
         return hostname!
     }
 
@@ -37,7 +37,7 @@ public struct Address {
     public var service:String {
         var service:String? = nil
         var hostname:String? = nil
-        getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
+        try! getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
         return service!
     }
 
@@ -168,15 +168,11 @@ public extension Address {
             hints.ai_family = family.rawValue
         }
 
-        let result = getaddrinfo(hostname, service: service, hints: hints) {
+        try getaddrinfo(hostname, service: service, hints: hints) {
             let ptr = UnsafePointer <sockaddr> ($0.memory.ai_addr)
             let address = try! Address(addr: ptr, addrlen: $0.memory.ai_addrlen)
             addresses.append(address)
             return true
-        }
-
-        guard result == 0 else {
-            throw Error.posix(result, "getaddrinfo() failed")
         }
 
         return addresses
@@ -192,7 +188,6 @@ public extension Address {
         self = try Address.addresses(hostname, service: service, family: family).first!
     }
 }
-
 
 // MARK: -
 
