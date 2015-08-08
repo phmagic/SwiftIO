@@ -18,10 +18,10 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         return mutableData.length - head
     }
 
-    init() {
+    public init() {
     }
 
-    init(buffer:Buffer <Void>) {
+    public init(buffer:Buffer <Void>) {
         mutableData = NSMutableData(bytes: buffer.baseAddress, length: buffer.length)
     }
 
