@@ -14,7 +14,8 @@ import Darwin
 
 public class TCPChannel {
 
-    public var address:Address
+    public let address:Address
+    public let port:UInt16
     public var readHandler:(Void -> Void)? = nil
     public var errorHandler:(ErrorType -> Void)? = loggingErrorHandler
 
@@ -22,19 +23,20 @@ public class TCPChannel {
     private var queue:dispatch_queue_t!
     private var socket:Int32!
 
-    public init(address:Address) {
+    public init(address:Address, port:UInt16, readHandler:(Void -> Void)? = nil) {
         self.address = address
-    }
-
-    public convenience init(hostname:String = "0.0.0.0", port:Int16, family:ProtocolFamily? = nil, readHandler:(Void -> Void)? = nil) throws {
-        let addresses = try Address.addresses(hostname, service:"\(port)", `protocol`: .TCP, family: family)
-        self.init(address:addresses[0])
+        self.port = port
         if let readHandler = readHandler {
             self.readHandler = readHandler
         }
     }
 
-    public func resume() {
+    public convenience init(hostname:String = "0.0.0.0", port:UInt16, family:ProtocolFamily? = nil, readHandler:(Void -> Void)? = nil) throws {
+        let addresses = try Address.addresses(hostname, `protocol`: .TCP, family: family)
+        self.init(address:addresses[0], port:port, readHandler:readHandler)
+    }
+
+    public func resume() throws {
         debugLog?("Resuming")
 
         socket = Darwin.socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)
@@ -46,27 +48,30 @@ public class TCPChannel {
 //let flags = Darwin.fcntl(socket, F_GETFL, 0)
 //fcntl(socket, F_SETFL, flags | O_NONBLOCK)
 
-        let sockaddr = address.addr
-        let result = Darwin.connect(socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
-        if result != 0 {
+        var addr = address.to_sockaddr(port: port)
+
+        let result = withUnsafePointer(&addr) {
+            (ptr:UnsafePointer <sockaddr>) -> Int32 in
+            return Darwin.connect(socket, ptr, socklen_t(sizeof(sockaddr)))
+        }
+
+        guard result == 0 else {
             cleanup()
-            errorHandler?(Error.generic("connect() failed"))
-            return
+            throw Error.posix(errno, "connect() failed")
         }
 
         queue = dispatch_queue_create("io.schwa.SwiftIO.TCP", DISPATCH_QUEUE_CONCURRENT)
-        if queue == nil {
+        guard queue != nil else {
             cleanup()
-            errorHandler?(Error.generic("dispatch_queue_create() failed"))
-            return
+            throw(Error.generic("dispatch_queue_create() failed"))
         }
 
     }
 
-    public func cancel() {
+    public func cancel() throws {
     }
 
-    public func send(data:NSData, address:Address! = nil, writeHandler:((Bool,Error?) -> Void)? = loggingWriteHandler) {
+    public func send(data:NSData, address:Address! = nil, writeHandler:((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
         // TODO
     }
 

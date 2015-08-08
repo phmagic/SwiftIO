@@ -17,116 +17,80 @@ import SwiftUtilities
  *
  *  sockaddr generally store IP address (either IPv4 or IPv6), port, protocol family and type.
  */
-public struct Address {
-    public let addr:Buffer <sockaddr>!
+public enum Address {
+    case INET(in_addr)
+    case INET6(in6_addr)
 
-    public init(_ buffer:Buffer <sockaddr>) {
-        self.addr = buffer
+    init(addr:in_addr) {
+        self = .INET(addr)
     }
 
-    public var hostname: String {
-        var hostname:String? = nil
-        var service:String? = nil
-        try! getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
-        return hostname!
+    init(addr:in6_addr) {
+        self = .INET6(addr)
     }
 
-    // TODO: make hostname and service one get() api that returns a tuple
-
-    /// Return the service of the address, this is either a numberic port (returned as a string) or the service name if a none type
-    public var service:String {
-        var service:String? = nil
-        var hostname:String? = nil
-        try! getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
-        return service!
-    }
-
-     /// Return the port
-    public var port:Int16 {
-        switch protocolFamily! {
+    var addressFamily:Int32 {
+        switch self {
             case .INET:
-                let address = as_sockaddr_in!
-                return Int16(bigEndian:Int16(address.sin_port))
+                return AF_INET
             case .INET6:
-                let address = as_sockaddr_in6!
-                return Int16(bigEndian:Int16(address.sin6_port))
+                return AF_INET6
         }
     }
 }
 
-extension Address: Equatable {
-}
-
-public func ==(lhs: Address, rhs: Address) -> Bool {
-    return lhs.addr == rhs.addr
-}
-
-// MARK: -
-
-/**
- An enum representing Inet protocols supported by sockaddr.
-
- This is a subset of what is support by sockaddr. But we mostly care about TCP and UDP.
- */
-public enum InetProtocol {
-    case TCP
-    case UDP
-}
-
-/**
- An enum representing protocol family supported by sockaddr.
-
- This is a subset of what is support by sockaddr. But we mostly care about INET and INET6.
- */
-public enum ProtocolFamily {
-    case INET
-    case INET6
-}
+//extension Address: Equatable {
+//}
+//
+//public func ==(lhs: Address, rhs: Address) -> Bool {
+//
+//    switch (lhs, rhs) {
+//        case .INET, .INET:
+//            break
+//        case .INET6, .INET6:
+//            break
+//        default:
+//            return false
+//    }
+//}
 
 // MARK: -
+
+extension Address {
+    public func withUnsafePointer <Result> (@noescape body: UnsafePointer<Void> -> Result) -> Result {
+        switch self {
+            case .INET(var addr):
+                return Swift.withUnsafePointer(&addr) {
+                    let ptr = UnsafePointer <Void> ($0)
+                    return body(ptr)
+                }
+            case .INET6(var addr):
+                return Swift.withUnsafePointer(&addr) {
+                    let ptr = UnsafePointer <Void> ($0)
+                    return body(ptr)
+                }
+        }
+    }
+}
+
+extension Address {
+    public var address:String {
+        return withUnsafePointer() {
+            (inputPtr:UnsafePointer<Void>) -> String in
+            var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
+            return buffer.withUnsafeMutableBufferPointer() {
+                (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
+                let result = inet_ntop(self.addressFamily, inputPtr, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
+                return String(CString: result, encoding: NSASCIIStringEncoding)!
+            }
+
+        }
+    }
+}
 
 extension Address: CustomStringConvertible {
     public var description: String {
-
-        let family = addr.baseAddress.memory.sa_family
-        var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
-        let address = buffer.withUnsafeMutableBufferPointer {
-            (inout ptr:UnsafeMutableBufferPointer <Int8>) -> String in
-            // TODO: Offset by header. THis works but is a hack. Need address of addr.baseAddress.memory.data + skiping port
-            let address = UnsafeMutablePointer <Void> (addr.baseAddress).advancedBy(4)
-            let result = inet_ntop(Int32(family), address, ptr.baseAddress, socklen_t(addr.length))
-            return String(UTF8String: result)!
-        }
-
-        switch protocolFamily! {
-            case .INET:
-                return "\(address):\(port)"
-            case .INET6:
-                return "[\(address)]:\(port)"
-        }
-
-    }
-}
-
-public extension Address {
-
-    public var as_sockaddr_in:sockaddr_in? {
-        return protocolFamily == .INET ? UnsafePointer <sockaddr_in>(addr.baseAddress).memory : nil
-    }
-
-    public var as_sockaddr_in6:sockaddr_in6? {
-        return protocolFamily == .INET6 ? UnsafePointer <sockaddr_in6>(addr.baseAddress).memory : nil
-    }
-
-    public var protocolFamily:ProtocolFamily? {
-        switch addr.baseAddress.memory.sa_family {
-            case sa_family_t(PF_INET):
-                return .INET
-            case sa_family_t(PF_INET6):
-                return .INET6
-            default:
-                return nil
-        }
+        return address
     }
 }
 
@@ -134,31 +98,7 @@ public extension Address {
 
 public extension Address {
 
-    /**
-     Create an Address object from a POSIX sockaddr structure and length
-     */
-    init(addr:UnsafePointer<sockaddr>, addrlen:socklen_t) throws {
-        assert(socklen_t(addr.memory.sa_len) == addrlen)
-        let buffer = Buffer <sockaddr> (pointer:addr, length:Int(addrlen))
-        self.init(buffer)
-    }
-}
-
-public extension Address {
-
-    /**
-     Create zero or more Address objects satisfying the parameters passed in.
-     
-     This is a "nice" wrapper around POSIX.getaddrinfo.
-
-     - parameter hostname:   <#hostname description#>
-     - parameter service:    <#service description#>
-     - parameter `protocol`: <#`protocol` description#>
-     - parameter family:     <#family description#>
-
-     - returns: <#return value description#>
-     */
-    static func addresses(hostname:String, service:String, `protocol`:InetProtocol = .TCP, family:ProtocolFamily? = nil) throws -> [Address] {
+    static func addresses(hostname:String, `protocol`:InetProtocol = .TCP, family:ProtocolFamily? = nil) throws -> [Address] {
         var addresses:[Address] = []
 
         var hints = addrinfo()
@@ -168,9 +108,9 @@ public extension Address {
             hints.ai_family = family.rawValue
         }
 
-        try getaddrinfo(hostname, service: service, hints: hints) {
-            let ptr = UnsafePointer <sockaddr> ($0.memory.ai_addr)
-            let address = try! Address(addr: ptr, addrlen: $0.memory.ai_addrlen)
+        try getaddrinfo(hostname, service: "", hints: hints) {
+            let addr = $0.memory.ai_addr.memory
+            let address = try! Address(addr:addr)
             addresses.append(address)
             return true
         }
@@ -178,37 +118,56 @@ public extension Address {
         return addresses
     }
 
-    init(string:String, family:ProtocolFamily? = nil) throws {
-        // TODO: This is crude.
+    init(addr:sockaddr) throws {
+        switch Int32(addr.sa_family) {
+            case AF_INET:
+                let sockaddr = addr.to_sockaddr_in()
+                self = .INET(sockaddr.sin_addr)
+            case AF_INET6:
+                let sockaddr = addr.to_sockaddr_in6()
+                self = .INET6(sockaddr.sin6_addr)
+            default:
+                throw Error.generic("Invalid sockaddr family")
+        }
+    }
 
-        let components = string.componentsSeparatedByString(":")
-        let hostname = components[0]
-        let service = components[1]
+    func to_sockaddr(port port:UInt16) -> sockaddr {
+        switch self {
+            case .INET(let addr):
+                return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.bigEndian), sin_addr: addr).to_sockaddr()
+            default:
+                fatalError()
+        }
+        fatalError()
+    }
 
-        self = try Address.addresses(hostname, service: service, family: family).first!
+    init(address:String, family:ProtocolFamily? = nil) throws {
+        self = try Address.addresses(address, family: family).first!
     }
 }
 
-// MARK: -
+extension sockaddr_in {
+    init(sin_family: sa_family_t, sin_port: in_port_t, sin_addr: in_addr) {
+        self.sin_len = __uint8_t(sizeof(sockaddr_in))
+        self.sin_family = sin_family
+        self.sin_port = sin_port
+        self.sin_addr = sin_addr
+        self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
+    }
 
-public extension InetProtocol {
-    var rawValue:Int32 {
-        switch self {
-            case .TCP:
-                return IPPROTO_TCP
-            case .UDP:
-                return IPPROTO_UDP
+    func to_sockaddr() -> sockaddr {
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr_in>) -> sockaddr in
+            let ptr = UnsafePointer <sockaddr> (ptr)
+            return ptr.memory
         }
     }
 }
 
-public extension ProtocolFamily {
-    var rawValue:Int32 {
-        switch self {
-            case .INET:
-                return PF_INET
-            case .INET6:
-                return PF_INET6
-        }
+extension sockaddr_in: CustomStringConvertible {
+    public var description: String {
+        let address = Address(addr: sin_addr)
+        return "\(address):\(sin_port)"
     }
 }
