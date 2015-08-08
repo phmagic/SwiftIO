@@ -49,11 +49,18 @@ public struct Address {
 
      /// Return the port
     public var port:Int16 {
-        var hostname:String? = nil
-        var service:String? = nil
-        getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
-        return Int16((service! as NSString).integerValue)
+        mutating get {
+            if _port == nil {
+                var hostname:String? = nil
+                var service:String? = nil
+                getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
+                _port = Int16((service! as NSString).integerValue)
+            }
+            return _port!
+        }
     }
+
+    private var _port:Int16?
 
 }
 
