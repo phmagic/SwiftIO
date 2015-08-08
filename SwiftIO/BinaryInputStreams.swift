@@ -24,7 +24,7 @@ public extension BinaryInputStream {
 
     func read <T:BinaryDecodable> (size:Int) throws -> T {
         let buffer = try read(size)
-        let value = try T.decode(buffer.bufferPointer, endianness: Endianess.network)
+        let value = try T.decode(buffer.bufferPointer)
         return value
     }
 }
