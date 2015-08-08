@@ -10,6 +10,8 @@ import Foundation
 
 import SwiftUtilities
 
+// TODO; Make equatable and comparable and hashable
+
 /**
  *  A wrapper for a POSIX sockaddr structure.
  *
@@ -22,6 +24,7 @@ public struct Address {
         self.addr = addr
     }
 
+    // TODO: Make non-cached and non-mutating.
     public var hostname:String {
         mutating get {
             if _hostname == nil {
@@ -33,6 +36,9 @@ public struct Address {
     }
 
     private var _hostname:String?
+
+    // TODO: make hostname and service one get() api that returns a tuple
+    // TODO: Make non-cached and non-mutating.
 
     /// Return the service of the address, this is either a numberic port (returned as a string) or the service name if a none type
     public var service:String {
@@ -49,19 +55,15 @@ public struct Address {
 
      /// Return the port
     public var port:Int16 {
-        mutating get {
-            if _port == nil {
-                var hostname:String? = nil
-                var service:String? = nil
-                getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
-                _port = Int16((service! as NSString).integerValue)
-            }
-            return _port!
+        switch protocolFamily! {
+            case .INET:
+                let address = as_sockaddr_in!
+                return Int16(bigEndian:Int16(address.sin_port))
+            case .INET6:
+                let address = as_sockaddr_in6!
+                return Int16(bigEndian:Int16(address.sin6_port))
         }
     }
-
-    private var _port:Int16?
-
 }
 
 // MARK: -
@@ -91,10 +93,17 @@ public enum ProtocolFamily {
 extension Address: CustomStringConvertible {
     public var description: String {
 
-        var copy = self
+        let family = addr.baseAddress.memory.sa_family
+        var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
+        let address = buffer.withUnsafeMutableBufferPointer {
+            (inout ptr:UnsafeMutableBufferPointer <Int8>) -> String in
+            // TODO: Offset by header. THis works but is a hack. Need address of addr.baseAddress.memory.data + skiping port
+            let address = UnsafeMutablePointer <Void> (addr.baseAddress).advancedBy(4)
+            let result = inet_ntop(Int32(family), address, ptr.baseAddress, socklen_t(addr.length))
+            return String(UTF8String: result)!
+        }
 
-
-        return "\(copy.hostname):\(copy.service)"
+        return "\(address):\(port)"
     }
 }
 
@@ -165,7 +174,7 @@ public extension Address {
 
      - returns: <#return value description#>
      */
-    static func addresses(hostname:String, service:String, `protocol`:InetProtocol = .TCP, family:ProtocolFamily? = nil) -> [Address] {
+    static func addresses(hostname:String, service:String, `protocol`:InetProtocol = .TCP, family:ProtocolFamily? = nil) throws -> [Address] {
         var addresses:[Address] = []
 
         var hints = addrinfo()
@@ -182,19 +191,21 @@ public extension Address {
             return true
         }
 
-        assert(result == 0)
+        guard result != 0 else {
+            throw Error.posix(result, "getaddrinfo() failed")
+        }
 
         return addresses
     }
 
-    init(string:String) {
+    init(string:String) throws {
         // TODO: This is crude.
 
         let components = string.componentsSeparatedByString(":")
         let hostname = components[0]
         let service = components[1]
 
-        self = Address.addresses(hostname, service: service).first!
+        self = try Address.addresses(hostname, service: service).first!
     }
 }
 

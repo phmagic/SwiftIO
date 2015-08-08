@@ -9,10 +9,11 @@
 import Darwin
 
 public extension in_addr {
-    init?(string:String) {
+    init(string:String) throws {
         let (result, address) = string.withCString() {
             (f: UnsafePointer<Int8>) -> (Int32, in_addr) in
             var address = in_addr()
+        // TODO: replace with inet_pton
         let result = inet_aton(f, &address)
         return (result, address)
         }
@@ -21,18 +22,16 @@ public extension in_addr {
         }
         else {
             self = in_addr()
-            return nil
+            throw Error.generic("inet_aton() failed")
         }
     }
 }
 
 extension in_addr: CustomStringConvertible {
     public var description: String {
-        get {
-            let buffer = inet_ntoa(self)
-            let s = String(CString: buffer, encoding: NSASCIIStringEncoding)
-            return s ?? ""
-        }
+        // TODO: replace with inet_ntop
+        let buffer = inet_ntoa(self)
+        return String(CString: buffer, encoding: NSASCIIStringEncoding)!
     }
 }
 
@@ -60,6 +59,9 @@ public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout h
 }
 
 // MARK: -
+
+//public func getaddrinfo(hostname:String, service:String, hints:addrinfo) throws -> addrinfo {
+//}
 
 public func getaddrinfo(hostname:String, service:String, hints:addrinfo, info:UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) -> Int32 {
     var hints = hints
