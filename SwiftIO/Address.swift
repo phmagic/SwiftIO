@@ -17,6 +17,44 @@ import SwiftUtilities
  */
 public struct Address {
     public let addr:Buffer <sockaddr>!
+
+    public init(addr:Buffer <sockaddr>) {
+        self.addr = addr
+    }
+
+    public var hostname:String {
+        mutating get {
+            if _hostname == nil {
+                var service:String? = nil
+                getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &_hostname, service: &service, flags: 0)
+            }
+            return _hostname!
+        }
+    }
+
+    private var _hostname:String?
+
+    /// Return the service of the address, this is either a numberic port (returned as a string) or the service name if a none type
+    public var service:String {
+        mutating get {
+            if _service == nil {
+                var hostname:String? = nil
+                getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &_service, flags: 0)
+            }
+            return _service!
+        }
+    }
+
+    private var _service:String?
+
+     /// Return the port
+    public var port:Int16 {
+        var hostname:String? = nil
+        var service:String? = nil
+        getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
+        return Int16((service! as NSString).integerValue)
+    }
+
 }
 
 // MARK: -
@@ -45,65 +83,33 @@ public enum ProtocolFamily {
 
 extension Address: CustomStringConvertible {
     public var description: String {
-        get {
-            return "\(hostname!):\(service!)"
-        }
+
+        var copy = self
+
+
+        return "\(copy.hostname):\(copy.service)"
     }
 }
 
 public extension Address {
 
-    var hostname:String! {
-        get {
-            var hostname:String? = nil
-            var service:String? = nil
-            getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
-            return hostname
-        }
-    }
-
-    /// Return the service of the address, this is either a numberic port (returned as a string) or the service name if a none type
-    var service:String! {
-        get {
-            var hostname:String? = nil
-            var service:String? = nil
-            getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
-            return service
-        }
-    }
-
-     /// Return the port
-    var port:Int16! {
-        get {
-            var hostname:String? = nil
-            var service:String? = nil
-            getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: NI_NUMERICSERV)
-            return Int16((service! as NSString).integerValue)
-        }
-    }
 
     public var as_sockaddr_in:sockaddr_in? {
-        get {
-            return protocolFamily == .INET ? UnsafePointer <sockaddr_in>(addr.baseAddress).memory : nil
-        }
+        return protocolFamily == .INET ? UnsafePointer <sockaddr_in>(addr.baseAddress).memory : nil
     }
 
     public var as_sockaddr_in6:sockaddr_in6? {
-        get {
-            return protocolFamily == .INET ? UnsafePointer <sockaddr_in6>(addr.baseAddress).memory : nil
-        }
+        return protocolFamily == .INET ? UnsafePointer <sockaddr_in6>(addr.baseAddress).memory : nil
     }
 
     public var protocolFamily:ProtocolFamily? {
-        get {
-            switch addr.baseAddress.memory.sa_family {
-                case sa_family_t(PF_INET):
-                    return .INET
-                case sa_family_t(PF_INET6):
-                    return .INET6
-                default:
-                    return nil
-            }
+        switch addr.baseAddress.memory.sa_family {
+            case sa_family_t(PF_INET):
+                return .INET
+            case sa_family_t(PF_INET6):
+                return .INET6
+            default:
+                return nil
         }
     }
 }
@@ -190,26 +196,22 @@ public extension Address {
 
 public extension InetProtocol {
     var rawValue:Int32 {
-        get {
-            switch self {
-                case .TCP:
-                    return IPPROTO_TCP
-                case .UDP:
-                    return IPPROTO_UDP
-            }
+        switch self {
+            case .TCP:
+                return IPPROTO_TCP
+            case .UDP:
+                return IPPROTO_UDP
         }
     }
 }
 
 public extension ProtocolFamily {
     var rawValue:Int32 {
-        get {
-            switch self {
-                case .INET:
-                    return PF_INET
-                case .INET6:
-                    return PF_INET6
-            }
+        switch self {
+            case .INET:
+                return PF_INET
+            case .INET6:
+                return PF_INET6
         }
     }
 }
