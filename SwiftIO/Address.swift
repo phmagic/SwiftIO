@@ -42,14 +42,14 @@ public struct Address {
     }
 
      /// Return the port
-    public var port:Int16 {
+    public var port:UInt16 {
         switch protocolFamily! {
             case .INET:
                 let address = as_sockaddr_in!
-                return Int16(bigEndian:Int16(address.sin_port))
+                return UInt16(bigEndian:UInt16(address.sin_port))
             case .INET6:
                 let address = as_sockaddr_in6!
-                return Int16(bigEndian:Int16(address.sin6_port))
+                return UInt16(bigEndian:UInt16(address.sin6_port))
         }
     }
 }
