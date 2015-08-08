@@ -16,7 +16,7 @@ public class TCPChannel {
 
     public var address:Address
     public var readHandler:(Void -> Void)? = nil
-    public var errorHandler:(Error -> Void)? = loggingErrorHandler
+    public var errorHandler:(ErrorType -> Void)? = loggingErrorHandler
 
     private var resumed:Bool = false
     private var queue:dispatch_queue_t!
@@ -90,7 +90,7 @@ internal func loggingReadHandler(datagram:Datagram) {
     debugLog?("READ")
 }
 
-internal func loggingErrorHandler(error:Error) {
+internal func loggingErrorHandler(error:ErrorType) {
     debugLog?("ERROR: \(error)")
 }
 

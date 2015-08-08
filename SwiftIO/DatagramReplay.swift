@@ -82,7 +82,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             "from": String(from),
             "timestamp": String(timestamp),
         ]
-        let json = try! NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
+        let json = try NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
         try payload.write(Int32(json.length))
         try payload.write(json)
 

@@ -20,38 +20,26 @@ import SwiftUtilities
 public struct Address {
     public let addr:Buffer <sockaddr>!
 
-    public init(addr:Buffer <sockaddr>) {
-        self.addr = addr
+    public init(_ buffer:Buffer <sockaddr>) {
+        self.addr = buffer
     }
 
-    // TODO: Make non-cached and non-mutating.
-    public var hostname:String {
-        mutating get {
-            if _hostname == nil {
-                var service:String? = nil
-                getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &_hostname, service: &service, flags: 0)
-            }
-            return _hostname!
-        }
+    public var hostname: String {
+        var hostname:String? = nil
+        var service:String? = nil
+        getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
+        return hostname!
     }
-
-    private var _hostname:String?
 
     // TODO: make hostname and service one get() api that returns a tuple
-    // TODO: Make non-cached and non-mutating.
 
     /// Return the service of the address, this is either a numberic port (returned as a string) or the service name if a none type
     public var service:String {
-        mutating get {
-            if _service == nil {
-                var hostname:String? = nil
-                getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &_service, flags: 0)
-            }
-            return _service!
-        }
+        var service:String? = nil
+        var hostname:String? = nil
+        getnameinfo(addr.baseAddress, addrlen: socklen_t(addr.length), hostname: &hostname, service: &service, flags: 0)
+        return service!
     }
-
-    private var _service:String?
 
      /// Return the port
     public var port:Int16 {
@@ -64,6 +52,13 @@ public struct Address {
                 return Int16(bigEndian:Int16(address.sin6_port))
         }
     }
+}
+
+extension Address: Equatable {
+}
+
+public func ==(lhs: Address, rhs: Address) -> Bool {
+    return lhs.addr == rhs.addr
 }
 
 // MARK: -
@@ -103,19 +98,24 @@ extension Address: CustomStringConvertible {
             return String(UTF8String: result)!
         }
 
-        return "\(address):\(port)"
+        switch protocolFamily! {
+            case .INET:
+                return "\(address):\(port)"
+            case .INET6:
+                return "[\(address)]:\(port)"
+        }
+
     }
 }
 
 public extension Address {
-
 
     public var as_sockaddr_in:sockaddr_in? {
         return protocolFamily == .INET ? UnsafePointer <sockaddr_in>(addr.baseAddress).memory : nil
     }
 
     public var as_sockaddr_in6:sockaddr_in6? {
-        return protocolFamily == .INET ? UnsafePointer <sockaddr_in6>(addr.baseAddress).memory : nil
+        return protocolFamily == .INET6 ? UnsafePointer <sockaddr_in6>(addr.baseAddress).memory : nil
     }
 
     public var protocolFamily:ProtocolFamily? {
@@ -137,26 +137,10 @@ public extension Address {
     /**
      Create an Address object from a POSIX sockaddr structure and length
      */
-    init(addr:UnsafePointer<sockaddr>, addrlen:socklen_t) {
+    init(addr:UnsafePointer<sockaddr>, addrlen:socklen_t) throws {
         assert(socklen_t(addr.memory.sa_len) == addrlen)
-        self.init(addr:Buffer <sockaddr> (pointer:addr, length:Int(addrlen)))
-    }
-
-    /**
-     Convenience (and slightly esoteric) method to create an Address by providing a closure with a sockaddr and length.
-     */
-    static func with(@noescape context:(UnsafeMutablePointer <sockaddr>, inout socklen_t) -> Void) -> Address {
-        var addressData = Array <Int8> (count:Int(SOCK_MAXADDRLEN), repeatedValue:0)
-        return addressData.withUnsafeMutableBufferPointer() {
-            (inout ptr:UnsafeMutableBufferPointer <Int8>) -> Address in
-
-            let addr = UnsafeMutablePointer <sockaddr> (ptr.baseAddress)
-            var addrlen = socklen_t(SOCK_MAXADDRLEN)
-
-            context(addr, &addrlen)
-
-            return Address(addr: addr, addrlen: addrlen)
-        }
+        let buffer = Buffer <sockaddr> (pointer:addr, length:Int(addrlen))
+        self.init(buffer)
     }
 }
 
@@ -186,26 +170,26 @@ public extension Address {
 
         let result = getaddrinfo(hostname, service: service, hints: hints) {
             let ptr = UnsafePointer <sockaddr> ($0.memory.ai_addr)
-            let address = Address(addr: ptr, addrlen: $0.memory.ai_addrlen)
+            let address = try! Address(addr: ptr, addrlen: $0.memory.ai_addrlen)
             addresses.append(address)
             return true
         }
 
-        guard result != 0 else {
+        guard result == 0 else {
             throw Error.posix(result, "getaddrinfo() failed")
         }
 
         return addresses
     }
 
-    init(string:String) throws {
+    init(string:String, family:ProtocolFamily? = nil) throws {
         // TODO: This is crude.
 
         let components = string.componentsSeparatedByString(":")
         let hostname = components[0]
         let service = components[1]
 
-        self = try Address.addresses(hostname, service: service).first!
+        self = try Address.addresses(hostname, service: service, family: family).first!
     }
 }
 

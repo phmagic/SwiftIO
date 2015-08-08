@@ -46,7 +46,7 @@ public class UDPChannel {
 
     public var address:Address
     public var readHandler:(Datagram -> Void)? = loggingReadHandler
-    public var errorHandler:(Error -> Void)? = loggingErrorHandler
+    public var errorHandler:(ErrorType -> Void)? = loggingErrorHandler
 
     private var resumed:Bool = false
     private var queue:dispatch_queue_t!
@@ -93,27 +93,45 @@ public class UDPChannel {
         }
 
         dispatch_source_set_cancel_handler(source) {
-            debugLog?("Cancel handler")
-            self.cleanup()
-            self.resumed = false
-        }
-
-        dispatch_source_set_event_handler(source) {
-            try! self.read()
-        }
-
-        dispatch_source_set_registration_handler(source) {
-            let sockaddr = self.address.addr
-
-            let result = Darwin.bind(self.socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
-            guard result == 0 else {
-                self.errorHandler?(Error.generic("bind() failed"))
-                try! self.cancel()
+            [weak self] in
+            guard let strong_self = self else {
                 return
             }
 
-            self.resumed = true
-            debugLog?("Listening on \(self.address)")
+            debugLog?("Cancel handler")
+            strong_self.cleanup()
+            strong_self.resumed = false
+        }
+
+        dispatch_source_set_event_handler(source) {
+            [weak self] in
+            guard let strong_self = self else {
+                return
+            }
+
+            do {
+                try strong_self.read()
+            }
+            catch let error {
+                strong_self.errorHandler?(error)
+            }
+        }
+
+        dispatch_source_set_registration_handler(source) {
+            [weak self] in
+            guard let strong_self = self else {
+                return
+            }
+
+            let sockaddr = strong_self.address.addr
+            let result = Darwin.bind(strong_self.socket, sockaddr.baseAddress, socklen_t(sockaddr.length))
+            guard result == 0 else {
+                strong_self.errorHandler?(Error.generic("bind() failed"))
+                try! strong_self.cancel()
+                return
+            }
+            strong_self.resumed = true
+            debugLog?("Listening on \(strong_self.address)")
         }
 
         dispatch_resume(source)
@@ -132,11 +150,16 @@ public class UDPChannel {
 
         dispatch_async(queue) {
 
+            [weak self] in
+            guard let strong_self = self else {
+                return
+            }
+
             debugLog?("Send")
 
-            let address:Address = address ?? self.address
+            let address:Address = address ?? strong_self.address
             let sockaddr = address.addr
-            let result = Darwin.sendto(self.socket, data.bytes, data.length, 0, sockaddr.baseAddress, socklen_t(sockaddr.length))
+            let result = Darwin.sendto(strong_self.socket, data.bytes, data.length, 0, sockaddr.baseAddress, socklen_t(sockaddr.length))
             if result == data.length {
                 writeHandler?(true, nil)
             }
@@ -151,21 +174,32 @@ public class UDPChannel {
 
     internal func read() throws {
 
+        // TODO: There are two (buffer, address) data mallocs per read() - this is somewhat unnecessary.
+
         let data:NSMutableData! = NSMutableData(length: 4096)
 
-        let address = Address.with() {
-            (addr:UnsafeMutablePointer<sockaddr>, inout addrlen:socklen_t) -> Void in
-
-            let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, addr, &addrlen)
-            guard result >= 0 else {
-                let error = Error.generic("recvfrom() failed")
-                errorHandler?(error)
-                return
+        var addressData = Array <Int8> (count:Int(SOCK_MAXADDRLEN), repeatedValue:0)
+        let (result, address) = addressData.withUnsafeMutableBufferPointer() {
+            (inout ptr:UnsafeMutableBufferPointer <Int8>) -> (Int, Address?) in
+            var addrlen:socklen_t = 0
+            let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, UnsafeMutablePointer<sockaddr> (ptr.baseAddress), &addrlen)
+            if result != 0 {
+                let address = try! Address(addr: UnsafeMutablePointer<sockaddr> (ptr.baseAddress), addrlen: addrlen)
+                return (result, address)
             }
-            data.length = result
+            else {
+                return (result, nil)
+            }
         }
 
-        let datagram = Datagram(from: address, timestamp: Timestamp(), buffer: Buffer <Void> (data:data))
+        guard result >= 0 else {
+            let error = Error.generic("recvfrom() failed")
+            errorHandler?(error)
+            throw error
+        }
+
+        data.length = result
+        let datagram = Datagram(from: address!, timestamp: Timestamp(), buffer: Buffer <Void> (data:data))
         readHandler?(datagram)
     }
 
