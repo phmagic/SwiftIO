@@ -8,6 +8,62 @@
 
 import Darwin
 
+public extension UInt16 {
+    init(networkEndian value:UInt16) {
+        self = UInt16(bigEndian: value)
+    }
+    var networkEndian: UInt16 {
+        return bigEndian
+    }
+}
+
+public extension UInt32 {
+    init(networkEndian value:UInt32) {
+        self = UInt32(bigEndian: value)
+    }
+    var networkEndian: UInt32 {
+        return bigEndian
+    }
+}
+
+public extension UInt64 {
+    init(networkEndian value:UInt64) {
+        self = UInt64(bigEndian: value)
+    }
+    var networkEndian: UInt64 {
+        return bigEndian
+    }
+}
+
+public extension Int16 {
+    init(networkEndian value:Int16) {
+        self = Int16(bigEndian: value)
+    }
+    var networkEndian: Int16 {
+        return bigEndian
+    }
+}
+
+public extension Int32 {
+    init(networkEndian value:Int32) {
+        self = Int32(bigEndian: value)
+    }
+    var networkEndian: Int32 {
+        return bigEndian
+    }
+}
+
+public extension Int64 {
+    init(networkEndian value:Int64) {
+        self = Int64(bigEndian: value)
+    }
+    var networkEndian: Int64 {
+        return bigEndian
+    }
+}
+
+// MARK: -
+
 public extension in_addr {
     init(string:String) throws {
         let (result, address) = string.withCString() {
@@ -131,6 +187,19 @@ extension sockaddr {
         }
     }
 
+    /// Still in network endian.
+    var port:UInt16 {
+        switch self.sa_family {
+            case sa_family_t(AF_INET):
+                let addr = to_sockaddr_in()
+                return addr.sin_port
+            case sa_family_t(AF_INET6):
+                let addr = to_sockaddr_in6()
+                return addr.sin6_port
+            default:
+                preconditionFailure()
+        }
+    }
 }
 
 

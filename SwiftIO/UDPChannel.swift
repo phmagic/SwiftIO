@@ -171,7 +171,10 @@ public class UDPChannel {
 
             let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress).memory
             let address = try! Address(addr: addr)
-            return (result, address, nil)
+
+            // TODO sockaddr_in vs in6
+            let port = UInt16(networkEndian: addr.port)
+            return (result, address, port)
         }
 
         guard result >= 0 else {

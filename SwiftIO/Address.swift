@@ -134,7 +134,7 @@ public extension Address {
     func to_sockaddr(port port:UInt16) -> sockaddr {
         switch self {
             case .INET(let addr):
-                return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.bigEndian), sin_addr: addr).to_sockaddr()
+                return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
             default:
                 fatalError()
         }

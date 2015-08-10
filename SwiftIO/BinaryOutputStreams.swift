@@ -28,7 +28,7 @@ public extension BinaryOutputStream {
 
 extension Int32: BinaryOutputStreamable {
     public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
-        var value = bigEndian
+        var value = networkEndian
         let buffer = withUnsafePointer(&value) {
             (pointer:UnsafePointer <Int32>) -> UnsafeBufferPointer <Void> in
             return UnsafeBufferPointer(start: pointer, count: sizeof(Int32))
