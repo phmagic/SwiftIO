@@ -98,12 +98,7 @@ extension Address {
     public var address:String {
         return withUnsafePointer() {
             (inputPtr:UnsafePointer<Void>) -> String in
-            var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
-            return buffer.withUnsafeMutableBufferPointer() {
-                (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
-                let result = inet_ntop(self.addressFamily, inputPtr, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
-                return String(CString: result, encoding: NSASCIIStringEncoding)!
-            }
+            return try! inet_ntop(addressFamily: self.addressFamily, address: inputPtr)
         }
     }
 }

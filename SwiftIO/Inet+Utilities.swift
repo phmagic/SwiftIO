@@ -64,7 +64,7 @@ public extension Int64 {
     }
 }
 
-public func inet_ntop(addressFamily:Int32, address:UnsafePointer <Void>) throws -> String {
+public func inet_ntop(addressFamily addressFamily:Int32, address:UnsafePointer <Void>) throws -> String {
     var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
     return buffer.withUnsafeMutableBufferPointer() {
         (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
