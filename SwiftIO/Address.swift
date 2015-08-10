@@ -39,20 +39,28 @@ public enum Address {
     }
 }
 
-//extension Address: Equatable {
-//}
-//
-//public func ==(lhs: Address, rhs: Address) -> Bool {
-//
-//    switch (lhs, rhs) {
-//        case .INET, .INET:
-//            break
-//        case .INET6, .INET6:
-//            break
-//        default:
-//            return false
-//    }
-//}
+extension Address: Equatable {
+}
+
+public func ==(lhs: Address, rhs: Address) -> Bool {
+
+    switch (lhs, rhs) {
+        case (.INET(let lhs_addr), .INET(let rhs_addr)):
+            return lhs_addr == rhs_addr
+        case (.INET6, .INET6):
+            return false
+        default:
+            return false
+    }
+}
+
+extension Address: Hashable {
+    public var hashValue: Int {
+        // TODO: cheating
+        return description.hashValue
+    }
+
+}
 
 // MARK: -
 
@@ -73,6 +81,19 @@ extension Address {
     }
 }
 
+extension Address: CustomStringConvertible {
+    public var description: String {
+        switch self {
+            case INET:
+                return "INET(\(address))"
+            case INET6:
+                return "INET6(\(address))"
+        }
+    }
+}
+
+// MARK: -
+
 extension Address {
     public var address:String {
         return withUnsafePointer() {
@@ -83,40 +104,13 @@ extension Address {
                 let result = inet_ntop(self.addressFamily, inputPtr, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
                 return String(CString: result, encoding: NSASCIIStringEncoding)!
             }
-
         }
     }
 }
 
-extension Address: CustomStringConvertible {
-    public var description: String {
-        return address
-    }
-}
-
-// MARK: -
+// MARK: sockaddr support
 
 public extension Address {
-
-    static func addresses(hostname:String, `protocol`:InetProtocol = .TCP, family:ProtocolFamily? = nil) throws -> [Address] {
-        var addresses:[Address] = []
-
-        var hints = addrinfo()
-        hints.ai_flags = AI_CANONNAME | AI_V4MAPPED
-        hints.ai_protocol = `protocol`.rawValue
-        if let family = family {
-            hints.ai_family = family.rawValue
-        }
-
-        try getaddrinfo(hostname, service: "", hints: hints) {
-            let addr = $0.memory.ai_addr.memory
-            let address = try! Address(addr:addr)
-            addresses.append(address)
-            return true
-        }
-
-        return addresses
-    }
 
     init(addr:sockaddr) throws {
         switch Int32(addr.sa_family) {
@@ -135,39 +129,99 @@ public extension Address {
         switch self {
             case .INET(let addr):
                 return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
-            default:
-                fatalError()
+            case .INET6(let addr):
+                return sockaddr_in6(sin6_family: sa_family_t(AF_INET), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr).to_sockaddr()
         }
-        fatalError()
     }
+}
 
-    init(address:String, family:ProtocolFamily? = nil) throws {
+// MARK: Hostname support
+
+public extension Address {
+
+    init(address:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws {
         self = try Address.addresses(address, family: family).first!
     }
-}
 
-extension sockaddr_in {
-    init(sin_family: sa_family_t, sin_port: in_port_t, sin_addr: in_addr) {
-        self.sin_len = __uint8_t(sizeof(sockaddr_in))
-        self.sin_family = sin_family
-        self.sin_port = sin_port
-        self.sin_addr = sin_addr
-        self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
-    }
+    static func addresses(hostname:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws -> [(Address,InetProtocol,ProtocolFamily,String?)] {
+        var results:[(Address,InetProtocol,ProtocolFamily,String?)] = []
 
-    func to_sockaddr() -> sockaddr {
-        var copy = self
-        return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr_in>) -> sockaddr in
-            let ptr = UnsafePointer <sockaddr> (ptr)
-            return ptr.memory
+        var hints = addrinfo()
+//        hints.ai_flags |= AI_ADDRCONFIG // If the AI_ADDRCONFIG bit is set, IPv4 addresses shall be returned only if an IPv4 address is configured on the local system, and IPv6 addresses shall be returned only if an IPv6 address is con- figured on the local system.
+        hints.ai_flags |= AI_CANONNAME
+        hints.ai_flags |= AI_V4MAPPED // If the AI_V4MAPPED flag is specified along with an ai_family of AF_INET6, then getaddrinfo() shall return IPv4-mapped IPv6 addresses on finding no matching IPv6 addresses ( ai_addrlen shall be 16).  The AI_V4MAPPED flag shall be ignored unlessai_family equals AF_INET6.
+
+        if let `protocol` = `protocol` {
+            hints.ai_protocol = `protocol`.rawValue
         }
-    }
-}
+        if let family = family {
+            hints.ai_family = family.rawValue
+        }
 
-extension sockaddr_in: CustomStringConvertible {
-    public var description: String {
-        let address = Address(addr: sin_addr)
-        return "\(address):\(sin_port)"
+        try getaddrinfo(hostname, service: "", hints: hints) {
+            let addrinfo = $0.memory
+            let addr = addrinfo.ai_addr.memory
+            let address = try! Address(addr:addr)
+            precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
+
+            let family = ProtocolFamily(rawValue:addrinfo.ai_family)
+            let `protocol` = InetProtocol(rawValue:addrinfo.ai_protocol)
+            var canonicalName:String? = nil
+
+            if addrinfo.ai_canonname != nil {
+                canonicalName = String(CString: addrinfo.ai_canonname, encoding: NSASCIIStringEncoding)
+            }
+
+            let result = (address,`protocol`!,family!,canonicalName)
+            results.append(result)
+
+
+//    public var ai_family: Int32 /* PF_xxx */
+//    public var ai_socktype: Int32 /* SOCK_xxx */
+//    public var ai_protocol: Int32 /* 0 or IPPROTO_xxx for IPv4 and IPv6 */
+//    public var ai_canonname: UnsafeMutablePointer<Int8> /* canonical name for hostname */
+
+
+            return true
+        }
+
+        return results
     }
+
+
+    static func addresses(hostname:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws -> [Address] {
+        var addresses:[Address] = []
+
+        var hints = addrinfo()
+//        hints.ai_flags |= AI_ADDRCONFIG // If the AI_ADDRCONFIG bit is set, IPv4 addresses shall be returned only if an IPv4 address is configured on the local system, and IPv6 addresses shall be returned only if an IPv6 address is con- figured on the local system.
+//        hints.ai_flags |= AI_CANONNAME
+        hints.ai_flags |= AI_V4MAPPED // If the AI_V4MAPPED flag is specified along with an ai_family of AF_INET6, then getaddrinfo() shall return IPv4-mapped IPv6 addresses on finding no matching IPv6 addresses ( ai_addrlen shall be 16).  The AI_V4MAPPED flag shall be ignored unlessai_family equals AF_INET6.
+
+        if let `protocol` = `protocol` {
+            hints.ai_protocol = `protocol`.rawValue
+        }
+        if let family = family {
+            hints.ai_family = family.rawValue
+        }
+
+        try getaddrinfo(hostname, service: "", hints: hints) {
+            let addr = $0.memory.ai_addr.memory
+            let address = try! Address(addr:addr)
+            precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
+            addresses.append(address)
+
+//    public var ai_family: Int32 /* PF_xxx */
+//    public var ai_socktype: Int32 /* SOCK_xxx */
+//    public var ai_protocol: Int32 /* 0 or IPPROTO_xxx for IPv4 and IPv6 */
+//    public var ai_canonname: UnsafeMutablePointer<Int8> /* canonical name for hostname */
+
+
+            return true
+        }
+
+        let addressSet = Set <Address> (addresses)
+
+        return Array <Address> (addressSet)
+    }
+
 }

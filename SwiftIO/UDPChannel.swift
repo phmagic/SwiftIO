@@ -45,7 +45,7 @@ public class UDPChannel {
     }
 
     public convenience init(hostname:String = "0.0.0.0", port:UInt16, family:ProtocolFamily? = nil, readHandler:(Datagram -> Void)? = nil) throws {
-        let addresses = try Address.addresses(hostname, `protocol`: .UDP, family: family)
+        let addresses:[Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family)
         try self.init(address:addresses[0], port:port, readHandler:readHandler)
     }
 

@@ -8,6 +8,8 @@
 
 import Darwin
 
+import SwiftUtilities
+
 public extension UInt16 {
     init(networkEndian value:UInt16) {
         self = UInt16(bigEndian: value)
@@ -62,6 +64,15 @@ public extension Int64 {
     }
 }
 
+public func inet_ntop(addressFamily:Int32, address:UnsafePointer <Void>) throws -> String {
+    var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
+    return buffer.withUnsafeMutableBufferPointer() {
+        (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
+        let result = inet_ntop(addressFamily, address, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
+        return String(CString: result, encoding: NSASCIIStringEncoding)!
+    }
+}
+
 // MARK: -
 
 public extension in_addr {
@@ -83,12 +94,28 @@ public extension in_addr {
     }
 }
 
+extension in_addr: Equatable {
+}
+
+public func ==(lhs: in_addr, rhs: in_addr) -> Bool {
+    return bitwiseEquality(lhs, rhs)
+}
+
 extension in_addr: CustomStringConvertible {
     public var description: String {
         // TODO: replace with inet_ntop
         let buffer = inet_ntoa(self)
         return String(CString: buffer, encoding: NSASCIIStringEncoding)!
     }
+}
+
+// MARK: -
+
+extension in6_addr: Equatable {
+}
+
+public func ==(lhs: in6_addr, rhs: in6_addr) -> Bool {
+    return bitwiseEquality(lhs, rhs)
 }
 
 // MARK: -
@@ -160,8 +187,7 @@ public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:U
     freeaddrinfo(info)
 }
 
-
-
+// MARK: -
 
 extension sockaddr {
 
@@ -202,4 +228,47 @@ extension sockaddr {
     }
 }
 
+// MARK: -
 
+extension sockaddr_in {
+
+    init(sin_family: sa_family_t, sin_port: in_port_t, sin_addr: in_addr) {
+        self.sin_len = __uint8_t(sizeof(sockaddr_in))
+        self.sin_family = sin_family
+        self.sin_port = sin_port
+        self.sin_addr = sin_addr
+        self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
+    }
+
+    func to_sockaddr() -> sockaddr {
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr_in>) -> sockaddr in
+            let ptr = UnsafePointer <sockaddr> (ptr)
+            return ptr.memory
+        }
+    }
+}
+
+// MARK:
+
+extension sockaddr_in6 {
+
+    init(sin6_family: sa_family_t, sin6_port: in_port_t, sin6_addr: in6_addr) {
+        self.sin6_len = __uint8_t(sizeof(sockaddr_in6))
+        self.sin6_family = sin6_family
+        self.sin6_port = sin6_port
+        self.sin6_flowinfo = 0
+        self.sin6_addr = sin6_addr
+        self.sin6_scope_id = 0
+    }
+
+    func to_sockaddr() -> sockaddr {
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr_in6>) -> sockaddr in
+            let ptr = UnsafePointer <sockaddr> (ptr)
+            return ptr.memory
+        }
+    }
+}

@@ -32,7 +32,7 @@ public class TCPChannel {
     }
 
     public convenience init(hostname:String = "0.0.0.0", port:UInt16, family:ProtocolFamily? = nil, readHandler:(Void -> Void)? = nil) throws {
-        let addresses = try Address.addresses(hostname, `protocol`: .TCP, family: family)
+        let addresses:[Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
         self.init(address:addresses[0], port:port, readHandler:readHandler)
     }
 

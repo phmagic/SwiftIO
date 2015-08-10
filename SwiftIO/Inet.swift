@@ -18,18 +18,18 @@ public enum InetProtocol {
     case UDP
 }
 
-/**
- An enum representing protocol family supported by sockaddr.
-
- This is a subset of what is support by sockaddr. But we mostly care about INET and INET6.
- */
-public enum ProtocolFamily {
-    case INET
-    case INET6
-}
-
-
 public extension InetProtocol {
+    init?(rawValue:Int32) {
+        switch rawValue {
+            case IPPROTO_TCP:
+                self = .TCP
+            case IPPROTO_UDP:
+                self = .UDP
+            default:
+                return nil
+        }
+    }
+
     var rawValue:Int32 {
         switch self {
             case .TCP:
@@ -40,7 +40,28 @@ public extension InetProtocol {
     }
 }
 
+/**
+ An enum representing protocol family supported by sockaddr.
+
+ This is a subset of what is support by sockaddr. But we mostly care about INET and INET6.
+ */
+public enum ProtocolFamily {
+    case INET
+    case INET6
+}
+
 public extension ProtocolFamily {
+
+    init?(rawValue:Int32) {
+        switch rawValue {
+            case PF_INET:
+                self = .INET
+            case PF_INET6:
+                self = .INET6
+            default:
+                return nil
+        }
+    }
     var rawValue:Int32 {
         switch self {
             case .INET:

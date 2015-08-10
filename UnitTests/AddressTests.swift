@@ -11,19 +11,25 @@ import XCTest
 import SwiftIO
 
 class AddressTests: XCTestCase {
+
     func testLocahost() {
         let address = try! Address(address: "127.0.0.1")
-        XCTAssertEqual(String(address), "127.0.0.1")
+        XCTAssertEqual(address.address, "127.0.0.1")
     }
 
-    func testLocahost2() {
-        let address = try! Address(address: "localhost")
-        XCTAssertEqual(String(address), "127.0.0.1")
+    func testLocahostIPV4() {
+        let address = try! Address(address: "localhost", family:.INET)
+        XCTAssertEqual(address.address, "127.0.0.1")
+    }
+
+    func testLocahostIPV6() {
+        let address = try! Address(address: "localhost", family:.INET6)
+        XCTAssertEqual(address.address, "::")
     }
 
     func testLocahost3() {
-        let addresses = try! Address.addresses("localhost")
-        print(addresses)
+        let addresses:[(Address,InetProtocol,ProtocolFamily,String?)] = try! Address.addresses("apple.com")
+        addresses.forEach() { print($0) }
     }
 
 }
