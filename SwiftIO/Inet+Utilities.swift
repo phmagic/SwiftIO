@@ -10,89 +10,7 @@ import Darwin
 
 import SwiftUtilities
 
-public extension UInt16 {
-    init(networkEndian value:UInt16) {
-        self = UInt16(bigEndian: value)
-    }
-    var networkEndian: UInt16 {
-        return bigEndian
-    }
-}
-
-public extension UInt32 {
-    init(networkEndian value:UInt32) {
-        self = UInt32(bigEndian: value)
-    }
-    var networkEndian: UInt32 {
-        return bigEndian
-    }
-}
-
-public extension UInt64 {
-    init(networkEndian value:UInt64) {
-        self = UInt64(bigEndian: value)
-    }
-    var networkEndian: UInt64 {
-        return bigEndian
-    }
-}
-
-public extension Int16 {
-    init(networkEndian value:Int16) {
-        self = Int16(bigEndian: value)
-    }
-    var networkEndian: Int16 {
-        return bigEndian
-    }
-}
-
-public extension Int32 {
-    init(networkEndian value:Int32) {
-        self = Int32(bigEndian: value)
-    }
-    var networkEndian: Int32 {
-        return bigEndian
-    }
-}
-
-public extension Int64 {
-    init(networkEndian value:Int64) {
-        self = Int64(bigEndian: value)
-    }
-    var networkEndian: Int64 {
-        return bigEndian
-    }
-}
-
-public func inet_ntop(addressFamily addressFamily:Int32, address:UnsafePointer <Void>) throws -> String {
-    var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
-    return buffer.withUnsafeMutableBufferPointer() {
-        (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
-        let result = inet_ntop(addressFamily, address, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
-        return String(CString: result, encoding: NSASCIIStringEncoding)!
-    }
-}
-
-// MARK: -
-
-public extension in_addr {
-    init(string:String) throws {
-        let (result, address) = string.withCString() {
-            (f: UnsafePointer<Int8>) -> (Int32, in_addr) in
-            var address = in_addr()
-        // TODO: replace with inet_pton
-        let result = inet_aton(f, &address)
-        return (result, address)
-        }
-        if result == 0 {
-            self = address
-        }
-        else {
-            self = in_addr()
-            throw Error.generic("inet_aton() failed")
-        }
-    }
-}
+// MARK: in_addr extensions
 
 extension in_addr: Equatable {
 }
@@ -109,13 +27,110 @@ extension in_addr: CustomStringConvertible {
     }
 }
 
-// MARK: -
+// MARK: in6_addr extensions
 
 extension in6_addr: Equatable {
 }
 
 public func ==(lhs: in6_addr, rhs: in6_addr) -> Bool {
     return bitwiseEquality(lhs, rhs)
+}
+
+// MARK: -
+
+extension sockaddr {
+
+    func to_sockaddr_in() -> sockaddr_in {
+        assert(sa_family == sa_family_t(AF_INET))
+        assert(Int(sa_len) == sizeof(sockaddr_in))
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in in
+            let ptr = UnsafePointer <sockaddr_in> (ptr)
+            return ptr.memory
+        }
+    }
+
+    func to_sockaddr_in6() -> sockaddr_in6 {
+        assert(sa_family == sa_family_t(AF_INET6))
+        assert(Int(sa_len) == sizeof(sockaddr_in6))
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in6 in
+            let ptr = UnsafePointer <sockaddr_in6> (ptr)
+            return ptr.memory
+        }
+    }
+
+    /// Still in network endian.
+    var port:UInt16 {
+        switch self.sa_family {
+            case sa_family_t(AF_INET):
+                let addr = to_sockaddr_in()
+                return addr.sin_port
+            case sa_family_t(AF_INET6):
+                let addr = to_sockaddr_in6()
+                return addr.sin6_port
+            default:
+                preconditionFailure()
+        }
+    }
+}
+
+// MARK: sockaddr_in extensions
+
+extension sockaddr_in {
+
+    init(sin_family: sa_family_t, sin_port: in_port_t, sin_addr: in_addr) {
+        self.sin_len = __uint8_t(sizeof(sockaddr_in))
+        self.sin_family = sin_family
+        self.sin_port = sin_port
+        self.sin_addr = sin_addr
+        self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
+    }
+
+    func to_sockaddr() -> sockaddr {
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr_in>) -> sockaddr in
+            let ptr = UnsafePointer <sockaddr> (ptr)
+            return ptr.memory
+        }
+    }
+}
+
+// MARK: sockaddr_in6 extensions
+
+extension sockaddr_in6 {
+
+    init(sin6_family: sa_family_t, sin6_port: in_port_t, sin6_addr: in6_addr) {
+        self.sin6_len = __uint8_t(sizeof(sockaddr_in6))
+        self.sin6_family = sin6_family
+        self.sin6_port = sin6_port
+        self.sin6_flowinfo = 0
+        self.sin6_addr = sin6_addr
+        self.sin6_scope_id = 0
+    }
+
+    func to_sockaddr() -> sockaddr {
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr_in6>) -> sockaddr in
+            let ptr = UnsafePointer <sockaddr> (ptr)
+            return ptr.memory
+        }
+    }
+}
+
+// MARK: Swift wrapper functions for useful (but fiddly) POSIX network functions
+
+public func inet_ntop(addressFamily addressFamily:Int32, address:UnsafePointer <Void>) throws -> String {
+    var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
+    return buffer.withUnsafeMutableBufferPointer() {
+        (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
+        let result = inet_ntop(addressFamily, address, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
+        return String(CString: result, encoding: NSASCIIStringEncoding)!
+    }
 }
 
 // MARK: -
@@ -185,90 +200,4 @@ public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:U
         current = current.memory.ai_next
     }
     freeaddrinfo(info)
-}
-
-// MARK: -
-
-extension sockaddr {
-
-    func to_sockaddr_in() -> sockaddr_in {
-        assert(sa_family == sa_family_t(AF_INET))
-        assert(Int(sa_len) == sizeof(sockaddr_in)) // TODO: this could be incorrect
-        var copy = self
-        return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in in
-            let ptr = UnsafePointer <sockaddr_in> (ptr)
-            return ptr.memory
-        }
-    }
-
-    func to_sockaddr_in6() -> sockaddr_in6 {
-        assert(sa_family == sa_family_t(AF_INET6))
-        assert(Int(sa_len) == sizeof(sockaddr_in6)) // TODO: this could be incorrect
-        var copy = self
-        return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in6 in
-            let ptr = UnsafePointer <sockaddr_in6> (ptr)
-            return ptr.memory
-        }
-    }
-
-    /// Still in network endian.
-    var port:UInt16 {
-        switch self.sa_family {
-            case sa_family_t(AF_INET):
-                let addr = to_sockaddr_in()
-                return addr.sin_port
-            case sa_family_t(AF_INET6):
-                let addr = to_sockaddr_in6()
-                return addr.sin6_port
-            default:
-                preconditionFailure()
-        }
-    }
-}
-
-// MARK: -
-
-extension sockaddr_in {
-
-    init(sin_family: sa_family_t, sin_port: in_port_t, sin_addr: in_addr) {
-        self.sin_len = __uint8_t(sizeof(sockaddr_in))
-        self.sin_family = sin_family
-        self.sin_port = sin_port
-        self.sin_addr = sin_addr
-        self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
-    }
-
-    func to_sockaddr() -> sockaddr {
-        var copy = self
-        return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr_in>) -> sockaddr in
-            let ptr = UnsafePointer <sockaddr> (ptr)
-            return ptr.memory
-        }
-    }
-}
-
-// MARK:
-
-extension sockaddr_in6 {
-
-    init(sin6_family: sa_family_t, sin6_port: in_port_t, sin6_addr: in6_addr) {
-        self.sin6_len = __uint8_t(sizeof(sockaddr_in6))
-        self.sin6_family = sin6_family
-        self.sin6_port = sin6_port
-        self.sin6_flowinfo = 0
-        self.sin6_addr = sin6_addr
-        self.sin6_scope_id = 0
-    }
-
-    func to_sockaddr() -> sockaddr {
-        var copy = self
-        return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr_in6>) -> sockaddr in
-            let ptr = UnsafePointer <sockaddr> (ptr)
-            return ptr.memory
-        }
-    }
 }
