@@ -106,3 +106,31 @@ public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:U
 
 
 
+
+extension sockaddr {
+
+    func to_sockaddr_in() -> sockaddr_in {
+        assert(sa_family == sa_family_t(AF_INET))
+        assert(Int(sa_len) == sizeof(sockaddr_in)) // TODO: this could be incorrect
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in in
+            let ptr = UnsafePointer <sockaddr_in> (ptr)
+            return ptr.memory
+        }
+    }
+
+    func to_sockaddr_in6() -> sockaddr_in6 {
+        assert(sa_family == sa_family_t(AF_INET6))
+        assert(Int(sa_len) == sizeof(sockaddr_in6)) // TODO: this could be incorrect
+        var copy = self
+        return withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in6 in
+            let ptr = UnsafePointer <sockaddr_in6> (ptr)
+            return ptr.memory
+        }
+    }
+
+}
+
+
