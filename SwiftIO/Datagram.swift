@@ -67,7 +67,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
 
     public static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Datagram {
 
-        let jsonLength:Int32 = try stream.read()
+        let jsonLength = Int32(networkEndian:try stream.read())
         let jsonBuffer:Buffer <Void> = try stream.read(Int(jsonLength))
         let jsonData = jsonBuffer.data
         let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String:AnyObject]
@@ -86,7 +86,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
 
         // TODO: timestamp
 
-        let dataLength:Int32 = try stream.read()
+        let dataLength = Int32(networkEndian:try stream.read())
         let buffer:Buffer <Void> = try stream.read(Int(dataLength))
         let datagram = try Datagram(from:(Address(address:address), UInt16(port)), timestamp:Timestamp(absoluteTime: absoluteTime), buffer: buffer)
 
@@ -102,9 +102,9 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             "timestamp": timestamp.absoluteTime,
         ]
         let json = try NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
-        try stream.write(Int32(json.length))
+        try stream.write(Int32(networkEndian:Int32(json.length)))
         try stream.write(json)
-        try stream.write(Int32(buffer.length))
+        try stream.write(Int32(networkEndian:Int32(buffer.length)))
         try stream.write(buffer.bufferPointer)
     }
 }
