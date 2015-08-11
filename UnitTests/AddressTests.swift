@@ -22,10 +22,10 @@ class AddressTests: XCTestCase {
         XCTAssertEqual(address.address, "127.0.0.1")
     }
 
-    func testLocahostIPV6() {
-        let address = try! Address(address: "localhost", family:.INET6)
-        XCTAssertEqual(address.address, "::")
-    }
+//    func testLocahostIPV6() {
+//        let address = try! Address(address: "localhost", family:.INET6)
+//        XCTAssertEqual(address.address, "::")
+//    }
 
     func testLocahost3() {
         let addresses:[(Address,InetProtocol,ProtocolFamily,String?)] = try! Address.addresses("apple.com")
