@@ -18,7 +18,7 @@ public struct Mode: OptionSetType {
     public static let write = Mode(rawValue: 2)
     public static let readWrite = Mode(rawValue: read.rawValue | write.rawValue)
 
-    func oflags() -> Int32 {
+    public func oflags() -> Int32 {
         switch rawValue {
             case Mode.read.rawValue:
                 return O_RDONLY
@@ -51,36 +51,38 @@ public class FileStream {
     }
 
     public func open(mode mode:Mode = Mode.read, append:Bool = false, create:Bool = false) throws {
-        do {
-            guard let path = url.path else {
-                throw Error.generic("Could not get path from url.")
-            }
 
-            var flags:Int32 = mode.oflags()
-            if (mode.rawValue & Mode.write.rawValue) != 0 {
-                flags |= (append ? O_APPEND : 0) | (create ? O_CREAT : 0)
-            }
-
-            let fd = path.withCString() {
-                return Darwin.open($0, flags, 0o644)
-            }
-            guard fd > 0 else {
-                throw Error.posix(errno, "Could not open file.")
-            }
-
-            isOpen = true
-            self.fd = fd
+        guard isOpen == false else {
+            throw Error.generic("File already open.")
         }
-        catch let error {
 
-            throw error
+        guard let path = url.path else {
+            throw Error.generic("Could not get path from url.")
         }
+
+        var flags:Int32 = mode.oflags()
+        if (mode.rawValue & Mode.write.rawValue) != 0 {
+            flags |= (append ? O_APPEND : 0) | (create ? O_CREAT : 0)
+        }
+
+        let fd = path.withCString() {
+            return Darwin.open($0, flags, 0o644)
+        }
+        guard fd > 0 else {
+            throw Error.posix(errno, "Could not open file.")
+        }
+
+        isOpen = true
+        self.fd = fd
     }
 
     public func close() throws {
         guard isOpen == true else {
-            return
+            throw Error.generic("File already closed.")
         }
+
+        Darwin.close(fd)
+        fd = nil
     }
 }
 

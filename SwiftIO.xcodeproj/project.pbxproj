@@ -19,6 +19,7 @@
 		459410471B79240A007FFBA0 /* DatagramTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459410461B79240A007FFBA0 /* DatagramTests.swift */; };
 		4594104C1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */; };
 		4594104D1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */; };
+		459693821B7A962C003A8639 /* test.tlv in Resources */ = {isa = PBXBuildFile; fileRef = 459693811B7A962C003A8639 /* test.tlv */; };
 		4596D3D11B7A8496009318E6 /* RandomAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596D3D01B7A8496009318E6 /* RandomAccess.swift */; };
 		4596D3D21B7A8496009318E6 /* RandomAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596D3D01B7A8496009318E6 /* RandomAccess.swift */; };
 		45B9DE911B753363009FD963 /* SwiftIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; };
@@ -98,6 +99,7 @@
 		4589723D1B76555800251997 /* AddressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressTests.swift; sourceTree = "<group>"; };
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
 		4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkEndian.swift; sourceTree = "<group>"; };
+		459693811B7A962C003A8639 /* test.tlv */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.tlv; sourceTree = "<group>"; };
 		4596D3D01B7A8496009318E6 /* RandomAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomAccess.swift; sourceTree = "<group>"; };
 		45B9DE8C1B753363009FD963 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B9DE901B753363009FD963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 		45DD2DAC1B76AD850002994A /* TestApp */ = {
 			isa = PBXGroup;
 			children = (
+				459693811B7A962C003A8639 /* test.tlv */,
 				45DD2DAD1B76AD850002994A /* AppDelegate.swift */,
 				45DD2DAF1B76AD850002994A /* ViewController.swift */,
 				45DD2DB11B76AD850002994A /* Assets.xcassets */,
@@ -421,6 +424,7 @@
 			files = (
 				45DD2DB21B76AD850002994A /* Assets.xcassets in Resources */,
 				45DD2DB51B76AD850002994A /* Main.storyboard in Resources */,
+				459693821B7A962C003A8639 /* test.tlv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
