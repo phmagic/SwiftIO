@@ -68,6 +68,10 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
     public static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Datagram {
 
         let jsonLength = Int32(networkEndian:try stream.read())
+        guard jsonLength >= 0 else {
+            throw Error.generic("Negative length")
+        }
+
         let jsonBuffer:Buffer <Void> = try stream.read(Int(jsonLength))
         let jsonData = jsonBuffer.data
         let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String:AnyObject]
@@ -87,6 +91,10 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
         // TODO: timestamp
 
         let dataLength = Int32(networkEndian:try stream.read())
+        guard dataLength >= 0 else {
+            throw Error.generic("Negative length")
+        }
+
         let buffer:Buffer <Void> = try stream.read(Int(dataLength))
         let datagram = try Datagram(from:(Address(address:address), UInt16(port)), timestamp:Timestamp(absoluteTime: absoluteTime), buffer: buffer)
 
