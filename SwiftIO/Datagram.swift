@@ -22,9 +22,42 @@ public struct Datagram {
 
 // MARK: -
 
+extension Datagram: Equatable {
+}
+
+public func ==(lhs: Datagram, rhs: Datagram) -> Bool {
+
+    if lhs.from.0 != rhs.from.0 {
+        return false
+    }
+    if lhs.from.1 != rhs.from.1 {
+        return false
+    }
+    if lhs.timestamp != rhs.timestamp {
+        return false
+    }
+    if lhs.buffer != rhs.buffer {
+        return false
+    }
+
+    return true
+}
+
+// MARK: -
+
 extension Datagram: CustomStringConvertible {
     public var description: String {
         return "Datagram(from:\(from), timestamp:\(timestamp): buffer:\(buffer.length) bytes)"
+    }
+}
+
+extension Datagram: CustomReflectable {
+    public func customMirror() -> Mirror {
+        return Mirror(self, children: [
+            "from": from,
+            "timestamp": timestamp,
+            "buffer": buffer,
+        ])
     }
 }
 
@@ -43,13 +76,19 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             throw Error.generic("Could not get from address")
         }
 
-        guard let port = json["port"] as? UInt16 else {
-            throw Error.generic("Could not get from address")
+        guard let port = json["port"] as? Int else {
+            throw Error.generic("Could not get from port")
         }
+
+        guard let absoluteTime = json["timestamp"] as? Double else {
+            throw Error.generic("Could not get from port")
+        }
+
+        // TODO: timestamp
 
         let dataLength:Int32 = try stream.read()
         let buffer:Buffer <Void> = try stream.read(Int(dataLength))
-        let datagram = try Datagram(from:(Address(address:address), port), buffer: buffer)
+        let datagram = try Datagram(from:(Address(address:address), UInt16(port)), timestamp:Timestamp(absoluteTime: absoluteTime), buffer: buffer)
 
         return datagram
     }
@@ -57,12 +96,10 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
 
     public func writeTo <Stream:BinaryOutputStream> (stream:Stream) throws {
 
-        let stream = MemoryStream()
-
         let metadata:[String:AnyObject] = [
-            "address": String(from.0),
-            "port": String(from.1),
-            "timestamp": String(timestamp),
+            "address": from.0.address,
+            "port": Int(from.1),
+            "timestamp": timestamp.absoluteTime,
         ]
         let json = try NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
         try stream.write(Int32(json.length))

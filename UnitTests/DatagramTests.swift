@@ -8,28 +8,37 @@
 
 import XCTest
 
-//class DatagramTests: XCTestCase {
+import SwiftIO
+import SwiftUtilities
+
+class DatagramTests: XCTestCase {
+
+    func testExample() {
+        let address = try! Address(address: "localhost")
+
+        let port:UInt16 = 12345
+        let buffer = Buffer <Void> (data:"Hello world".dataUsingEncoding(NSUTF8StringEncoding)!)
+        let datagram = Datagram(from: (address, port), buffer: buffer)
+        let encodedData = try! NSData(streamable: datagram)
+        encodedData.buffer
+        let stream = MemoryStream(buffer: Buffer <Void> (data:encodedData))
+        let decodedDatagram = try! Datagram.readFrom(stream)
+
+        XCTAssertEqual(datagram, decodedDatagram)
+    }
+
+}
+
+extension NSData {
+    convenience init(streamable:BinaryOutputStreamable) throws {
+        let stream = MemoryStream()
+        try streamable.writeTo(stream)
+        self.init(data:stream.data)
+    }
+}
+
+//extension Datagram {
 //
-//    override func setUp() {
-//        super.setUp()
-//        // Put setup code here. This method is called before the invocation of each test method in the class.
-//    }
-//    
-//    override func tearDown() {
-//        // Put teardown code here. This method is called after the invocation of each test method in the class.
-//        super.tearDown()
+//    public static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Datagram {
 //    }
 //
-//    func testExample() {
-//        // This is an example of a functional test case.
-//        // Use XCTAssert and related functions to verify your tests produce the correct results.
-//    }
-//
-//    func testPerformanceExample() {
-//        // This is an example of a performance test case.
-//        self.measureBlock {
-//            // Put the code you want to measure the time of here.
-//        }
-//    }
-//
-//}

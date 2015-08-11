@@ -44,4 +44,8 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         mutableData.appendBytes(buffer.baseAddress, length: buffer.count)
         head = mutableData.length
     }
+
+    public var data:NSData {
+        return mutableData
+    }
 }

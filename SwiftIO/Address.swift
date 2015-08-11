@@ -17,20 +17,25 @@ import SwiftUtilities
  *
  *  sockaddr generally store IP address (either IPv4 or IPv6), port, protocol family and type.
  */
-public enum Address {
-    case INET(in_addr)
-    case INET6(in6_addr)
+public struct Address {
+
+    enum InternalAddress {
+        case INET(in_addr)
+        case INET6(in6_addr)
+    }
+
+    let internalAddress:InternalAddress
 
     init(addr:in_addr) {
-        self = .INET(addr)
+        internalAddress = .INET(addr)
     }
 
     init(addr:in6_addr) {
-        self = .INET6(addr)
+        internalAddress = .INET6(addr)
     }
 
     var addressFamily:Int32 {
-        switch self {
+        switch internalAddress {
             case .INET:
                 return AF_INET
             case .INET6:
@@ -43,12 +48,11 @@ extension Address: Equatable {
 }
 
 public func ==(lhs: Address, rhs: Address) -> Bool {
-
-    switch (lhs, rhs) {
+    switch (lhs.internalAddress, rhs.internalAddress) {
         case (.INET(let lhs_addr), .INET(let rhs_addr)):
             return lhs_addr == rhs_addr
-        case (.INET6, .INET6):
-            return false
+        case (.INET6(let lhs_addr), .INET6(let rhs_addr)):
+            return lhs_addr == rhs_addr
         default:
             return false
     }
@@ -59,14 +63,33 @@ extension Address: Hashable {
         // TODO: cheating
         return description.hashValue
     }
+}
 
+extension Address: CustomStringConvertible {
+    public var description: String {
+        switch internalAddress {
+            case .INET:
+                return "INET(\(address))"
+            case .INET6:
+                return "INET6(\(address))"
+        }
+    }
+}
+
+extension Address: CustomReflectable {
+    public func customMirror() -> Mirror {
+        return Mirror(self, children: [
+            "family": String(addressFamily),
+            "address": String(address),
+        ])
+    }
 }
 
 // MARK: -
 
 extension Address {
     public func withUnsafePointer <Result> (@noescape body: UnsafePointer<Void> -> Result) -> Result {
-        switch self {
+        switch internalAddress {
             case .INET(var addr):
                 return Swift.withUnsafePointer(&addr) {
                     let ptr = UnsafePointer <Void> ($0)
@@ -81,16 +104,6 @@ extension Address {
     }
 }
 
-extension Address: CustomStringConvertible {
-    public var description: String {
-        switch self {
-            case INET:
-                return "INET(\(address))"
-            case INET6:
-                return "INET6(\(address))"
-        }
-    }
-}
 
 // MARK: -
 
@@ -98,7 +111,7 @@ extension Address {
     public var address:String {
         return withUnsafePointer() {
             (inputPtr:UnsafePointer<Void>) -> String in
-            return try! inet_ntop(addressFamily: self.addressFamily, address: inputPtr)
+            return try! inet_ntop(addressFamily: addressFamily, address: inputPtr)
         }
     }
 }
@@ -111,17 +124,17 @@ public extension Address {
         switch Int32(addr.sa_family) {
             case AF_INET:
                 let sockaddr = addr.to_sockaddr_in()
-                self = .INET(sockaddr.sin_addr)
+                internalAddress = .INET(sockaddr.sin_addr)
             case AF_INET6:
                 let sockaddr = addr.to_sockaddr_in6()
-                self = .INET6(sockaddr.sin6_addr)
+                internalAddress = .INET6(sockaddr.sin6_addr)
             default:
                 throw Error.generic("Invalid sockaddr family")
         }
     }
 
     func to_sockaddr(port port:UInt16) -> sockaddr {
-        switch self {
+        switch internalAddress {
             case .INET(let addr):
                 return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
             case .INET6(let addr):
@@ -135,7 +148,8 @@ public extension Address {
 public extension Address {
 
     init(address:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws {
-        self = try Address.addresses(address, family: family).first!
+        let addresses:[Address] = try Address.addresses(address, family: family)
+        self = addresses.first!
     }
 
     static func addresses(hostname:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws -> [(Address,InetProtocol,ProtocolFamily,String?)] {
