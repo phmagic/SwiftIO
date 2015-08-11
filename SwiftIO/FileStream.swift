@@ -10,33 +10,35 @@ import Foundation
 
 import SwiftUtilities
 
-public class FileStream: BinaryInputStream, BinaryOutputStream {
+public struct Mode: OptionSetType {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
 
-    public struct Mode: OptionSetType {
-        public let rawValue: Int
-        public init(rawValue: Int) { self.rawValue = rawValue }
+    public static let read = Mode(rawValue: 1)
+    public static let write = Mode(rawValue: 2)
+    public static let readWrite = Mode(rawValue: read.rawValue | write.rawValue)
 
-        public static let read = Mode(rawValue: 1)
-        public static let write = Mode(rawValue: 2)
-        public static let readWrite = Mode(rawValue: read.rawValue | write.rawValue)
-
-        func oflags() -> Int32 {
-            switch rawValue {
-                case Mode.read.rawValue:
-                    return O_RDONLY
-                case Mode.write.rawValue:
-                    return O_WRONLY
-                case Mode.readWrite.rawValue:
-                    return O_RDWR
-                default:
-                    preconditionFailure("Invalid flags")
-            }
+    func oflags() -> Int32 {
+        switch rawValue {
+            case Mode.read.rawValue:
+                return O_RDONLY
+            case Mode.write.rawValue:
+                return O_WRONLY
+            case Mode.readWrite.rawValue:
+                return O_RDWR
+            default:
+                preconditionFailure("Invalid flags")
         }
     }
+}
 
+// MARK: -
+
+public class FileStream {
 
     public let url:NSURL
     public internal(set) var isOpen:Bool = false
+    public internal(set) var fd:Int32!
 
     public init(url:NSURL) {
         self.url = url
@@ -47,8 +49,6 @@ public class FileStream: BinaryInputStream, BinaryOutputStream {
             try! close()
         }
     }
-
-    var fd:Int32!
 
     public func open(mode mode:Mode = Mode.read, append:Bool = false, create:Bool = false) throws {
         do {
@@ -82,18 +82,11 @@ public class FileStream: BinaryInputStream, BinaryOutputStream {
             return
         }
     }
+}
 
-    public func write(buffer:UnsafeBufferPointer <Void>) throws {
+// MARK: -
 
-        guard isOpen == true else {
-            throw Error.generic("Stream not open")
-        }
-
-        let result = Darwin.write(fd, buffer.baseAddress, buffer.count)
-        if result < 0 {
-            throw Error.posix(Int32(result), "write failed")
-        }
-    }
+extension FileStream: BinaryInputStream {
 
     public func read(length:Int) throws -> Buffer <Void> {
         guard isOpen == true else {
@@ -115,7 +108,51 @@ public class FileStream: BinaryInputStream, BinaryOutputStream {
 
         data.length = result
 
-        return Buffer(data:data)
+        return Buffer <Void> (data:data)
+    }
+}
+
+// MARK: -
+
+extension FileStream: BinaryOutputStream {
+
+    public func write(buffer:UnsafeBufferPointer <Void>) throws {
+
+        guard isOpen == true else {
+            throw Error.generic("Stream not open")
+        }
+
+        let result = Darwin.write(fd, buffer.baseAddress, buffer.count)
+        if result < 0 {
+            throw Error.posix(Int32(result), "write failed")
+        }
+    }
+}
+
+// MARK: -
+
+extension FileStream: RandomAccess {
+    public func tell() throws -> Int {
+        return try seek(0, whence: .current)
+    }
+
+    public func seek(offset:Int, whence:Whence = .set) throws -> Int {
+        let result = lseek(fd, off_t(offset), Int32(whence.rawValue))
+        return Int(result)
+    }
+}
+
+extension FileStream: RandomAccessInput {
+    public func read(offset offset:Int, length:Int) throws -> Buffer <Void> {
+        try seek(offset)
+        return try read(length)
+    }
+}
+
+extension FileStream: RandomAccessOutput {
+    public func write(offset offset:Int, buffer:UnsafeBufferPointer <Void>) throws {
+        try seek(offset)
+        try write(buffer)
     }
 }
 
