@@ -6,7 +6,7 @@
 //  Copyright © 2015 schwa.io. All rights reserved.
 //
 
-import Foundation
+
 
 /**
  An enum representing Inet protocols supported by sockaddr.

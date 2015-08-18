@@ -6,7 +6,7 @@
 //  Copyright © 2015 schwa.io. All rights reserved.
 //
 
-import Foundation
+
 
 public extension UInt16 {
     init(networkEndian value:UInt16) {

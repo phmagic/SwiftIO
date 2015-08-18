@@ -6,8 +6,6 @@
 //  Copyright © 2015 schwa.io. All rights reserved.
 //
 
-import Foundation
-
 import SwiftUtilities
 
 public class MemoryStream: BinaryInputStream, BinaryOutputStream {
@@ -37,7 +35,6 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         let result = DispatchData <Void> (start:buffer.baseAddress.advancedBy(head), count:length)
         head += length
         return result
-
     }
 
     public func write(buffer:UnsafeBufferPointer <Void>) throws {
