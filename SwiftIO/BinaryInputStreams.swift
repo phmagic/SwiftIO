@@ -11,7 +11,7 @@ import Foundation
 import SwiftUtilities
 
 public protocol BinaryInputStream {
-    func read(length:Int) throws -> Buffer <Void>
+    func read(length:Int) throws -> DispatchData <Void>
 }
 
 // MARK: -
@@ -23,9 +23,12 @@ public extension BinaryInputStream {
     }
 
     func read <T:BinaryDecodable> (size:Int) throws -> T {
-        let buffer = try read(size)
-        let value = try T.decode(buffer.bufferPointer)
-        return value
+        let data = try read(size)
+        return try data.map() {
+            (data, buffer) in
+            let value = try T.decode(buffer)
+            return value
+        }
     }
 }
 

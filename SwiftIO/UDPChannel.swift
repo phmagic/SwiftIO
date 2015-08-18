@@ -172,7 +172,6 @@ public class UDPChannel {
             let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress).memory
             let address = try! Address(addr: addr)
 
-            // TODO sockaddr_in vs in6
             let port = UInt16(networkEndian: addr.port)
             return (result, address, port)
         }
@@ -184,7 +183,7 @@ public class UDPChannel {
         }
 
         data.length = result
-        let datagram = Datagram(from: (address!, port!), timestamp: Timestamp(), buffer: Buffer <Void> (data:data))
+        let datagram = Datagram(from: (address!, port!), timestamp: Timestamp(), data: DispatchData <Void> (buffer:data.toUnsafeBufferPointer()))
         readHandler?(datagram)
     }
 

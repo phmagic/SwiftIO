@@ -90,7 +90,7 @@ public class FileStream {
 
 extension FileStream: BinaryInputStream {
 
-    public func read(length:Int) throws -> Buffer <Void> {
+    public func read(length:Int) throws -> DispatchData <Void> {
         guard isOpen == true else {
             throw Error.generic("Stream not open")
         }
@@ -110,7 +110,7 @@ extension FileStream: BinaryInputStream {
 
         data.length = result
 
-        return Buffer <Void> (data:data)
+        return DispatchData <Void> (buffer: data.toUnsafeBufferPointer())
     }
 }
 
@@ -145,7 +145,7 @@ extension FileStream: RandomAccess {
 }
 
 extension FileStream: RandomAccessInput {
-    public func read(offset offset:Int, length:Int) throws -> Buffer <Void> {
+    public func read(offset offset:Int, length:Int) throws -> DispatchData <Void> {
         try seek(offset)
         return try read(length)
     }

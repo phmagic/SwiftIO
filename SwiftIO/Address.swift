@@ -10,8 +10,6 @@ import Foundation
 
 import SwiftUtilities
 
-// TODO; Make equatable and comparable and hashable
-
 /**
  *  A wrapper for a POSIX sockaddr structure.
  *

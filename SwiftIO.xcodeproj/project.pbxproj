@@ -16,6 +16,8 @@
 		452E96F11B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */; };
 		452E96F21B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */; };
 		4589723E1B76555800251997 /* AddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589723D1B76555800251997 /* AddressTests.swift */; };
+		4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
+		4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
 		459410471B79240A007FFBA0 /* DatagramTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459410461B79240A007FFBA0 /* DatagramTests.swift */; };
 		4594104C1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */; };
 		4594104D1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */; };
@@ -97,6 +99,7 @@
 		452E96ED1B3C9EC6002269CD /* BinaryDecoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryDecoding.swift; sourceTree = "<group>"; };
 		452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryOutputStreams.swift; sourceTree = "<group>"; };
 		4589723D1B76555800251997 /* AddressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressTests.swift; sourceTree = "<group>"; };
+		459321091B83AEF400105005 /* Datagram+Streams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Datagram+Streams.swift"; sourceTree = "<group>"; };
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
 		4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkEndian.swift; sourceTree = "<group>"; };
 		459693811B7A962C003A8639 /* test.tlv */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.tlv; sourceTree = "<group>"; };
@@ -244,6 +247,7 @@
 				45E2400B1B0E8A700001F5B9 /* SwiftIO.h */,
 				45DD2DA11B766FC70002994A /* Address.swift */,
 				45C377B71B78295900E2153E /* Datagram.swift */,
+				459321091B83AEF400105005 /* Datagram+Streams.swift */,
 				45DD2DA31B76700B0002994A /* Inet.swift */,
 				451E03521B754A4B00193626 /* Error.swift */,
 				45E240221B0E8A7A0001F5B9 /* UDPChannel.swift */,
@@ -480,6 +484,7 @@
 				45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */,
 				45DD2DA61B76704E0002994A /* Address.swift in Sources */,
 				4596D3D21B7A8496009318E6 /* RandomAccess.swift in Sources */,
+				4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */,
 				4594104D1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,6 +506,7 @@
 				45E289761B3C8E6D00EDBBAE /* FileStream.swift in Sources */,
 				45DD2DA41B76700B0002994A /* Inet.swift in Sources */,
 				4596D3D11B7A8496009318E6 /* RandomAccess.swift in Sources */,
+				4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */,
 				4594104C1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

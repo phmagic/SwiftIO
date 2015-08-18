@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUtilities
 
 public protocol BinaryOutputStream {
    func write(buffer:UnsafeBufferPointer <Void>) throws
@@ -25,6 +26,18 @@ public extension BinaryOutputStream {
 }
 
 // MARK: -
+
+extension DispatchData: BinaryOutputStreamable {
+    public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
+        apply() {
+            (range, buffer) in
+            preconditionFailure("Unimplemented")
+//            try! stream.write(buffer)
+            return
+        }
+    }
+}
+
 
 extension Int32: BinaryOutputStreamable {
     public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {

@@ -21,7 +21,7 @@ public protocol RandomAccess {
 
 
 public protocol RandomAccessInput: RandomAccess {
-    func read(offset offset:Int, length:Int) throws -> Buffer <Void>
+    func read(offset offset:Int, length:Int) throws -> DispatchData <Void>
 }
 
 public protocol RandomAccessOutput: RandomAccess {
