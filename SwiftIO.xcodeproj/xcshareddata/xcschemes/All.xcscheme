@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "45E240051B0E8A700001F5B9"
-               BuildableName = "SwiftIO.framework"
-               BlueprintName = "SwiftIO_iOS"
+               BlueprintIdentifier = "45A2209B1B84320E00809FDB"
+               BuildableName = "All"
+               BlueprintName = "All"
                ReferencedContainer = "container:SwiftIO.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "45E240051B0E8A700001F5B9"
-            BuildableName = "SwiftIO.framework"
-            BlueprintName = "SwiftIO_iOS"
+            BlueprintIdentifier = "45A2209B1B84320E00809FDB"
+            BuildableName = "All"
+            BlueprintName = "All"
             ReferencedContainer = "container:SwiftIO.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "45E240051B0E8A700001F5B9"
-            BuildableName = "SwiftIO.framework"
-            BlueprintName = "SwiftIO_iOS"
+            BlueprintIdentifier = "45A2209B1B84320E00809FDB"
+            BuildableName = "All"
+            BlueprintName = "All"
             ReferencedContainer = "container:SwiftIO.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

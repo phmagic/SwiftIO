@@ -6,6 +6,19 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		45A2209B1B84320E00809FDB /* All */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 45A2209E1B84320E00809FDB /* Build configuration list for PBXAggregateTarget "All" */;
+			buildPhases = (
+			);
+			dependencies = (
+			);
+			name = All;
+			productName = All;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		451E03531B754A4B00193626 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E03521B754A4B00193626 /* Error.swift */; };
 		451E03541B754A4B00193626 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E03521B754A4B00193626 /* Error.swift */; };
@@ -58,6 +71,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		45A2209F1B84321800809FDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45E240051B0E8A700001F5B9;
+			remoteInfo = SwiftIO_iOS;
+		};
+		45A220A11B84321800809FDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45DEC6AA1B0E8FEE00B7C234;
+			remoteInfo = SwiftIO_OSX;
+		};
 		45B9DE921B753363009FD963 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
@@ -327,6 +354,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				45A220A01B84321800809FDB /* PBXTargetDependency */,
+				45A220A21B84321800809FDB /* PBXTargetDependency */,
 			);
 			name = TestApp;
 			productName = TestApp;
@@ -379,6 +408,9 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = schwa.io;
 				TargetAttributes = {
+					45A2209B1B84320E00809FDB = {
+						CreatedOnToolsVersion = 7.0;
+					};
 					45B9DE8B1B753363009FD963 = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -406,6 +438,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				45A2209B1B84320E00809FDB /* All */,
 				45E240051B0E8A700001F5B9 /* SwiftIO_iOS */,
 				45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */,
 				45B9DE8B1B753363009FD963 /* UnitTests */,
@@ -514,6 +547,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		45A220A01B84321800809FDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45E240051B0E8A700001F5B9 /* SwiftIO_iOS */;
+			targetProxy = 45A2209F1B84321800809FDB /* PBXContainerItemProxy */;
+		};
+		45A220A21B84321800809FDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
+			targetProxy = 45A220A11B84321800809FDB /* PBXContainerItemProxy */;
+		};
 		45B9DE931B753363009FD963 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
@@ -533,6 +576,20 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		45A2209C1B84320E00809FDB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		45A2209D1B84320E00809FDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		45B9DE941B753363009FD963 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -796,6 +853,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		45A2209E1B84320E00809FDB /* Build configuration list for PBXAggregateTarget "All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45A2209C1B84320E00809FDB /* Debug */,
+				45A2209D1B84320E00809FDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		45B9DE961B753363009FD963 /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
