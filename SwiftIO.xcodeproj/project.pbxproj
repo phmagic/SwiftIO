@@ -13,6 +13,8 @@
 			buildPhases = (
 			);
 			dependencies = (
+				45A220A41B8432B100809FDB /* PBXTargetDependency */,
+				45A220A61B8432B100809FDB /* PBXTargetDependency */,
 			);
 			name = All;
 			productName = All;
@@ -71,14 +73,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		45A2209F1B84321800809FDB /* PBXContainerItemProxy */ = {
+		45A220A11B84321800809FDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45DEC6AA1B0E8FEE00B7C234;
+			remoteInfo = SwiftIO_OSX;
+		};
+		45A220A31B8432B100809FDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 45E240051B0E8A700001F5B9;
 			remoteInfo = SwiftIO_iOS;
 		};
-		45A220A11B84321800809FDB /* PBXContainerItemProxy */ = {
+		45A220A51B8432B100809FDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
 			proxyType = 1;
@@ -354,7 +363,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				45A220A01B84321800809FDB /* PBXTargetDependency */,
 				45A220A21B84321800809FDB /* PBXTargetDependency */,
 			);
 			name = TestApp;
@@ -547,15 +555,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		45A220A01B84321800809FDB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45E240051B0E8A700001F5B9 /* SwiftIO_iOS */;
-			targetProxy = 45A2209F1B84321800809FDB /* PBXContainerItemProxy */;
-		};
 		45A220A21B84321800809FDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
 			targetProxy = 45A220A11B84321800809FDB /* PBXContainerItemProxy */;
+		};
+		45A220A41B8432B100809FDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45E240051B0E8A700001F5B9 /* SwiftIO_iOS */;
+			targetProxy = 45A220A31B8432B100809FDB /* PBXContainerItemProxy */;
+		};
+		45A220A61B8432B100809FDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
+			targetProxy = 45A220A51B8432B100809FDB /* PBXContainerItemProxy */;
 		};
 		45B9DE931B753363009FD963 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -860,6 +873,7 @@
 				45A2209D1B84320E00809FDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		45B9DE961B753363009FD963 /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
 			isa = XCConfigurationList;
