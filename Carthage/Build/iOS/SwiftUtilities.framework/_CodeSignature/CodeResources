@@ -6,19 +6,19 @@
 	<dict>
 		<key>Headers/CPPRandom.h</key>
 		<data>
-		9AE2vwNsQDTheF9HMwiSPQ8esNo=
+		kaESbRAC33zzlAdzAVsBADjPtd0=
 		</data>
 		<key>Headers/SwiftUtilities-Swift.h</key>
 		<data>
-		5ZIMOTVrxcaYeFNw8jqwNytX36o=
+		uU3ozV3BCptxYLl3ej2jTGpl4Yk=
 		</data>
 		<key>Headers/SwiftUtilities.h</key>
 		<data>
-		BcHjcPS7BQAHhWQ3P5SEPp6g+mk=
+		E6GbyPxTQQAFnnslkUzpekDcBmo=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		63VRNyb0IVgBt6nc1iGgpnOg58Y=
+		m3py1rMBUVZgYednQCmyQq5pllE=
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm.swiftdoc</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm.swiftmodule</key>
 		<data>
-		tgnq0IeJUjSyIs7eFlZdUziui4s=
+		2KMhhZepl5t1lVMxxw5dQ8ZgDrY=
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -34,7 +34,7 @@
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		31QGZ/nHzRsZjuNHmfFGMkA2/T4=
+		moNNE/+Gb0M2q1URuAeOkVRloHY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -45,15 +45,15 @@
 	<dict>
 		<key>Headers/CPPRandom.h</key>
 		<data>
-		9AE2vwNsQDTheF9HMwiSPQ8esNo=
+		kaESbRAC33zzlAdzAVsBADjPtd0=
 		</data>
 		<key>Headers/SwiftUtilities-Swift.h</key>
 		<data>
-		5ZIMOTVrxcaYeFNw8jqwNytX36o=
+		uU3ozV3BCptxYLl3ej2jTGpl4Yk=
 		</data>
 		<key>Headers/SwiftUtilities.h</key>
 		<data>
-		BcHjcPS7BQAHhWQ3P5SEPp6g+mk=
+		E6GbyPxTQQAFnnslkUzpekDcBmo=
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm.swiftdoc</key>
 		<data>
@@ -61,7 +61,7 @@
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm.swiftmodule</key>
 		<data>
-		tgnq0IeJUjSyIs7eFlZdUziui4s=
+		2KMhhZepl5t1lVMxxw5dQ8ZgDrY=
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -69,7 +69,7 @@
 		</data>
 		<key>Modules/SwiftUtilities.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		31QGZ/nHzRsZjuNHmfFGMkA2/T4=
+		moNNE/+Gb0M2q1URuAeOkVRloHY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
