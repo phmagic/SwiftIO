@@ -54,9 +54,7 @@ extension DispatchData: BinaryOutputStreamable {
     public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
         apply() {
             (range, buffer) in
-            preconditionFailure("Unimplemented")
-//            try! stream.write(buffer)
-            return
+            try! stream.write(buffer.toUnsafeBufferPointer())
         }
     }
 }
