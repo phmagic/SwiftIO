@@ -55,6 +55,7 @@ extension DispatchData: BinaryOutputStreamable {
         apply() {
             (range, buffer) in
             try! stream.write(buffer.toUnsafeBufferPointer())
+            return true
         }
     }
 }

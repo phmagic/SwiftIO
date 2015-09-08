@@ -47,7 +47,7 @@ public extension BinaryInputStream {
 
     func read <T:BinaryDecodable> (size:Int) throws -> T {
         let data = try read(size)
-        return try data.map() {
+        return try data.createMap() {
             (data, buffer) in
             let value = try T.decode(buffer)
             return value
