@@ -36,11 +36,7 @@ import SwiftUtilities
 
 // MARK: -
 
-public var debugLog:(AnyObject? -> Void)? = {
-    if let value = $0 {
-        print(value)
-    }
-}
+public var debugLog:(AnyObject? -> Void)? = nil
 
 // MARK: -
 
