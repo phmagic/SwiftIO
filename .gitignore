@@ -26,5 +26,5 @@ xcuserdata/
 
 ### Carthage
 # Cartfile.resolved
-Carthage/Builds
+Carthage/Build
 Carthage/Checkouts
