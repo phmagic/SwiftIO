@@ -147,7 +147,12 @@ public class UDPChannel {
         }
     }
 
-    public func send(data:NSData, address:Address! = nil, port:UInt16, writeHandler:((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: NSData, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
+        let data = DispatchData <Void> (start: data.bytes, count: data.length)
+        try send(data, address:address, port:port, writeHandler:writeHandler)
+    }
+
+    public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
         precondition(queue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 
@@ -162,7 +167,13 @@ public class UDPChannel {
 
             let address:Address = address ?? strong_self.address
             var addr = address.to_sockaddr(port: port)
-            let result = Darwin.sendto(strong_self.socket, data.bytes, data.length, 0, &addr, socklen_t(addr.sa_len))
+
+            let result = data.createMap() {
+                (_, buffer) in
+                return Darwin.sendto(strong_self.socket, buffer.baseAddress, buffer.count, 0, &addr, socklen_t(addr.sa_len))
+            }
+
+
             if result == data.length {
                 writeHandler?(true, nil)
             }
