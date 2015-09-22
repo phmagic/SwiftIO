@@ -93,3 +93,19 @@ public extension BinaryOutputStream {
 
 // MARK: -
 
+public extension BinaryOutputStream {
+
+    func write(start start: UnsafePointer<Void>, count: Int) throws {
+        let buffer = UnsafeBufferPointer <Void> (start: start, count: count)
+        try write(buffer)
+    }
+
+    func write <T:UnsignedIntegerType> (value:T) throws {
+        var copy:T = value
+        withUnsafePointer(&copy) {
+            (ptr:UnsafePointer <T>) -> Void in
+            // TODO: try! is bad
+            try! write(start: ptr, count: sizeof(T))
+        }
+    }
+}
