@@ -14,7 +14,7 @@ public class TLVOutputStream {
 
     public typealias TypeType = UInt16
     public typealias LengthType = UInt16
-    public typealias TypedData = (type:TypeType, data:UnsafeBufferPointer<Void>)
+    public typealias TypedData = (type:TypeType, length:LengthType, value:BinaryOutputStreamable)
 
     public var outputStream: BinaryOutputStream
 
@@ -23,7 +23,7 @@ public class TLVOutputStream {
     }
 
     public func write(data:TypedData) throws {
-        let length = LengthType(data.data.length)
+        let length = data.length
 
         guard length <= LengthType.max else {
             throw Error.generic("Buffer too big")
@@ -31,7 +31,7 @@ public class TLVOutputStream {
 
         try outputStream.write(data.type.networkEndian)
         try outputStream.write(length.networkEndian)
-        try outputStream.write(data.data)
+        try outputStream.write(data.value)
     }
 }
 

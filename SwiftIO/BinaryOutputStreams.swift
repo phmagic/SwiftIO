@@ -28,22 +28,22 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 import SwiftUtilities
+
+// MARK: BinaryOutputStream
 
 public protocol BinaryOutputStream {
    func write(buffer:UnsafeBufferPointer <Void>) throws
 }
 
-// MARK: -
+// MARK: BinaryOutputStreamable
 
 public protocol BinaryOutputStreamable {
     func writeTo <Target:BinaryOutputStream> (stream:Target) throws
 }
 
 public extension BinaryOutputStream {
-    func write <Target:BinaryOutputStreamable> (value:Target) throws {
+    func write(value:BinaryOutputStreamable) throws {
         try value.writeTo(self)
     }
 }
@@ -59,7 +59,6 @@ extension DispatchData: BinaryOutputStreamable {
         }
     }
 }
-
 
 extension Int32: BinaryOutputStreamable {
     public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
@@ -82,7 +81,6 @@ extension NSData: BinaryOutputStreamable {
 // MARK: -
 
 public extension BinaryOutputStream {
-
     func write(string:String, appendNewline: Bool = false) throws {
         let string = appendNewline == true ? string : string + "\n"
         let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
@@ -94,18 +92,12 @@ public extension BinaryOutputStream {
 // MARK: -
 
 public extension BinaryOutputStream {
-
-    func write(start start: UnsafePointer<Void>, count: Int) throws {
-        let buffer = UnsafeBufferPointer <Void> (start: start, count: count)
-        try write(buffer)
-    }
-
     func write <T:UnsignedIntegerType> (value:T) throws {
         var copy:T = value
-        withUnsafePointer(&copy) {
+        try withUnsafePointer(&copy) {
             (ptr:UnsafePointer <T>) -> Void in
-            // TODO: try! is bad
-            try! write(start: ptr, count: sizeof(T))
+            let buffer = UnsafeBufferPointer <Void> (start: ptr, count: sizeof(T))
+            try write(buffer)
         }
     }
 }
