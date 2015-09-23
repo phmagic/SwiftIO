@@ -47,6 +47,8 @@ public class UDPChannel {
 
     public let address:Address
     public let port:UInt16
+    public var qos = QOS_CLASS_DEFAULT
+
     public var readHandler:(Datagram -> Void)? = loggingReadHandler
     public var errorHandler:(ErrorType -> Void)? = loggingErrorHandler
 
@@ -83,7 +85,8 @@ public class UDPChannel {
             throw Error.generic("setsockopt() failed")
         }
 
-        queue = dispatch_queue_create("io.schwa.SwiftIO.UDP", DISPATCH_QUEUE_CONCURRENT)
+        let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
+        queue = dispatch_queue_create("io.schwa.SwiftIO.UDP", queueAttribute)
         guard queue != nil else {
             cleanup()
             throw Error.generic("dispatch_queue_create() failed")
