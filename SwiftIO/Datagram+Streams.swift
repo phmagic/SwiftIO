@@ -67,7 +67,6 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
         return datagram
     }
 
-
     public func writeTo <Stream:BinaryOutputStream> (stream:Stream) throws {
 
         let metadata:[String:AnyObject] = [

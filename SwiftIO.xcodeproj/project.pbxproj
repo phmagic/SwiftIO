@@ -32,6 +32,8 @@
 		452E96F21B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */; };
 		4578F9121BB2177A00C90DA6 /* TLVStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9111BB2177A00C90DA6 /* TLVStream.swift */; settings = {ASSET_TAGS = (); }; };
 		4578F9131BB2177A00C90DA6 /* TLVStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9111BB2177A00C90DA6 /* TLVStream.swift */; settings = {ASSET_TAGS = (); }; };
+		4578F9181BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; settings = {ASSET_TAGS = (); }; };
+		4578F9191BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; settings = {ASSET_TAGS = (); }; };
 		4589723E1B76555800251997 /* AddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589723D1B76555800251997 /* AddressTests.swift */; };
 		4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
 		4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
@@ -137,6 +139,7 @@
 		452E96ED1B3C9EC6002269CD /* BinaryDecoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryDecoding.swift; sourceTree = "<group>"; };
 		452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryOutputStreams.swift; sourceTree = "<group>"; };
 		4578F9111BB2177A00C90DA6 /* TLVStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVStream.swift; sourceTree = "<group>"; };
+		4578F9171BB2289F00C90DA6 /* NullStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullStream.swift; sourceTree = "<group>"; };
 		4589723D1B76555800251997 /* AddressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressTests.swift; sourceTree = "<group>"; };
 		459321091B83AEF400105005 /* Datagram+Streams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Datagram+Streams.swift"; sourceTree = "<group>"; };
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
@@ -298,6 +301,7 @@
 				4596D3D01B7A8496009318E6 /* RandomAccess.swift */,
 				45E289751B3C8E6D00EDBBAE /* FileStream.swift */,
 				45E289771B3C8E7300EDBBAE /* MemoryStream.swift */,
+				4578F9171BB2289F00C90DA6 /* NullStream.swift */,
 				452E96ED1B3C9EC6002269CD /* BinaryDecoding.swift */,
 				4578F9111BB2177A00C90DA6 /* TLVStream.swift */,
 				45E240091B0E8A700001F5B9 /* Supporting Files */,
@@ -522,6 +526,7 @@
 				45DEC6CD1B0E94CE00B7C234 /* Inet+Utilities.swift in Sources */,
 				45C377B91B78295900E2153E /* Datagram.swift in Sources */,
 				452E96E71B3C8F2A002269CD /* BinaryInputStreams.swift in Sources */,
+				4578F9191BB2289F00C90DA6 /* NullStream.swift in Sources */,
 				45DEC6CC1B0E94CE00B7C234 /* UDPChannel.swift in Sources */,
 				45DD2DA51B7670490002994A /* Inet.swift in Sources */,
 				452E96EF1B3C9EC6002269CD /* BinaryDecoding.swift in Sources */,
@@ -545,6 +550,7 @@
 				451E03531B754A4B00193626 /* Error.swift in Sources */,
 				45C377B81B78295900E2153E /* Datagram.swift in Sources */,
 				45E240271B0E8A950001F5B9 /* Inet+Utilities.swift in Sources */,
+				4578F9181BB2289F00C90DA6 /* NullStream.swift in Sources */,
 				452E96E61B3C8F1B002269CD /* BinaryInputStreams.swift in Sources */,
 				45E240231B0E8A7A0001F5B9 /* UDPChannel.swift in Sources */,
 				452E96EE1B3C9EC6002269CD /* BinaryDecoding.swift in Sources */,

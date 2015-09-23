@@ -48,6 +48,14 @@ public extension BinaryOutputStream {
     }
 }
 
+public extension BinaryOutputStreamable {
+    var length: Int {
+        let nullStream = NullStream()
+        try! nullStream.write(self)
+        return nullStream.length
+    }
+}
+
 // MARK: -
 
 extension DispatchData: BinaryOutputStreamable {
