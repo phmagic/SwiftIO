@@ -53,7 +53,8 @@ public class UDPChannel {
     public var errorHandler: (ErrorType -> Void)? = loggingErrorHandler
 
     private var resumed: Bool = false
-    private var queue: dispatch_queue_t!
+    private var receiveQueue: dispatch_queue_t!
+    private var sendQueue: dispatch_queue_t!
     private var source: dispatch_source_t!
     private var socket: Int32!
 
@@ -86,13 +87,20 @@ public class UDPChannel {
         }
 
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-        queue = dispatch_queue_create("io.schwa.SwiftIO.UDP", queueAttribute)
-        guard queue != nil else {
+
+        receiveQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
+        guard receiveQueue != nil else {
             cleanup()
             throw Error.generic("dispatch_queue_create() failed")
         }
 
-        source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(socket), 0, queue)
+        sendQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.sendQueue", queueAttribute)
+        guard sendQueue != nil else {
+            cleanup()
+            throw Error.generic("dispatch_queue_create() failed")
+        }
+
+        source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(socket), 0, receiveQueue)
         guard source != nil else {
             cleanup()
             throw Error.generic("dispatch_source_create() failed")
@@ -156,10 +164,10 @@ public class UDPChannel {
     }
 
     public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
-        precondition(queue != nil, "Cannot send data without a queue")
+        precondition(receiveQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 
-        dispatch_async(queue) {
+        dispatch_async(sendQueue) {
 
             [weak self] in
             guard let strong_self = self else {
@@ -225,7 +233,8 @@ public class UDPChannel {
             Darwin.close(socket)
         }
         self.socket = nil
-        self.queue = nil
+        self.receiveQueue = nil
+        self.sendQueue = nil
         self.source = nil
     }
 }
