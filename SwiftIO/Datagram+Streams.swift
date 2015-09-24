@@ -33,16 +33,16 @@ import SwiftUtilities
 
 extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
 
-    public static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Datagram {
+    public static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> Datagram {
 
-        let jsonLength = Int32(networkEndian:try stream.read())
+        let jsonLength = Int32(networkEndian: try stream.read())
         guard jsonLength >= 0 else {
             throw Error.generic("Negative length")
         }
 
-        let jsonBuffer:DispatchData <Void> = try stream.read(Int(jsonLength))
+        let jsonBuffer: DispatchData <Void> = try stream.read(Int(jsonLength))
         let jsonData = jsonBuffer.data as! NSData
-        let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String:AnyObject]
+        let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String: AnyObject]
 
         guard let address = json["address"] as? String else {
             throw Error.generic("Could not get from address")
@@ -56,28 +56,28 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             throw Error.generic("Could not get from port")
         }
 
-        let dataLength = Int32(networkEndian:try stream.read())
+        let dataLength = Int32(networkEndian: try stream.read())
         guard dataLength >= 0 else {
             throw Error.generic("Negative length")
         }
 
-        let data:DispatchData <Void> = try stream.read(Int(dataLength))
-        let datagram = try Datagram(from:(Address(address:address), UInt16(port)), timestamp:Timestamp(absoluteTime: absoluteTime), data: data)
+        let data: DispatchData <Void> = try stream.read(Int(dataLength))
+        let datagram = try Datagram(from: (Address(address: address), UInt16(port)), timestamp: Timestamp(absoluteTime: absoluteTime), data: data)
 
         return datagram
     }
 
-    public func writeTo <Stream:BinaryOutputStream> (stream:Stream) throws {
+    public func writeTo <Stream: BinaryOutputStream> (stream: Stream) throws {
 
-        let metadata:[String:AnyObject] = [
+        let metadata: [String: AnyObject] = [
             "address": from.0.address,
             "port": Int(from.1),
             "timestamp": timestamp.absoluteTime,
         ]
         let json = try NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())
-        try stream.write(Int32(networkEndian:Int32(json.length)))
+        try stream.write(Int32(networkEndian: Int32(json.length)))
         try stream.write(json)
-        try stream.write(Int32(networkEndian:Int32(data.length)))
+        try stream.write(Int32(networkEndian: Int32(data.length)))
         try stream.write(data)
     }
 }

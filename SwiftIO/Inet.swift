@@ -40,7 +40,7 @@ public enum InetProtocol {
 }
 
 public extension InetProtocol {
-    init?(rawValue:Int32) {
+    init?(rawValue: Int32) {
         switch rawValue {
             case IPPROTO_TCP:
                 self = .TCP
@@ -51,7 +51,7 @@ public extension InetProtocol {
         }
     }
 
-    var rawValue:Int32 {
+    var rawValue: Int32 {
         switch self {
             case .TCP:
                 return IPPROTO_TCP
@@ -73,7 +73,7 @@ public enum ProtocolFamily {
 
 public extension ProtocolFamily {
 
-    init?(rawValue:Int32) {
+    init?(rawValue: Int32) {
         switch rawValue {
             case PF_INET:
                 self = .INET
@@ -83,7 +83,7 @@ public extension ProtocolFamily {
                 return nil
         }
     }
-    var rawValue:Int32 {
+    var rawValue: Int32 {
         switch self {
             case .INET:
                 return PF_INET

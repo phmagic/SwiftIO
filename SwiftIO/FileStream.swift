@@ -59,11 +59,11 @@ public struct Mode: OptionSetType {
 
 public class FileStream {
 
-    public let url:NSURL
-    public internal(set) var isOpen:Bool = false
-    public internal(set) var fd:Int32!
+    public let url: NSURL
+    public internal(set) var isOpen: Bool = false
+    public internal(set) var fd: Int32!
 
-    public init(url:NSURL) {
+    public init(url: NSURL) {
         self.url = url
     }
 
@@ -73,7 +73,7 @@ public class FileStream {
         }
     }
 
-    public func open(mode mode:Mode = Mode.read, append:Bool = false, create:Bool = false) throws {
+    public func open(mode mode: Mode = Mode.read, append: Bool = false, create: Bool = false) throws {
 
         guard isOpen == false else {
             throw Error.generic("File already open.")
@@ -83,7 +83,7 @@ public class FileStream {
             throw Error.generic("Could not get path from url.")
         }
 
-        var flags:Int32 = mode.oflags()
+        var flags: Int32 = mode.oflags()
         if (mode.rawValue & Mode.write.rawValue) != 0 {
             flags |= (append ? O_APPEND : 0) | (create ? O_CREAT : 0)
         }
@@ -113,7 +113,7 @@ public class FileStream {
 
 extension FileStream: BinaryInputStream {
 
-    public func read(length:Int) throws -> DispatchData <Void> {
+    public func read(length: Int) throws -> DispatchData <Void> {
         guard isOpen == true else {
             throw Error.generic("Stream not open")
         }
@@ -122,7 +122,7 @@ extension FileStream: BinaryInputStream {
             throw Error.generic("Does not support nil length yet")
         }
 
-        guard let data = NSMutableData(length:length ?? 0) else {
+        guard let data = NSMutableData(length: length ?? 0) else {
             throw Error.generic("Could not allocate data of length")
         }
 
@@ -141,7 +141,7 @@ extension FileStream: BinaryInputStream {
 
 extension FileStream: BinaryOutputStream {
 
-    public func write(buffer:UnsafeBufferPointer <Void>) throws {
+    public func write(buffer: UnsafeBufferPointer <Void>) throws {
 
         guard isOpen == true else {
             throw Error.generic("Stream not open")
@@ -161,21 +161,21 @@ extension FileStream: RandomAccess {
         return try seek(0, whence: .current)
     }
 
-    public func seek(offset:Int, whence:Whence = .set) throws -> Int {
+    public func seek(offset: Int, whence: Whence = .set) throws -> Int {
         let result = lseek(fd, off_t(offset), Int32(whence.rawValue))
         return Int(result)
     }
 }
 
 extension FileStream: RandomAccessInput {
-    public func read(offset offset:Int, length:Int) throws -> DispatchData <Void> {
+    public func read(offset offset: Int, length: Int) throws -> DispatchData <Void> {
         try seek(offset)
         return try read(length)
     }
 }
 
 extension FileStream: RandomAccessOutput {
-    public func write(offset offset:Int, buffer:UnsafeBufferPointer <Void>) throws {
+    public func write(offset offset: Int, buffer: UnsafeBufferPointer <Void>) throws {
         try seek(offset)
         try write(buffer)
     }

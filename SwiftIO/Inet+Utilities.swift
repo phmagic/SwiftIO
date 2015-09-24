@@ -68,7 +68,7 @@ extension sockaddr {
         assert(Int(sa_len) == sizeof(sockaddr_in))
         var copy = self
         return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in in
+            (ptr: UnsafePointer <sockaddr>) -> sockaddr_in in
             let ptr = UnsafePointer <sockaddr_in> (ptr)
             return ptr.memory
         }
@@ -79,14 +79,14 @@ extension sockaddr {
         assert(Int(sa_len) == sizeof(sockaddr_in6))
         var copy = self
         return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr>) -> sockaddr_in6 in
+            (ptr: UnsafePointer <sockaddr>) -> sockaddr_in6 in
             let ptr = UnsafePointer <sockaddr_in6> (ptr)
             return ptr.memory
         }
     }
 
     /// Still in network endian.
-    var port:UInt16 {
+    var port: UInt16 {
         switch self.sa_family {
             case sa_family_t(AF_INET):
                 let addr = to_sockaddr_in()
@@ -115,7 +115,7 @@ extension sockaddr_in {
     func to_sockaddr() -> sockaddr {
         var copy = self
         return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr_in>) -> sockaddr in
+            (ptr: UnsafePointer <sockaddr_in>) -> sockaddr in
             let ptr = UnsafePointer <sockaddr> (ptr)
             return ptr.memory
         }
@@ -138,7 +138,7 @@ extension sockaddr_in6 {
     func to_sockaddr() -> sockaddr {
         var copy = self
         return withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <sockaddr_in6>) -> sockaddr in
+            (ptr: UnsafePointer <sockaddr_in6>) -> sockaddr in
             let ptr = UnsafePointer <sockaddr> (ptr)
             return ptr.memory
         }
@@ -147,10 +147,10 @@ extension sockaddr_in6 {
 
 // MARK: Swift wrapper functions for useful (but fiddly) POSIX network functions
 
-public func inet_ntop(addressFamily addressFamily:Int32, address:UnsafePointer <Void>) throws -> String {
+public func inet_ntop(addressFamily addressFamily: Int32, address: UnsafePointer <Void>) throws -> String {
     var buffer = Array <Int8> (count: Int(INET6_ADDRSTRLEN) + 1, repeatedValue: 0)
     return buffer.withUnsafeMutableBufferPointer() {
-        (inout outputBuffer:UnsafeMutableBufferPointer <Int8>) -> String in
+        (inout outputBuffer: UnsafeMutableBufferPointer <Int8>) -> String in
         let result = inet_ntop(addressFamily, address, outputBuffer.baseAddress, socklen_t(INET6_ADDRSTRLEN))
         return String(CString: result, encoding: NSASCIIStringEncoding)!
     }
@@ -158,13 +158,13 @@ public func inet_ntop(addressFamily addressFamily:Int32, address:UnsafePointer <
 
 // MARK: -
 
-public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout hostname:String?, inout service:String?, flags:Int32) throws {
+public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout hostname: String?, inout service: String?, flags: Int32) throws {
     var hostnameBuffer = [Int8](count: Int(NI_MAXHOST), repeatedValue: 0)
     var serviceBuffer = [Int8](count: Int(NI_MAXSERV), repeatedValue: 0)
     let result = hostnameBuffer.withUnsafeMutableBufferPointer() {
-        (inout hostnameBufferPtr:UnsafeMutableBufferPointer<Int8>) -> Int32 in
+        (inout hostnameBufferPtr: UnsafeMutableBufferPointer<Int8>) -> Int32 in
         serviceBuffer.withUnsafeMutableBufferPointer() {
-            (inout serviceBufferPtr:UnsafeMutableBufferPointer<Int8>) -> Int32 in
+            (inout serviceBufferPtr: UnsafeMutableBufferPointer<Int8>) -> Int32 in
             let result = getnameinfo(
                 addr, addrlen,
                 hostnameBufferPtr.baseAddress, socklen_t(NI_MAXHOST),
@@ -184,15 +184,15 @@ public func getnameinfo(addr:UnsafePointer<sockaddr>, addrlen:socklen_t, inout h
 
 // MARK: -
 
-//public func getaddrinfo(hostname:String, service:String, hints:addrinfo) throws -> addrinfo {
+//public func getaddrinfo(hostname: String, service: String, hints: addrinfo) throws -> addrinfo {
 //}
 
-public func getaddrinfo(hostname:String, service:String, hints:addrinfo, info:UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) throws {
+public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info: UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) throws {
     var hints = hints
     let result = hostname.withCString() {
-        (hostnameBuffer:UnsafePointer <Int8>) -> Int32 in
+        (hostnameBuffer: UnsafePointer <Int8>) -> Int32 in
         return service.withCString() {
-            (serviceBuffer:UnsafePointer <Int8>) -> Int32 in
+            (serviceBuffer: UnsafePointer <Int8>) -> Int32 in
             return getaddrinfo(hostnameBuffer, serviceBuffer, &hints, info)
         }
     }
@@ -201,13 +201,13 @@ public func getaddrinfo(hostname:String, service:String, hints:addrinfo, info:Un
     }
 }
 
-public func getaddrinfo(hostname:String, service:String, hints:addrinfo, block:UnsafePointer<addrinfo> -> Bool) throws {
+public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> -> Bool) throws {
     var hints = hints
     var info = UnsafeMutablePointer<addrinfo>()
     let result = hostname.withCString() {
-        (hostnameBuffer:UnsafePointer <Int8>) -> Int32 in
+        (hostnameBuffer: UnsafePointer <Int8>) -> Int32 in
         return service.withCString() {
-            (serviceBuffer:UnsafePointer <Int8>) -> Int32 in
+            (serviceBuffer: UnsafePointer <Int8>) -> Int32 in
             return getaddrinfo(hostnameBuffer, serviceBuffer, &hints, &info)
         }
     }

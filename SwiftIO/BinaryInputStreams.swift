@@ -34,18 +34,18 @@
 import SwiftUtilities
 
 public protocol BinaryInputStream {
-    func read(length:Int) throws -> DispatchData <Void>
+    func read(length: Int) throws -> DispatchData <Void>
 }
 
 // MARK: -
 
 public extension BinaryInputStream {
 
-    func read <T:BinaryDecodable> () throws -> T {
+    func read <T: BinaryDecodable> () throws -> T {
         return try read(sizeof(T))
     }
 
-    func read <T:BinaryDecodable> (size:Int) throws -> T {
+    func read <T: BinaryDecodable> (size: Int) throws -> T {
         let data = try read(size)
         return try data.createMap() {
             (data, buffer) in
@@ -58,11 +58,11 @@ public extension BinaryInputStream {
 // MARK: -
 
 public protocol BinaryInputStreamable {
-     static func readFrom <Stream:BinaryInputStream> (stream:Stream) throws -> Self
+     static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> Self
 }
 
 public extension BinaryInputStream {
-    func read <T:BinaryInputStreamable> () throws -> T {
+    func read <T: BinaryInputStreamable> () throws -> T {
         return try T.readFrom(self)
     }
 }
@@ -70,10 +70,10 @@ public extension BinaryInputStream {
 // MARK: -
 
 //extension Int32: BinaryInputStreamable {
-//     public static func readFrom <Stream:BinaryInputStream> (stream:Stream, handler:(ReadResult <Int32>) -> Void) throws {
+//     public static func readFrom <Stream: BinaryInputStream> (stream: Stream, handler: (ReadResult <Int32>) -> Void) throws {
 //
 ////        try! stream.read() {
-////            (readResult:ReadResult <Int32>) in
+////            (readResult: ReadResult <Int32>) in
 ////
 ////            handler(readResult)
 ////

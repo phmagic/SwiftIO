@@ -44,17 +44,17 @@ public struct Address {
         case INET6(in6_addr)
     }
 
-    let internalAddress:InternalAddress
+    let internalAddress: InternalAddress
 
-    init(addr:in_addr) {
+    init(addr: in_addr) {
         internalAddress = .INET(addr)
     }
 
-    init(addr:in6_addr) {
+    init(addr: in6_addr) {
         internalAddress = .INET6(addr)
     }
 
-    var addressFamily:Int32 {
+    var addressFamily: Int32 {
         switch internalAddress {
             case .INET:
                 return AF_INET
@@ -128,9 +128,9 @@ extension Address {
 // MARK: -
 
 extension Address {
-    public var address:String {
+    public var address: String {
         return try! withUnsafePointer() {
-            (inputPtr:UnsafePointer<Void>) -> String in
+            (inputPtr: UnsafePointer<Void>) -> String in
             return try! inet_ntop(addressFamily: addressFamily, address: inputPtr)
         }
     }
@@ -140,7 +140,7 @@ extension Address {
 
 public extension Address {
 
-    init(addr:sockaddr) throws {
+    init(addr: sockaddr) throws {
         switch Int32(addr.sa_family) {
             case AF_INET:
                 let sockaddr = addr.to_sockaddr_in()
@@ -153,7 +153,7 @@ public extension Address {
         }
     }
 
-    func to_sockaddr(port port:UInt16) -> sockaddr {
+    func to_sockaddr(port port: UInt16) -> sockaddr {
         switch internalAddress {
             case .INET(let addr):
                 return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
@@ -167,13 +167,13 @@ public extension Address {
 
 public extension Address {
 
-    init(address:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws {
-        let addresses:[Address] = try Address.addresses(address, family: family)
+    init(address: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws {
+        let addresses: [Address] = try Address.addresses(address, family: family)
         self = addresses.first!
     }
 
-    static func addresses(hostname:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws -> [(Address,InetProtocol,ProtocolFamily,String?)] {
-        var results:[(Address,InetProtocol,ProtocolFamily,String?)] = []
+    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [(Address,InetProtocol,ProtocolFamily,String?)] {
+        var results: [(Address,InetProtocol,ProtocolFamily,String?)] = []
 
         var hints = addrinfo()
 //        hints.ai_flags |= AI_ADDRCONFIG // If the AI_ADDRCONFIG bit is set, IPv4 addresses shall be returned only if an IPv4 address is configured on the local system, and IPv6 addresses shall be returned only if an IPv6 address is con- figured on the local system.
@@ -190,12 +190,12 @@ public extension Address {
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addrinfo = $0.memory
             let addr = addrinfo.ai_addr.memory
-            let address = try! Address(addr:addr)
+            let address = try! Address(addr: addr)
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
 
-            let family = ProtocolFamily(rawValue:addrinfo.ai_family)
-            let `protocol` = InetProtocol(rawValue:addrinfo.ai_protocol)
-            var canonicalName:String? = nil
+            let family = ProtocolFamily(rawValue: addrinfo.ai_family)
+            let `protocol` = InetProtocol(rawValue: addrinfo.ai_protocol)
+            var canonicalName: String? = nil
 
             if addrinfo.ai_canonname != nil {
                 canonicalName = String(CString: addrinfo.ai_canonname, encoding: NSASCIIStringEncoding)
@@ -218,8 +218,8 @@ public extension Address {
     }
 
 
-    static func addresses(hostname:String, `protocol`:InetProtocol? = nil, family:ProtocolFamily? = nil) throws -> [Address] {
-        var addresses:[Address] = []
+    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [Address] {
+        var addresses: [Address] = []
 
         var hints = addrinfo()
 //        hints.ai_flags |= AI_ADDRCONFIG // If the AI_ADDRCONFIG bit is set, IPv4 addresses shall be returned only if an IPv4 address is configured on the local system, and IPv6 addresses shall be returned only if an IPv6 address is con- figured on the local system.
@@ -235,7 +235,7 @@ public extension Address {
 
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addr = $0.memory.ai_addr.memory
-            let address = try! Address(addr:addr)
+            let address = try! Address(addr: addr)
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
             addresses.append(address)
 

@@ -34,11 +34,11 @@
 import SwiftUtilities
 
 public protocol BinaryDecodable {
-    static func decode(buffer:UnsafeBufferPointer <Void>) throws -> Self
+    static func decode(buffer: UnsafeBufferPointer <Void>) throws -> Self
 }
 
 extension IntegerType {
-    public static func decode(buffer:UnsafeBufferPointer <Void>) throws -> Self {
+    public static func decode(buffer: UnsafeBufferPointer <Void>) throws -> Self {
         typealias Type = Self
         guard buffer.count >= sizeof(Type) else {
             throw Error.generic("Not enough bytes for \(Type.self) decoding.")
@@ -49,7 +49,7 @@ extension IntegerType {
 }
 
 extension UnsignedIntegerType {
-    public static func decode(buffer:UnsafeBufferPointer <Void>) throws -> Self {
+    public static func decode(buffer: UnsafeBufferPointer <Void>) throws -> Self {
         typealias Type = Self
         guard buffer.count >= sizeof(Type) else {
             throw Error.generic("Not enough bytes for \(Type.self) decoding.")

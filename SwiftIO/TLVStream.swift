@@ -14,7 +14,7 @@ public class TLVOutputStream {
 
     public typealias TypeType = UInt16
     public typealias LengthType = UInt16
-    public typealias TypedData = (type:TypeType, value:BinaryOutputStreamable)
+    public typealias TypedData = (type: TypeType, value: BinaryOutputStreamable)
 
     public var outputStream: BinaryOutputStream
 
@@ -22,7 +22,7 @@ public class TLVOutputStream {
         self.outputStream = outputStream
     }
 
-    public func write(data:TypedData) throws {
+    public func write(data: TypedData) throws {
         let length = LengthType(data.value.length)
 
         guard length <= LengthType.max else {
@@ -39,7 +39,7 @@ public class TLVInputStream {
 
     public typealias TypeType = UInt16
     public typealias LengthType = UInt16
-    public typealias TypedData = (type:TypeType, data:DispatchData <Void>)
+    public typealias TypedData = (type: TypeType, data: DispatchData <Void>)
 
     public var stream: BinaryInputStream
 
@@ -48,19 +48,19 @@ public class TLVInputStream {
     }
 
     func read() throws -> TypedData {
-        let type:TypeType = TypeType(bigEndian:try stream.read())
-        let length:LengthType = LengthType(bigEndian:try stream.read())
-        let buffer:DispatchData <Void> = try stream.read(Int(length))
-        return TypedData(type:type, data:buffer)
+        let type: TypeType = TypeType(bigEndian: try stream.read())
+        let length: LengthType = LengthType(bigEndian: try stream.read())
+        let buffer: DispatchData <Void> = try stream.read(Int(length))
+        return TypedData(type: type, data: buffer)
     }
 }
 
-func indexTLVBuffer(buffer:UnsafeBufferPointer <Void>) throws -> [(Int, Int)] {
-    var index:[(Int, Int)] = []
+func indexTLVBuffer(buffer: UnsafeBufferPointer <Void>) throws -> [(Int, Int)] {
+    var index: [(Int, Int)] = []
     let scanner = DataScanner(buffer: buffer.toUnsafeBufferPointer())
     while scanner.atEnd == false {
-        let _:UInt16 = try scanner.scan()
-        let length = Int(UInt16(networkEndian:try scanner.scan()!))
+        let _: UInt16 = try scanner.scan()
+        let length = Int(UInt16(networkEndian: try scanner.scan()!))
         let offset = scanner.current
         scanner.current += length
         index.append((offset, length))

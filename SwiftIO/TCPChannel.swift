@@ -37,16 +37,16 @@ import Darwin
 
 public class TCPChannel {
 
-    public let address:Address
-    public let port:UInt16
-    public var readHandler:(Void -> Void)? = nil
-    public var errorHandler:(ErrorType -> Void)? = loggingErrorHandler
+    public let address: Address
+    public let port: UInt16
+    public var readHandler: (Void -> Void)? = nil
+    public var errorHandler: (ErrorType -> Void)? = loggingErrorHandler
 
-    private var resumed:Bool = false
-    private var queue:dispatch_queue_t!
-    private var socket:Int32!
+    private var resumed: Bool = false
+    private var queue: dispatch_queue_t!
+    private var socket: Int32!
 
-    public init(address:Address, port:UInt16, readHandler:(Void -> Void)? = nil) {
+    public init(address: Address, port: UInt16, readHandler: (Void -> Void)? = nil) {
         self.address = address
         self.port = port
         if let readHandler = readHandler {
@@ -54,9 +54,9 @@ public class TCPChannel {
         }
     }
 
-    public convenience init(hostname:String = "0.0.0.0", port:UInt16, family:ProtocolFamily? = nil, readHandler:(Void -> Void)? = nil) throws {
-        let addresses:[Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
-        self.init(address:addresses[0], port:port, readHandler:readHandler)
+    public convenience init(hostname: String = "0.0.0.0", port: UInt16, family: ProtocolFamily? = nil, readHandler: (Void -> Void)? = nil) throws {
+        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
+        self.init(address: addresses[0], port: port, readHandler: readHandler)
     }
 
     public func resume() throws {
@@ -74,7 +74,7 @@ public class TCPChannel {
         var addr = address.to_sockaddr(port: port)
 
         let result = withUnsafePointer(&addr) {
-            (ptr:UnsafePointer <sockaddr>) -> Int32 in
+            (ptr: UnsafePointer <sockaddr>) -> Int32 in
             return Darwin.connect(socket, ptr, socklen_t(sizeof(sockaddr)))
         }
 
@@ -94,7 +94,7 @@ public class TCPChannel {
     public func cancel() throws {
     }
 
-    public func send(data:NSData, address:Address! = nil, writeHandler:((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: NSData, address: Address! = nil, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
         // TODO
     }
 
@@ -114,15 +114,15 @@ public class TCPChannel {
 
 // MARK: -
 
-internal func loggingReadHandler(datagram:Datagram) {
+internal func loggingReadHandler(datagram: Datagram) {
     debugLog?("READ")
 }
 
-internal func loggingErrorHandler(error:ErrorType) {
+internal func loggingErrorHandler(error: ErrorType) {
     debugLog?("ERROR: \(error)")
 }
 
-internal func loggingWriteHandler(success:Bool, error:Error?) {
+internal func loggingWriteHandler(success: Bool, error: Error?) {
     if success {
         debugLog?("WRITE")
     }

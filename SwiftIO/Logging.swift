@@ -29,15 +29,15 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-internal func loggingReadHandler(datagram:Datagram) {
+internal func loggingReadHandler(datagram: Datagram) {
     debugLog?("READ")
 }
 
-internal func loggingErrorHandler(error:ErrorType) {
+internal func loggingErrorHandler(error: ErrorType) {
     debugLog?("ERROR: \(error)")
 }
 
-internal func loggingWriteHandler(success:Bool, error:Error?) {
+internal func loggingWriteHandler(success: Bool, error: Error?) {
     if success {
         debugLog?("WRITE")
     }

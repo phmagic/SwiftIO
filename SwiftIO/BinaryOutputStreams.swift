@@ -33,17 +33,17 @@ import SwiftUtilities
 // MARK: BinaryOutputStream
 
 public protocol BinaryOutputStream {
-   func write(buffer:UnsafeBufferPointer <Void>) throws
+   func write(buffer: UnsafeBufferPointer <Void>) throws
 }
 
 // MARK: BinaryOutputStreamable
 
 public protocol BinaryOutputStreamable {
-    func writeTo <Target:BinaryOutputStream> (stream:Target) throws
+    func writeTo <Target: BinaryOutputStream> (stream: Target) throws
 }
 
 public extension BinaryOutputStream {
-    func write(value:BinaryOutputStreamable) throws {
+    func write(value: BinaryOutputStreamable) throws {
         try value.writeTo(self)
     }
 }
@@ -59,7 +59,7 @@ public extension BinaryOutputStreamable {
 // MARK: -
 
 extension DispatchData: BinaryOutputStreamable {
-    public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
+    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
         apply() {
             (range, buffer) in
             try! stream.write(buffer.toUnsafeBufferPointer())
@@ -69,10 +69,10 @@ extension DispatchData: BinaryOutputStreamable {
 }
 
 extension Int32: BinaryOutputStreamable {
-    public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
+    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
         var value = self
         let buffer = withUnsafePointer(&value) {
-            (pointer:UnsafePointer <Int32>) -> UnsafeBufferPointer <Void> in
+            (pointer: UnsafePointer <Int32>) -> UnsafeBufferPointer <Void> in
             return UnsafeBufferPointer(start: pointer, count: sizeof(Int32))
         }
         try stream.write(buffer)
@@ -80,7 +80,7 @@ extension Int32: BinaryOutputStreamable {
 }
 
 extension NSData: BinaryOutputStreamable {
-    public func writeTo <Target:BinaryOutputStream> (stream:Target) throws {
+    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
         let buffer = UnsafeBufferPointer <Void> (start: bytes, count: length)
         try stream.write(buffer)
     }
@@ -89,10 +89,10 @@ extension NSData: BinaryOutputStreamable {
 // MARK: -
 
 public extension BinaryOutputStream {
-    func write(string:String, appendNewline: Bool = false) throws {
+    func write(string: String, appendNewline: Bool = false) throws {
         let string = appendNewline == true ? string : string + "\n"
         let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
-        let buffer = UnsafeBufferPointer <Void> (start:data.bytes, count:data.length)
+        let buffer = UnsafeBufferPointer <Void> (start: data.bytes, count: data.length)
         try write(buffer)
     }
 }
@@ -100,10 +100,10 @@ public extension BinaryOutputStream {
 // MARK: -
 
 public extension BinaryOutputStream {
-    func write <T:UnsignedIntegerType> (value:T) throws {
-        var copy:T = value
+    func write <T: UnsignedIntegerType> (value: T) throws {
+        var copy: T = value
         try withUnsafePointer(&copy) {
-            (ptr:UnsafePointer <T>) -> Void in
+            (ptr: UnsafePointer <T>) -> Void in
             let buffer = UnsafeBufferPointer <Void> (start: ptr, count: sizeof(T))
             try write(buffer)
         }

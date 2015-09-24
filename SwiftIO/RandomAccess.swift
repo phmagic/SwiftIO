@@ -39,15 +39,15 @@ public enum Whence: Int {
 
 public protocol RandomAccess {
     func tell() throws -> Int
-    func seek(offset:Int, whence:Whence) throws -> Int
+    func seek(offset: Int, whence: Whence) throws -> Int
 }
 
 
 public protocol RandomAccessInput: RandomAccess {
-    func read(offset offset:Int, length:Int) throws -> DispatchData <Void>
+    func read(offset offset: Int, length: Int) throws -> DispatchData <Void>
 }
 
 public protocol RandomAccessOutput: RandomAccess {
-    func write(offset offset:Int, buffer:UnsafeBufferPointer <Void>) throws
+    func write(offset offset: Int, buffer: UnsafeBufferPointer <Void>) throws
 }
 

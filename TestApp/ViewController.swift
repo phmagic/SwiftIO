@@ -36,7 +36,7 @@ import SwiftUtilities
 
 class ViewController: NSViewController {
 
-    var channel:UDPChannel?
+    var channel: UDPChannel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +51,7 @@ class ViewController: NSViewController {
 
         let data = NSData(contentsOfURL: url)!
         print(data)
-        let stream = MemoryStream(buffer: Buffer <Void> (data:data))
+        let stream = MemoryStream(buffer: Buffer <Void> (data: data))
         let decodedDatagram = try! Datagram.readFrom(stream)
 
 

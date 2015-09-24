@@ -30,7 +30,7 @@
 
 
 public extension UInt16 {
-    init(networkEndian value:UInt16) {
+    init(networkEndian value: UInt16) {
         self = UInt16(bigEndian: value)
     }
     var networkEndian: UInt16 {
@@ -39,7 +39,7 @@ public extension UInt16 {
 }
 
 public extension UInt32 {
-    init(networkEndian value:UInt32) {
+    init(networkEndian value: UInt32) {
         self = UInt32(bigEndian: value)
     }
     var networkEndian: UInt32 {
@@ -48,7 +48,7 @@ public extension UInt32 {
 }
 
 public extension UInt64 {
-    init(networkEndian value:UInt64) {
+    init(networkEndian value: UInt64) {
         self = UInt64(bigEndian: value)
     }
     var networkEndian: UInt64 {
@@ -57,7 +57,7 @@ public extension UInt64 {
 }
 
 public extension Int16 {
-    init(networkEndian value:Int16) {
+    init(networkEndian value: Int16) {
         self = Int16(bigEndian: value)
     }
     var networkEndian: Int16 {
@@ -66,7 +66,7 @@ public extension Int16 {
 }
 
 public extension Int32 {
-    init(networkEndian value:Int32) {
+    init(networkEndian value: Int32) {
         self = Int32(bigEndian: value)
     }
     var networkEndian: Int32 {
@@ -75,7 +75,7 @@ public extension Int32 {
 }
 
 public extension Int64 {
-    init(networkEndian value:Int64) {
+    init(networkEndian value: Int64) {
         self = Int64(bigEndian: value)
     }
     var networkEndian: Int64 {

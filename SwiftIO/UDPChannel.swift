@@ -36,7 +36,7 @@ import SwiftUtilities
 
 // MARK: -
 
-public var debugLog:(AnyObject? -> Void)? = nil
+public var debugLog: (AnyObject? -> Void)? = nil
 
 // MARK: -
 
@@ -45,19 +45,19 @@ public var debugLog:(AnyObject? -> Void)? = nil
  */
 public class UDPChannel {
 
-    public let address:Address
-    public let port:UInt16
+    public let address: Address
+    public let port: UInt16
     public var qos = QOS_CLASS_DEFAULT
 
-    public var readHandler:(Datagram -> Void)? = loggingReadHandler
-    public var errorHandler:(ErrorType -> Void)? = loggingErrorHandler
+    public var readHandler: (Datagram -> Void)? = loggingReadHandler
+    public var errorHandler: (ErrorType -> Void)? = loggingErrorHandler
 
-    private var resumed:Bool = false
-    private var queue:dispatch_queue_t!
-    private var source:dispatch_source_t!
-    private var socket:Int32!
+    private var resumed: Bool = false
+    private var queue: dispatch_queue_t!
+    private var source: dispatch_source_t!
+    private var socket: Int32!
 
-    public init(address:Address, port:UInt16, readHandler:(Datagram -> Void)? = nil) throws {
+    public init(address: Address, port: UInt16, readHandler: (Datagram -> Void)? = nil) throws {
         self.address = address
         self.port = port
         if let readHandler = readHandler {
@@ -65,9 +65,9 @@ public class UDPChannel {
         }
     }
 
-    public convenience init(hostname:String = "0.0.0.0", port:UInt16, family:ProtocolFamily? = nil, readHandler:(Datagram -> Void)? = nil) throws {
-        let addresses:[Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family)
-        try self.init(address:addresses[0], port:port, readHandler:readHandler)
+    public convenience init(hostname: String = "0.0.0.0", port: UInt16, family: ProtocolFamily? = nil, readHandler: (Datagram -> Void)? = nil) throws {
+        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family)
+        try self.init(address: addresses[0], port: port, readHandler: readHandler)
     }
 
     public func resume() throws {
@@ -78,7 +78,7 @@ public class UDPChannel {
             throw Error.generic("socket() failed")
         }
 
-        var reuseSocketFlag:Int = 1
+        var reuseSocketFlag: Int = 1
         let result = Darwin.setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &reuseSocketFlag, socklen_t(sizeof(Int)))
         guard result == 0 else {
             cleanup()
@@ -129,7 +129,7 @@ public class UDPChannel {
                 return
             }
 
-            var address = strong_self.address.to_sockaddr(port:strong_self.port)
+            var address = strong_self.address.to_sockaddr(port: strong_self.port)
             let result = Darwin.bind(strong_self.socket, &address, socklen_t(sizeof(sockaddr)))
             guard result == 0 else {
                 strong_self.errorHandler?(Error.posix(result, "bind() failed"))
@@ -152,7 +152,7 @@ public class UDPChannel {
 
     public func send(data: NSData, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
-        try send(data, address:address, port:port, writeHandler:writeHandler)
+        try send(data, address: address, port: port, writeHandler: writeHandler)
     }
 
     public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
@@ -168,7 +168,7 @@ public class UDPChannel {
 
             debugLog?("Send")
 
-            let address:Address = address ?? strong_self.address
+            let address: Address = address ?? strong_self.address
             var addr = address.to_sockaddr(port: port)
 
             let result = data.createMap() {
@@ -191,12 +191,12 @@ public class UDPChannel {
 
     internal func read() throws {
 
-        let data:NSMutableData! = NSMutableData(length: 4096)
+        let data: NSMutableData! = NSMutableData(length: 4096)
 
-        var addressData = Array <Int8> (count:Int(SOCK_MAXADDRLEN), repeatedValue:0)
+        var addressData = Array <Int8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
         let (result, address, port) = addressData.withUnsafeMutableBufferPointer() {
-            (inout ptr:UnsafeMutableBufferPointer <Int8>) -> (Int, Address?, UInt16?) in
-            var addrlen:socklen_t = socklen_t(SOCK_MAXADDRLEN)
+            (inout ptr: UnsafeMutableBufferPointer <Int8>) -> (Int, Address?, UInt16?) in
+            var addrlen: socklen_t = socklen_t(SOCK_MAXADDRLEN)
             let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, UnsafeMutablePointer<sockaddr> (ptr.baseAddress), &addrlen)
             guard result >= 0 else {
                 return (result, nil, nil)
@@ -216,7 +216,7 @@ public class UDPChannel {
         }
 
         data.length = result
-        let datagram = Datagram(from: (address!, port!), timestamp: Timestamp(), data: DispatchData <Void> (buffer:data.toUnsafeBufferPointer()))
+        let datagram = Datagram(from: (address!, port!), timestamp: Timestamp(), data: DispatchData <Void> (buffer: data.toUnsafeBufferPointer()))
         readHandler?(datagram)
     }
 
