@@ -34,6 +34,10 @@
 		4578F9131BB2177A00C90DA6 /* TLVStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9111BB2177A00C90DA6 /* TLVStream.swift */; settings = {ASSET_TAGS = (); }; };
 		4578F9181BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; settings = {ASSET_TAGS = (); }; };
 		4578F9191BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; settings = {ASSET_TAGS = (); }; };
+		457E99681BB9C88D00466389 /* SwiftIOSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 457E99671BB9C88D00466389 /* SwiftIOSupport.m */; settings = {ASSET_TAGS = (); }; };
+		457E99691BB9C88D00466389 /* SwiftIOSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 457E99671BB9C88D00466389 /* SwiftIOSupport.m */; settings = {ASSET_TAGS = (); }; };
+		457E996B1BB9D10F00466389 /* SwiftIOSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 457E996A1BB9C89600466389 /* SwiftIOSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		457E996C1BB9D11300466389 /* SwiftIOSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 457E996A1BB9C89600466389 /* SwiftIOSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4589723E1B76555800251997 /* AddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589723D1B76555800251997 /* AddressTests.swift */; };
 		4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
 		4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
@@ -140,6 +144,8 @@
 		452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryOutputStreams.swift; sourceTree = "<group>"; };
 		4578F9111BB2177A00C90DA6 /* TLVStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVStream.swift; sourceTree = "<group>"; };
 		4578F9171BB2289F00C90DA6 /* NullStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullStream.swift; sourceTree = "<group>"; };
+		457E99671BB9C88D00466389 /* SwiftIOSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftIOSupport.m; sourceTree = "<group>"; };
+		457E996A1BB9C89600466389 /* SwiftIOSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftIOSupport.h; sourceTree = "<group>"; };
 		4589723D1B76555800251997 /* AddressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressTests.swift; sourceTree = "<group>"; };
 		459321091B83AEF400105005 /* Datagram+Streams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Datagram+Streams.swift"; sourceTree = "<group>"; };
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
@@ -304,6 +310,8 @@
 				4578F9171BB2289F00C90DA6 /* NullStream.swift */,
 				452E96ED1B3C9EC6002269CD /* BinaryDecoding.swift */,
 				4578F9111BB2177A00C90DA6 /* TLVStream.swift */,
+				457E996A1BB9C89600466389 /* SwiftIOSupport.h */,
+				457E99671BB9C88D00466389 /* SwiftIOSupport.m */,
 				45E240091B0E8A700001F5B9 /* Supporting Files */,
 				4513AE601B7531E700BAA209 /* Carthage */,
 			);
@@ -326,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45DEC6C41B0E916A00B7C234 /* SwiftIO.h in Headers */,
+				457E996C1BB9D11300466389 /* SwiftIOSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45E2400C1B0E8A700001F5B9 /* SwiftIO.h in Headers */,
+				457E996B1BB9D10F00466389 /* SwiftIOSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +547,7 @@
 				4596D3D21B7A8496009318E6 /* RandomAccess.swift in Sources */,
 				4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */,
 				4594104D1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */,
+				457E99691BB9C88D00466389 /* SwiftIOSupport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -561,6 +572,7 @@
 				4596D3D11B7A8496009318E6 /* RandomAccess.swift in Sources */,
 				4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */,
 				4594104C1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */,
+				457E99681BB9C88D00466389 /* SwiftIOSupport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,6 +704,7 @@
 		45DEC6BF1B0E8FEE00B7C234 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
@@ -715,12 +728,14 @@
 				PRODUCT_NAME = SwiftIO;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		45DEC6C01B0E8FEE00B7C234 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;

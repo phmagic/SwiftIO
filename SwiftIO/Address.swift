@@ -244,7 +244,6 @@ public extension Address {
 //    public var ai_protocol: Int32 /* 0 or IPPROTO_xxx for IPv4 and IPv6 */
 //    public var ai_canonname: UnsafeMutablePointer<Int8> /* canonical name for hostname */
 
-
             return true
         }
 
@@ -252,5 +251,27 @@ public extension Address {
 
         return Array <Address> (addressSet)
     }
-
 }
+
+public extension Address {
+    static func addressesForInterfaces() throws -> [String:Address] {
+        let addressesForInterfaces = getAddressesForInterfaces() as! [String:NSData]
+        let pairs:[(String,Address)] = try addressesForInterfaces.map() {
+            (interface, addressData) in
+            let sockAddr = UnsafePointer <sockaddr> (addressData.bytes)
+            return (interface, try Address(addr: sockAddr.memory))
+        }
+        return Dictionary <String, Address> (pairs)
+    }
+}
+
+
+private extension Dictionary {
+    init(_ pairs: [Element]) {
+        self.init()
+        for (k, v) in pairs {
+            self[k] = v
+        }
+    }
+}
+

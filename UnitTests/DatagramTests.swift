@@ -43,7 +43,6 @@ class DatagramTests: XCTestCase {
         let buffer = DispatchData <Void> (buffer: "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!.toUnsafeBufferPointer())
         let datagram = Datagram(from: (address, port), data: buffer)
         let encodedData = try! NSData(streamable: datagram)
-        encodedData.buffer
         let stream = MemoryStream(buffer: encodedData.toUnsafeBufferPointer())
         let decodedDatagram = try! Datagram.readFrom(stream)
 
