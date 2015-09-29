@@ -87,6 +87,13 @@ extension Address: Hashable {
 
 extension Address: CustomStringConvertible {
     public var description: String {
+        return address
+    }
+}
+
+
+extension Address: CustomDebugStringConvertible {
+    public var debugDescription: String {
         switch internalAddress {
             case .INET:
                 return "INET(\(address))"
