@@ -47,6 +47,8 @@
 		459693821B7A962C003A8639 /* test.tlv in Resources */ = {isa = PBXBuildFile; fileRef = 459693811B7A962C003A8639 /* test.tlv */; };
 		4596D3D11B7A8496009318E6 /* RandomAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596D3D01B7A8496009318E6 /* RandomAccess.swift */; };
 		4596D3D21B7A8496009318E6 /* RandomAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596D3D01B7A8496009318E6 /* RandomAccess.swift */; };
+		45B822171BBB39530060E57D /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B822161BBB39530060E57D /* Logging.swift */; settings = {ASSET_TAGS = (); }; };
+		45B822181BBB39530060E57D /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B822161BBB39530060E57D /* Logging.swift */; settings = {ASSET_TAGS = (); }; };
 		45B9DE911B753363009FD963 /* SwiftIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; };
 		45C377B81B78295900E2153E /* Datagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C377B71B78295900E2153E /* Datagram.swift */; };
 		45C377B91B78295900E2153E /* Datagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C377B71B78295900E2153E /* Datagram.swift */; };
@@ -150,6 +152,7 @@
 		4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkEndian.swift; sourceTree = "<group>"; };
 		459693811B7A962C003A8639 /* test.tlv */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.tlv; sourceTree = "<group>"; };
 		4596D3D01B7A8496009318E6 /* RandomAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomAccess.swift; sourceTree = "<group>"; };
+		45B822161BBB39530060E57D /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		45B9DE8C1B753363009FD963 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B9DE901B753363009FD963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45C377B71B78295900E2153E /* Datagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datagram.swift; sourceTree = "<group>"; };
@@ -308,6 +311,7 @@
 				4578F9111BB2177A00C90DA6 /* TLVStream.swift */,
 				457E996A1BB9C89600466389 /* SwiftIOSupport.h */,
 				457E99671BB9C88D00466389 /* SwiftIOSupport.m */,
+				45B822161BBB39530060E57D /* Logging.swift */,
 				45E240091B0E8A700001F5B9 /* Supporting Files */,
 				4513AE601B7531E700BAA209 /* Carthage */,
 			);
@@ -533,6 +537,7 @@
 				452E96E71B3C8F2A002269CD /* BinaryInputStreams.swift in Sources */,
 				4578F9191BB2289F00C90DA6 /* NullStream.swift in Sources */,
 				45DEC6CC1B0E94CE00B7C234 /* UDPChannel.swift in Sources */,
+				45B822181BBB39530060E57D /* Logging.swift in Sources */,
 				45DD2DA51B7670490002994A /* Inet.swift in Sources */,
 				452E96EF1B3C9EC6002269CD /* BinaryDecoding.swift in Sources */,
 				45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */,
@@ -557,6 +562,7 @@
 				45E240271B0E8A950001F5B9 /* Inet+Utilities.swift in Sources */,
 				4578F9181BB2289F00C90DA6 /* NullStream.swift in Sources */,
 				452E96E61B3C8F1B002269CD /* BinaryInputStreams.swift in Sources */,
+				45B822171BBB39530060E57D /* Logging.swift in Sources */,
 				45E240231B0E8A7A0001F5B9 /* UDPChannel.swift in Sources */,
 				452E96EE1B3C9EC6002269CD /* BinaryDecoding.swift in Sources */,
 				45E289781B3C8E7300EDBBAE /* MemoryStream.swift in Sources */,

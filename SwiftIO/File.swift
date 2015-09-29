@@ -1,5 +1,5 @@
 //
-//  Logging.swift
+//  File.swift
 //  SwiftIO
 //
 //  Created by Jonathan Wight on 9/29/15.
