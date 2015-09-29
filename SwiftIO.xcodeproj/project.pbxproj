@@ -76,8 +76,6 @@
 		45E289781B3C8E7300EDBBAE /* MemoryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289771B3C8E7300EDBBAE /* MemoryStream.swift */; };
 		45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289751B3C8E6D00EDBBAE /* FileStream.swift */; };
 		45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289771B3C8E7300EDBBAE /* MemoryStream.swift */; };
-		45E504751B39D509007AE307 /* TCPChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E504741B39D509007AE307 /* TCPChannel.swift */; };
-		45E504761B39D6B6007AE307 /* TCPChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E504741B39D509007AE307 /* TCPChannel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -171,7 +169,6 @@
 		45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Inet+Utilities.swift"; sourceTree = "<group>"; };
 		45E289751B3C8E6D00EDBBAE /* FileStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStream.swift; sourceTree = "<group>"; };
 		45E289771B3C8E7300EDBBAE /* MemoryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryStream.swift; sourceTree = "<group>"; };
-		45E504741B39D509007AE307 /* TCPChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPChannel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,7 +296,6 @@
 				45DD2DA31B76700B0002994A /* Inet.swift */,
 				451E03521B754A4B00193626 /* Error.swift */,
 				45E240221B0E8A7A0001F5B9 /* UDPChannel.swift */,
-				45E504741B39D509007AE307 /* TCPChannel.swift */,
 				45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */,
 				4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */,
 				452E96E51B3C8F1B002269CD /* BinaryInputStreams.swift */,
@@ -531,7 +527,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				452E96F21B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */,
-				45E504761B39D6B6007AE307 /* TCPChannel.swift in Sources */,
 				451E03541B754A4B00193626 /* Error.swift in Sources */,
 				45DEC6CD1B0E94CE00B7C234 /* Inet+Utilities.swift in Sources */,
 				45C377B91B78295900E2153E /* Datagram.swift in Sources */,
@@ -557,7 +552,6 @@
 			files = (
 				452E96F11B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */,
 				45DD2DA21B766FC70002994A /* Address.swift in Sources */,
-				45E504751B39D509007AE307 /* TCPChannel.swift in Sources */,
 				451E03531B754A4B00193626 /* Error.swift in Sources */,
 				45C377B81B78295900E2153E /* Datagram.swift in Sources */,
 				45E240271B0E8A950001F5B9 /* Inet+Utilities.swift in Sources */,
