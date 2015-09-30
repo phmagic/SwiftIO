@@ -28,17 +28,9 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 import Darwin
 
 import SwiftUtilities
-
-// MARK: -
-
-public var debugLog: (AnyObject? -> Void)? = nil
-
-// MARK: -
 
 /**
  *  A GCD based UDP listener.
@@ -158,12 +150,12 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: NSData, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: NSData, address: Address! = nil, port: UInt16, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
         try send(data, address: address, port: port, writeHandler: writeHandler)
     }
 
-    public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,Error?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
         precondition(receiveQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 

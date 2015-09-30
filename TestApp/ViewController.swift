@@ -36,27 +36,112 @@ import SwiftUtilities
 
 class ViewController: NSViewController {
 
-    var channel: UDPChannel?
+    var channel: TCPChannel!
+    var task: NSTask?
+    dynamic var connected: Bool = false
+
+    dynamic var input: String?
+    dynamic var output: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        channel = try! UDPChannel(hostname: "127.0.0.1", port: 1234) {
-//            print($0)
-//        }
-//        try! channel?.resume()
+        // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
+//        task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
+//        sleep(1)
 
+        channel = try! TCPChannel(hostname: "localhost", port: 12345)
 
-        let url = NSBundle.mainBundle().URLForResource("test", withExtension: "tlv")!
+        channel.serverDisconnectedCallback = {
+            assert(self.channel.state == .Unconnected)
+            print("Disconnected!")
 
-        let data = NSData(contentsOfURL: url)!
-        print(data)
-        let stream = MemoryStream(buffer: Buffer <Void> (data: data))
-        let decodedDatagram = try! Datagram.readFrom(stream)
+            Async.main() {
+                self.updateConnected()
+            }
+            return true
+        }
 
+        channel.readCallback = {
+            (result) in
+            if let error = result.error {
+                print(error)
+                return
+            }
+            if let data = result.value {
+                let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
 
+                Async.main() {
+                    self.output = string
+                    self.updateConnected()
+                }
+            }
+        }
+
+        channel.connect() {
+            (result) in
+
+            Async.main() {
+                self.updateConnected()
+            }
+
+            if let error = result.error {
+                assert(self.channel.state == .Unconnected)
+                print("Connection failure: \(error)")
+                return
+            }
+
+            let data = "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!
+            let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
+            self.channel!.write(dispatchData) {
+                (result) in
+                print("Write: ", result)
+            }
+        }
+    }
+
+    @IBAction func connect(sender:AnyObject?) {
+        channel.connect() {
+            (result) in
+            print("Connect \(result)")
+            self.updateConnected()
+        }
+    }
+
+    @IBAction func disconnect(sender:AnyObject?) {
+        channel.disconnect() {
+            (result) in
+            print("Disconnect \(result)")
+        }
+    }
+
+    @IBAction func write(sender:AnyObject?) {
+
+        guard let input = input else {
+            return
+        }
+
+        let data = input.dataUsingEncoding(NSUTF8StringEncoding)!
+        let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
+        self.channel!.write(dispatchData) {
+            (result) in
+            print("Write: ", result)
+        }
+
+    }
+
+    func updateConnected() {
+        connected = channel.state == .Connected
+        print(channel.state, connected)
+    }
+
+}
+
+struct Async {
+
+    static func main(closure:() -> Void) {
+        dispatch_async(dispatch_get_main_queue(), closure)
     }
 
 
 }
-

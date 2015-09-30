@@ -8,6 +8,8 @@
 
 import Foundation
 
+public var debugLog: (AnyObject? -> Void)? = nil
+
 internal func loggingReadHandler(datagram: Datagram) {
     debugLog?("READ")
 }
@@ -16,7 +18,7 @@ internal func loggingErrorHandler(error: ErrorType) {
     debugLog?("ERROR: \(error)")
 }
 
-internal func loggingWriteHandler(success: Bool, error: Error?) {
+internal func loggingWriteHandler(success: Bool, error: ErrorType?) {
     if success {
         debugLog?("WRITE")
     }
