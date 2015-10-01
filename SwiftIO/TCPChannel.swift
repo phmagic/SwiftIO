@@ -131,7 +131,6 @@ public class TCPChannel {
 
             dispatch_io_set_low_water(channel, 0)
 
-
             strong_self.state = .Connected
             strong_self.channel = channel
             strong_self.socketDescriptor = socketDescriptor
@@ -164,6 +163,7 @@ public class TCPChannel {
         dispatch_io_write(channel, 0, data.data, queue) {
             (done, data, error) in
 
+//            print("WRITE: \(done) \(data) \(error)")
             // TODO: Handle done
 
             guard error == 0 else {
@@ -181,8 +181,13 @@ public class TCPChannel {
 
         precondition(state == .Connected)
 
+        assert(channel != nil)
+        assert(queue != nil)
+
         dispatch_io_read(channel, 0, Int(truncatingBitPattern:SIZE_MAX), queue) {
             [weak self] (done, data, error) in
+
+//            print("READ \(done) \(data) \(error)")
 
             guard let strong_self = self else {
                 // TODO
