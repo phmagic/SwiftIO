@@ -184,7 +184,7 @@ public class TCPChannel {
         assert(channel != nil)
         assert(queue != nil)
 
-        dispatch_io_read(channel, 0, Int(truncatingBitPattern:SIZE_MAX), queue) {
+        dispatch_io_read(channel, 0, -1 /* Int(truncatingBitPattern:SIZE_MAX) */, queue) {
             [weak self] (done, data, error) in
 
 //            print("READ \(done) \(data) \(error)")
