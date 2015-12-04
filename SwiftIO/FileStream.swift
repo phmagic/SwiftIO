@@ -76,11 +76,11 @@ public class FileStream {
     public func open(mode mode: Mode = Mode.read, append: Bool = false, create: Bool = false) throws {
 
         guard isOpen == false else {
-            throw Error.generic("File already open.")
+            throw Error.Generic("File already open.")
         }
 
         guard let path = url.path else {
-            throw Error.generic("Could not get path from url.")
+            throw Error.Generic("Could not get path from url.")
         }
 
         var flags: Int32 = mode.oflags()
@@ -92,7 +92,7 @@ public class FileStream {
             return Darwin.open($0, flags, 0o644)
         }
         guard fd > 0 else {
-            throw Error.posix(errno, "Could not open file.")
+            throw Error.POSIX(errno, "Could not open file.")
         }
 
         isOpen = true
@@ -101,7 +101,7 @@ public class FileStream {
 
     public func close() throws {
         guard isOpen == true else {
-            throw Error.generic("File already closed.")
+            throw Error.Generic("File already closed.")
         }
 
         Darwin.close(fd)
@@ -115,20 +115,20 @@ extension FileStream: BinaryInputStream {
 
     public func read(length: Int) throws -> DispatchData <Void> {
         guard isOpen == true else {
-            throw Error.generic("Stream not open")
+            throw Error.Generic("Stream not open")
         }
 
         if length <= 0 {
-            throw Error.generic("Does not support nil length yet")
+            throw Error.Generic("Does not support nil length yet")
         }
 
         guard let data = NSMutableData(length: length ?? 0) else {
-            throw Error.generic("Could not allocate data of length")
+            throw Error.Generic("Could not allocate data of length")
         }
 
         let result = Darwin.read(fd, data.mutableBytes, data.length)
         if result < 0 {
-            throw Error.posix(Int32(result), "Read failed.")
+            throw Error.POSIX(Int32(result), "Read failed.")
         }
 
         data.length = result
@@ -144,12 +144,12 @@ extension FileStream: BinaryOutputStream {
     public func write(buffer: UnsafeBufferPointer <Void>) throws {
 
         guard isOpen == true else {
-            throw Error.generic("Stream not open")
+            throw Error.Generic("Stream not open")
         }
 
         let result = Darwin.write(fd, buffer.baseAddress, buffer.count)
         if result < 0 {
-            throw Error.posix(Int32(result), "write failed")
+            throw Error.POSIX(Int32(result), "write failed")
         }
     }
 }

@@ -37,7 +37,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
 
         let jsonLength = Int32(networkEndian: try stream.read())
         guard jsonLength >= 0 else {
-            throw Error.generic("Negative length")
+            throw Error.Generic("Negative length")
         }
 
         let jsonBuffer: DispatchData <Void> = try stream.read(Int(jsonLength))
@@ -45,20 +45,20 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
         let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String: AnyObject]
 
         guard let address = json["address"] as? String else {
-            throw Error.generic("Could not get from address")
+            throw Error.Generic("Could not get from address")
         }
 
         guard let port = json["port"] as? Int else {
-            throw Error.generic("Could not get from port")
+            throw Error.Generic("Could not get from port")
         }
 
         guard let absoluteTime = json["timestamp"] as? Double else {
-            throw Error.generic("Could not get from port")
+            throw Error.Generic("Could not get from port")
         }
 
         let dataLength = Int32(networkEndian: try stream.read())
         guard dataLength >= 0 else {
-            throw Error.generic("Negative length")
+            throw Error.Generic("Negative length")
         }
 
         let data: DispatchData <Void> = try stream.read(Int(dataLength))

@@ -178,7 +178,7 @@ public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout
         }
     }
     guard result == 0 else {
-        throw Error.posix(result, "getnameinfo() failed")
+        throw Error.POSIX(result, "getnameinfo() failed")
     }
 }
 
@@ -197,7 +197,7 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info
         }
     }
     guard result == 0 else {
-        throw Error.posix(result, "getaddrinfo() failed")
+        throw Error.POSIX(result, "getaddrinfo() failed")
     }
 }
 
@@ -212,7 +212,7 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, bloc
         }
     }
     guard result == 0 else {
-        throw Error.posix(result, "getaddrinfo() failed")
+        throw Error.POSIX(result, "getaddrinfo() failed")
     }
 
     var current = info

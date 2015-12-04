@@ -26,7 +26,7 @@ public class TLVOutputStream {
         let length = LengthType(data.value.length)
 
         guard length <= LengthType.max else {
-            throw Error.generic("Buffer too big")
+            throw Error.Generic("Buffer too big")
         }
 
         try outputStream.write(data.type.networkEndian)
@@ -34,6 +34,8 @@ public class TLVOutputStream {
         try outputStream.write(data.value)
     }
 }
+
+// MARK: -
 
 public class TLVInputStream {
 

@@ -156,7 +156,7 @@ public extension Address {
                 let sockaddr = addr.to_sockaddr_in6()
                 internalAddress = .INET6(sockaddr.sin6_addr)
             default:
-                throw Error.generic("Invalid sockaddr family")
+                throw Error.Generic("Invalid sockaddr family")
         }
     }
 

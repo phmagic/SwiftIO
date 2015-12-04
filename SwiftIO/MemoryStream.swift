@@ -52,7 +52,7 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
 
     public func read(length: Int) throws -> DispatchData <Void> {
         if length > remaining {
-            throw Error.generic("Not enough space (requesting \(length) bytes, only \(remaining) bytes remaining")
+            throw Error.Generic("Not enough space (requesting \(length) bytes, only \(remaining) bytes remaining")
         }
 
         let result = DispatchData <Void> (start: buffer.baseAddress.advancedBy(head), count: length)

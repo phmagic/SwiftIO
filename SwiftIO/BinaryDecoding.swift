@@ -41,7 +41,7 @@ extension IntegerType {
     public static func decode(buffer: UnsafeBufferPointer <Void>) throws -> Self {
         typealias Type = Self
         guard buffer.count >= sizeof(Type) else {
-            throw Error.generic("Not enough bytes for \(Type.self) decoding.")
+            throw Error.Generic("Not enough bytes for \(Type.self) decoding.")
         }
         let pointer = UnsafePointer <Type> (buffer.baseAddress)
         return pointer.memory
@@ -52,7 +52,7 @@ extension UnsignedIntegerType {
     public static func decode(buffer: UnsafeBufferPointer <Void>) throws -> Self {
         typealias Type = Self
         guard buffer.count >= sizeof(Type) else {
-            throw Error.generic("Not enough bytes for \(Type.self) decoding.")
+            throw Error.Generic("Not enough bytes for \(Type.self) decoding.")
         }
         let pointer = UnsafePointer <Type> (buffer.baseAddress)
         return pointer.memory

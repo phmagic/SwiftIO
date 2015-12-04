@@ -68,14 +68,14 @@ public class UDPChannel {
 
         socket = Darwin.socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)
         guard socket >= 0 else {
-            throw Error.generic("socket() failed")
+            throw Error.Generic("socket() failed")
         }
 
         var reuseSocketFlag: Int = 1
         let result = Darwin.setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &reuseSocketFlag, socklen_t(sizeof(Int)))
         guard result == 0 else {
             cleanup()
-            throw Error.generic("setsockopt() failed")
+            throw Error.Generic("setsockopt() failed")
         }
 
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
@@ -83,19 +83,19 @@ public class UDPChannel {
         receiveQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
         guard receiveQueue != nil else {
             cleanup()
-            throw Error.generic("dispatch_queue_create() failed")
+            throw Error.Generic("dispatch_queue_create() failed")
         }
 
         sendQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.sendQueue", queueAttribute)
         guard sendQueue != nil else {
             cleanup()
-            throw Error.generic("dispatch_queue_create() failed")
+            throw Error.Generic("dispatch_queue_create() failed")
         }
 
         source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(socket), 0, receiveQueue)
         guard source != nil else {
             cleanup()
-            throw Error.generic("dispatch_source_create() failed")
+            throw Error.Generic("dispatch_source_create() failed")
         }
 
         dispatch_source_set_cancel_handler(source) {
@@ -132,7 +132,7 @@ public class UDPChannel {
             var address = strong_self.address.to_sockaddr(port: strong_self.port)
             let result = Darwin.bind(strong_self.socket, &address, socklen_t(sizeof(sockaddr)))
             guard result == 0 else {
-                strong_self.errorHandler?(Error.posix(result, "bind() failed"))
+                strong_self.errorHandler?(Error.POSIX(result, "bind() failed"))
                 try! strong_self.cancel()
                 return
             }
@@ -181,10 +181,10 @@ public class UDPChannel {
                 writeHandler?(true, nil)
             }
             else if result < 0 {
-                writeHandler?(false, Error.generic("sendto() failed"))
+                writeHandler?(false, Error.Generic("sendto() failed"))
             }
             if result < data.length {
-                writeHandler?(false, Error.generic("sendto() failed"))
+                writeHandler?(false, Error.Generic("sendto() failed"))
             }
         }
     }
@@ -210,7 +210,7 @@ public class UDPChannel {
         }
 
         guard result >= 0 else {
-            let error = Error.generic("recvfrom() failed")
+            let error = Error.Generic("recvfrom() failed")
             errorHandler?(error)
             throw error
         }
