@@ -33,6 +33,8 @@ import SwiftUtilities
 
 public class NullStream: BinaryOutputStream {
 
+    public let endianess = Endianess.native
+
     public private(set) var length: Int = 0
     public private(set) var writeCount: Int = 0
 

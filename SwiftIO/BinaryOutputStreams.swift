@@ -33,7 +33,8 @@ import SwiftUtilities
 // MARK: BinaryOutputStream
 
 public protocol BinaryOutputStream {
-   func write(buffer: UnsafeBufferPointer <Void>) throws
+    var endianess: Endianess { get }
+    func write(buffer: UnsafeBufferPointer <Void>) throws
 }
 
 // MARK: BinaryOutputStreamable

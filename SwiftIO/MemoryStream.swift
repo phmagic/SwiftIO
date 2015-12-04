@@ -28,10 +28,13 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 import SwiftUtilities
 
 public class MemoryStream: BinaryInputStream, BinaryOutputStream {
+
+    public var endianess = Endianess.native
+
+
     internal var mutableData: NSMutableData = NSMutableData() // TODO: Use DispatchData
 
     var head: Int = 0
@@ -67,5 +70,9 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
 
     public var data: NSData {
         return mutableData
+    }
+
+    public func rewind() {
+        head = 0
     }
 }

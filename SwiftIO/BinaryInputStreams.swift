@@ -28,19 +28,16 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
-
 import SwiftUtilities
 
 public protocol BinaryInputStream {
+    var endianess: Endianess { get }
     func read(length: Int) throws -> DispatchData <Void>
 }
 
 // MARK: -
 
 public extension BinaryInputStream {
-
     func read <T: BinaryDecodable> () throws -> T {
         return try read(sizeof(T))
     }
@@ -49,7 +46,7 @@ public extension BinaryInputStream {
         let data = try read(size)
         return try data.createMap() {
             (data, buffer) in
-            let value = try T.decode(buffer)
+            let value = try T.decode(buffer, endianess: endianess)
             return value
         }
     }
@@ -58,7 +55,7 @@ public extension BinaryInputStream {
 // MARK: -
 
 public protocol BinaryInputStreamable {
-     static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> Self
+    static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> Self
 }
 
 public extension BinaryInputStream {
@@ -66,17 +63,3 @@ public extension BinaryInputStream {
         return try T.readFrom(self)
     }
 }
-
-// MARK: -
-
-//extension Int32: BinaryInputStreamable {
-//     public static func readFrom <Stream: BinaryInputStream> (stream: Stream, handler: (ReadResult <Int32>) -> Void) throws {
-//
-////        try! stream.read() {
-////            (readResult: ReadResult <Int32>) in
-////
-////            handler(readResult)
-////
-////        }
-//     }
-//}
