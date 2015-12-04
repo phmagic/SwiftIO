@@ -54,12 +54,19 @@ public class TCPChannel {
         }
     }
 
-    /// Return true from serverDisconnectedCallback to initiate a reconnect.
-    public var serverDisconnectedCallback: (Void -> Bool)? {
+    /// Return true from shouldReconnect to initiate a reconnect.
+    public var shouldReconnect: (Void -> Bool)? {
         willSet {
             precondition(state == .Unconnected, "Cannot change parameter while socket connected")
         }
     }
+
+    public var stateChangeCallback: ((State, State) -> Void)? {
+        willSet {
+            precondition(state == .Unconnected, "Cannot change parameter while socket connected")
+        }
+    }
+
     public var reconnectionDelay: NSTimeInterval = 5.0 {
         willSet {
             precondition(state == .Unconnected, "Cannot change parameter while socket connected")
@@ -69,9 +76,13 @@ public class TCPChannel {
     public private(set) var queue: dispatch_queue_t!
     public private(set) var socketDescriptor: Int32!
     public private(set) var channel: dispatch_io_t!
-    public private(set) var state: State = .Unconnected
-
+    public private(set) var state: State = .Unconnected {
+        didSet {
+            stateChangeCallback?(oldValue, state)
+        }
+    }
     private var disconnectCallback: (Result <Void> -> Void)?
+
 
     public init(address: Address, port: UInt16) throws {
         self.address = address
@@ -218,8 +229,8 @@ public class TCPChannel {
 
         state = .Unconnected
 
-        if let serverDisconnectedCallback = serverDisconnectedCallback where remoteDisconnect == true{
-            let reconnectFlag = serverDisconnectedCallback()
+        if let shouldReconnect = shouldReconnect where remoteDisconnect == true{
+            let reconnectFlag = shouldReconnect()
             if reconnectFlag == true {
             let time = dispatch_time(DISPATCH_TIME_NOW, Int64(reconnectionDelay * 1000000000))
                 dispatch_after(time, queue) {
@@ -231,7 +242,7 @@ public class TCPChannel {
                         }
 
                         if result.isFailure {
-                            strong_self.serverDisconnectedCallback?()
+                            strong_self.shouldReconnect?()
                             strong_self.disconnectCallback?(result)
                             strong_self.disconnectCallback = nil
                         }
@@ -241,7 +252,7 @@ public class TCPChannel {
             }
         }
 
-        serverDisconnectedCallback?()
+        shouldReconnect?()
         disconnectCallback?(Result.success())
         disconnectCallback = nil
     }
