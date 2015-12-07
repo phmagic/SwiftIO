@@ -4,8 +4,13 @@ export PATH=$PATH:/usr/local/bin
 
 cd `git rev-parse --show-toplevel`
 
-brew list xctool || brew install xctool
-brew list carthage || brew install carthage
-carthage bootstrap
-xcodebuild -version | grep "Xcode 7" > /dev/null || { echo 'Not running Xcode 7' ; exit 1; }
+# Test
+xcodebuild -version | head -n 1 | grep "Xcode 7.1" || { echo "Not running correct Xcode version" ; exit 1; }
+
+# Setup
+brew list xctool || brew install xctool || exit $!
+brew list carthage || brew install carthage || exit $!
+carthage bootstrap || exit $!
+
+# Run
 xctool -project SwiftIO.xcodeproj -scheme All build test || exit $!
