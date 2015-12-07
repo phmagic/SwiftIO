@@ -69,16 +69,7 @@ extension DispatchData: BinaryOutputStreamable {
     }
 }
 
-extension Int32: BinaryOutputStreamable {
-    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
-        var value = self
-        let buffer = withUnsafePointer(&value) {
-            (pointer: UnsafePointer <Int32>) -> UnsafeBufferPointer <Void> in
-            return UnsafeBufferPointer(start: pointer, count: sizeof(Int32))
-        }
-        try stream.write(buffer)
-    }
-}
+// MARK: -
 
 extension NSData: BinaryOutputStreamable {
     public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {

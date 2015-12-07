@@ -32,8 +32,7 @@ import SwiftUtilities
 
 public class MemoryStream: BinaryInputStream, BinaryOutputStream {
 
-    public var endianess = Endianess.native
-
+    public var endianess = Endianess.Native
 
     internal var mutableData: NSMutableData = NSMutableData() // TODO: Use DispatchData
 
@@ -53,7 +52,7 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         return mutableData.toUnsafeBufferPointer()
     }
 
-    public func read(length: Int) throws -> DispatchData <Void> {
+    public func read(length length: Int) throws -> DispatchData <Void> {
         if length > remaining {
             throw Error.Generic("Not enough space (requesting \(length) bytes, only \(remaining) bytes remaining")
         }
@@ -76,3 +75,24 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         head = 0
     }
 }
+
+// MARK: -
+
+extension MemoryStream: CustomStringConvertible {
+
+    public var description: String {
+        return "MemoryStream(endianess: \(endianess), length: \(mutableData.length), head: \(head))"
+    }
+
+}
+
+// MARK:
+
+extension MemoryStream: CustomDebugStringConvertible {
+
+    public var debugDescription: String {
+        return "MemoryStream(endianess: \(endianess), length: \(mutableData.length), head: \(head), bytes: \(mutableData))"
+    }
+
+}
+

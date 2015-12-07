@@ -115,7 +115,7 @@ public class TCPChannel {
             guard socketDescriptor >= 0 else {
                 let error = Errno(rawValue: errno)!
                 close(socketDescriptor)
-                callback(Result.failure(error))
+                callback(Result.Failure(error))
                 return
             }
 
@@ -126,7 +126,7 @@ public class TCPChannel {
                 let error = Errno(rawValue: errno)!
                 close(socketDescriptor)
                 strong_self.state = .Unconnected
-                callback(Result.failure(error))
+                callback(Result.Failure(error))
                 return
             }
 
@@ -148,7 +148,7 @@ public class TCPChannel {
 
             strong_self.startReading()
 
-            callback(Result.success())
+            callback(Result.Success())
         }
     }
 
@@ -178,11 +178,11 @@ public class TCPChannel {
             // TODO: Handle done
 
             guard error == 0 else {
-                callback(Result.failure(Errno(rawValue: error)!))
+                callback(Result.Failure(Errno(rawValue: error)!))
                 return
             }
 
-            callback(Result.success())
+            callback(Result.Success())
         }
     }
 
@@ -206,14 +206,14 @@ public class TCPChannel {
             }
 
             guard error == 0 else {
-                strong_self.readCallback?(Result.failure(Errno(rawValue: error)!))
+                strong_self.readCallback?(Result.Failure(Errno(rawValue: error)!))
                 return
             }
 
             switch (done, dispatch_data_get_size(data) > 0) {
                 case (false, _), (true, true):
                     let dispatchData = DispatchData <Void> (data: data)
-                    strong_self.readCallback?(Result.success(dispatchData))
+                    strong_self.readCallback?(Result.Success(dispatchData))
                 case (true, false):
                     dispatch_io_close(strong_self.channel, dispatch_io_close_flags_t())
             }
@@ -253,7 +253,7 @@ public class TCPChannel {
         }
 
         shouldReconnect?()
-        disconnectCallback?(Result.success())
+        disconnectCallback?(Result.Success())
         disconnectCallback = nil
     }
 }

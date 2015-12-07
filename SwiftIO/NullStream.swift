@@ -28,12 +28,11 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 import SwiftUtilities
 
 public class NullStream: BinaryOutputStream {
 
-    public let endianess = Endianess.native
+    public let endianess = Endianess.Native
 
     public private(set) var length: Int = 0
     public private(set) var writeCount: Int = 0

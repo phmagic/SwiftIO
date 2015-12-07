@@ -32,24 +32,7 @@ import SwiftUtilities
 
 public protocol BinaryInputStream {
     var endianess: Endianess { get }
-    func read(length: Int) throws -> DispatchData <Void>
-}
-
-// MARK: -
-
-public extension BinaryInputStream {
-    func read <T: BinaryDecodable> () throws -> T {
-        return try read(sizeof(T))
-    }
-
-    func read <T: BinaryDecodable> (size: Int) throws -> T {
-        let data = try read(size)
-        return try data.createMap() {
-            (data, buffer) in
-            let value = try T.decode(buffer, endianess: endianess)
-            return value
-        }
-    }
+    func read(length length: Int) throws -> DispatchData <Void>
 }
 
 // MARK: -
