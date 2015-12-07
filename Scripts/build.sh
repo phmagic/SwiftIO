@@ -10,7 +10,7 @@ xcodebuild -version | head -n 1 | grep "Xcode 7.1" || { echo "Not running correc
 # Setup
 brew list xctool || brew install xctool || exit $!
 brew list carthage || brew install carthage || exit $!
-carthage bootstrap || exit $!
+carthage bootstrap --verbose || exit $!
 
 # Run
 xctool -project SwiftIO.xcodeproj -scheme All build test || exit $!
