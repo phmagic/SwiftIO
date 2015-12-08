@@ -13,6 +13,7 @@
 			buildPhases = (
 			);
 			dependencies = (
+				4569C2AA1C178BAD005E5215 /* PBXTargetDependency */,
 				45A220A41B8432B100809FDB /* PBXTargetDependency */,
 				45A220A61B8432B100809FDB /* PBXTargetDependency */,
 			);
@@ -85,6 +86,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4569C2A91C178BAD005E5215 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45DD2DAA1B76AD850002994A;
+			remoteInfo = TestApp;
+		};
 		45A220A11B84321800809FDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
@@ -173,7 +181,6 @@
 		45DD2DB61B76AD850002994A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E240061B0E8A700001F5B9 /* SwiftIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		45E2400A1B0E8A700001F5B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45E2400B1B0E8A700001F5B9 /* SwiftIO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftIO.h; sourceTree = "<group>"; };
 		45E240221B0E8A7A0001F5B9 /* UDPChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPChannel.swift; sourceTree = "<group>"; };
 		45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Inet+Utilities.swift"; sourceTree = "<group>"; };
@@ -279,7 +286,8 @@
 			isa = PBXGroup;
 			children = (
 				45D3F3041BBC8FEA00AF1690 /* Cartfile */,
-				45E240081B0E8A700001F5B9 /* SwiftIO */,
+				4513AE601B7531E700BAA209 /* Carthage */,
+				45E240081B0E8A700001F5B9 /* Sources */,
 				45B9DE8D1B753363009FD963 /* UnitTests */,
 				45DD2DAC1B76AD850002994A /* TestApp */,
 				45E240071B0E8A700001F5B9 /* Products */,
@@ -297,7 +305,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		45E240081B0E8A700001F5B9 /* SwiftIO */ = {
+		45E240081B0E8A700001F5B9 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				45E2400B1B0E8A700001F5B9 /* SwiftIO.h */,
@@ -322,18 +330,8 @@
 				457E99671BB9C88D00466389 /* SwiftIOSupport.m */,
 				45302F551C16120A00990F60 /* TLV.swift */,
 				45B822161BBB39530060E57D /* Logging.swift */,
-				45E240091B0E8A700001F5B9 /* Supporting Files */,
-				4513AE601B7531E700BAA209 /* Carthage */,
 			);
-			path = SwiftIO;
-			sourceTree = "<group>";
-		};
-		45E240091B0E8A700001F5B9 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				45E2400A1B0E8A700001F5B9 /* Info.plist */,
-			);
-			name = "Supporting Files";
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -593,6 +591,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4569C2AA1C178BAD005E5215 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45DD2DAA1B76AD850002994A /* TestApp */;
+			targetProxy = 4569C2A91C178BAD005E5215 /* PBXContainerItemProxy */;
+		};
 		45A220A21B84321800809FDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
@@ -734,7 +737,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = SwiftIO/Info.plist;
+				INFOPLIST_FILE = "Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -760,7 +763,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = SwiftIO/Info.plist;
+				INFOPLIST_FILE = "Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -873,7 +876,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = SwiftIO/Info.plist;
+				INFOPLIST_FILE = "Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.schwa.$(PRODUCT_NAME:rfc1034identifier)";
@@ -895,7 +898,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = SwiftIO/Info.plist;
+				INFOPLIST_FILE = "Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.schwa.$(PRODUCT_NAME:rfc1034identifier)";

@@ -36,12 +36,7 @@ import SwiftIO
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        try! test()
     }
 }
-
-// MARK: -
-
 
