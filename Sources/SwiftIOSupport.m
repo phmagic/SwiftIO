@@ -38,3 +38,15 @@ NSDictionary *getAddressesForInterfaces() {
     freeifaddrs(interfaces);
     return addressesForInterfaces;
 }
+
+int setNonblocking(int socket, BOOL flag) {
+
+    int flags = fcntl(socket, F_GETFL, 0);
+    if (flag) {
+        flags = flags | O_NONBLOCK;
+    }
+    else {
+        flags = flags & ~O_NONBLOCK;
+    }
+    return fcntl(socket, F_SETFL, flags);
+}

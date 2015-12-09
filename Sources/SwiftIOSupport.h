@@ -10,5 +10,6 @@
 #define SwiftIOSupport_h
 
 extern NSDictionary *getAddressesForInterfaces();
+extern int setNonblocking(int socket, BOOL flag);
 
 #endif /* SwiftIOSupport_h */

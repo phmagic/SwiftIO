@@ -147,6 +147,23 @@ extension Address {
 
 public extension Address {
 
+    static func fromSockaddr(addr: sockaddr) throws -> (Address, UInt16) {
+        switch Int32(addr.sa_family) {
+            case AF_INET:
+                let addr = addr.to_sockaddr_in()
+                let address = Address(addr: addr.sin_addr)
+                let port = addr.sin_port
+                return (address, port)
+            case AF_INET6:
+                let addr = addr.to_sockaddr_in6()
+                let address = Address(addr: addr.sin6_addr)
+                let port = addr.sin6_port
+                return (address, port)
+            default:
+                throw Error.Generic("Invalid sockaddr family")
+        }
+    }
+
     init(addr: sockaddr) throws {
         switch Int32(addr.sa_family) {
             case AF_INET:
