@@ -10,7 +10,6 @@
 
 import SwiftUtilities
 
-public typealias BinaryStreamable = protocol <BinaryInputStreamable, BinaryOutputStreamable>
 
 public struct TLVRecord <Type: protocol <BinaryStreamable, Equatable>, Length: protocol <BinaryStreamable, UnsignedIntegerType>> {
     let type: Type
