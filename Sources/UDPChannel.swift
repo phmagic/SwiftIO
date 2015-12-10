@@ -132,7 +132,7 @@ public class UDPChannel {
             var address = strong_self.address.to_sockaddr(port: strong_self.port)
             let result = Darwin.bind(strong_self.socket, &address, socklen_t(sizeof(sockaddr)))
             guard result == 0 else {
-                strong_self.errorHandler?(Error.POSIX(result, "bind() failed"))
+                strong_self.errorHandler?(Errno(rawValue: errno) ?? Error.Unknown)
                 try! strong_self.cancel()
                 return
             }

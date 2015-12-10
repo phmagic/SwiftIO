@@ -91,7 +91,7 @@ public class FileStream {
             return Darwin.open($0, flags, 0o644)
         }
         guard fd > 0 else {
-            throw Error.POSIX(errno, "Could not open file.")
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
 
         isOpen = true
@@ -127,7 +127,7 @@ extension FileStream: BinaryInputStream {
 
         let result = Darwin.read(fd, data.mutableBytes, data.length)
         if result < 0 {
-            throw Error.POSIX(Int32(result), "Read failed.")
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
 
         data.length = result
@@ -148,7 +148,7 @@ extension FileStream: BinaryOutputStream {
 
         let result = Darwin.write(fd, buffer.baseAddress, buffer.count)
         if result < 0 {
-            throw Error.POSIX(Int32(result), "write failed")
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 }
