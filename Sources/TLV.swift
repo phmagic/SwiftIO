@@ -14,8 +14,8 @@ public typealias TLVType = protocol <BinaryStreamable, Equatable, EndianConverta
 public typealias TLVlength = protocol <BinaryStreamable, UnsignedIntegerType, EndianConvertable>
 
 public struct TLVRecord <Type: TLVType, Length: TLVlength> {
-    let type: Type
-    let data: DispatchData <Void>
+    public let type: Type
+    public let data: DispatchData <Void>
 
     public init(type: Type, data: DispatchData <Void>) {
         self.type = type
