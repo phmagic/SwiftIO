@@ -74,15 +74,14 @@ public class TCPChannel {
     }
 
     public private(set) var queue: dispatch_queue_t!
-    public private(set) var socketDescriptor: Int32!
+    public private(set) var socket: Socket!
     public private(set) var channel: dispatch_io_t!
     public private(set) var state: State = .Unconnected {
         didSet {
-            stateChangeCallback?(oldValue, state)
+            stateChanged(old: oldValue, new: state)
         }
     }
     private var disconnectCallback: (Result <Void> -> Void)?
-
 
     public init(address: Address, port: UInt16) throws {
         self.address = address
@@ -94,16 +93,23 @@ public class TCPChannel {
         try self.init(address: addresses.first!, port: port)
     }
 
+    public init(address: Address, port: UInt16, socket: Socket) throws {
+        self.address = address
+        self.port = port
+        self.socket = socket
+    }
+
     public func connect(callback: Result <Void> -> Void) {
 
         precondition(state == .Unconnected)
 
-        let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-        queue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
-        precondition(queue != nil, "Could not create dispatch queue")
+        if queue == nil {
+            let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
+            queue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
+        }
 
         dispatch_async(queue) {
-            [weak self, address, port, queue] in
+            [weak self, address, port] in
 
             guard let strong_self = self else {
                 return
@@ -111,42 +117,12 @@ public class TCPChannel {
 
             strong_self.state = .Connecting
 
-            let socketDescriptor = Darwin.socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)
-            guard socketDescriptor >= 0 else {
-                let error = Errno(rawValue: errno)!
-                close(socketDescriptor)
-                callback(Result.Failure(error))
-                return
-            }
+            let socket = try! Socket.TCP()
 
-            var addr = address.to_sockaddr(port: port)
+            try! socket.connect(address, port: port)
 
-            let result = Darwin.connect(socketDescriptor, &addr, socklen_t(sizeof(sockaddr)))
-            guard result == 0 else {
-                let error = Errno(rawValue: errno)!
-                close(socketDescriptor)
-                strong_self.state = .Unconnected
-                callback(Result.Failure(error))
-                return
-            }
-
-            let channel = dispatch_io_create(DISPATCH_IO_STREAM, socketDescriptor, queue) {
-                (error) in
-
-                guard let strong_self = self else {
-                    return
-                }
-
-                strong_self.handleDisconnect()
-            }
-
-            dispatch_io_set_low_water(channel, 0)
-
+            strong_self.socket = socket
             strong_self.state = .Connected
-            strong_self.channel = channel
-            strong_self.socketDescriptor = socketDescriptor
-
-            strong_self.startReading()
 
             callback(Result.Success())
         }
@@ -168,24 +144,46 @@ public class TCPChannel {
     // MARK: -
 
     public func write(data: DispatchData <Void>, callback: Result <Void> -> Void) {
-
         precondition(state == .Connected)
-
         dispatch_io_write(channel, 0, data.data, queue) {
             (done, data, error) in
-
-//            print("WRITE: \(done) \(data) \(error)")
-            // TODO: Handle done
-
             guard error == 0 else {
                 callback(Result.Failure(Errno(rawValue: error)!))
                 return
             }
-
             callback(Result.Success())
         }
     }
 
+// mark: -
+
+    private func stateChanged(old old: State, new: State) {
+        stateChangeCallback?(old, new)
+
+        switch (old, new) {
+            case (_, .Connected):
+
+                if queue == nil {
+                    let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
+                    queue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
+                }
+
+                let channel = dispatch_io_create(DISPATCH_IO_STREAM, socket.descriptor, queue) {
+                    [weak self] (error) in
+
+                    guard let strong_self = self else {
+                        return
+                    }
+
+                    try! strong_self.handleDisconnect()
+                }
+                dispatch_io_set_low_water(channel, 0)
+                self.channel = channel
+                startReading()
+            default:
+                break
+        }
+    }
 
     /// Callback might be called 0 or more times.
     private func startReading() {
@@ -197,19 +195,17 @@ public class TCPChannel {
 
         dispatch_io_read(channel, 0, -1 /* Int(truncatingBitPattern:SIZE_MAX) */, queue) {
             [weak self] (done, data, error) in
-
-//            print("READ \(done) \(data) \(error)")
-
             guard let strong_self = self else {
-                // TODO
                 return
             }
-
             guard error == 0 else {
+                if error == ECONNRESET {
+                    try! strong_self.handleDisconnect()
+                    return
+                }
                 strong_self.readCallback?(Result.Failure(Errno(rawValue: error)!))
                 return
             }
-
             switch (done, dispatch_data_get_size(data) > 0) {
                 case (false, _), (true, true):
                     let dispatchData = DispatchData <Void> (data: data)
@@ -220,12 +216,10 @@ public class TCPChannel {
         }
     }
 
-    // MARK: -
-
-    private func handleDisconnect() {
+    private func handleDisconnect() throws {
         let remoteDisconnect = (state != .Disconnecting)
 
-        close(socketDescriptor)
+        try socket.close()
 
         state = .Unconnected
 
@@ -255,5 +249,11 @@ public class TCPChannel {
         shouldReconnect?()
         disconnectCallback?(Result.Success())
         disconnectCallback = nil
+    }
+
+    // TODO: Hack
+    public func triggerConnection() {
+        // TODO: Error check
+        self.state = .Connected
     }
 }
