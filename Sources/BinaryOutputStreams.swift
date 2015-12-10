@@ -50,6 +50,7 @@ public extension BinaryOutputStream {
 }
 
 public extension BinaryOutputStreamable {
+    // TODO: This can be dangerous (many situations exist in which this can return the wrong length). Deprecate?
     var length: Int {
         let nullStream = NullStream()
         try! nullStream.write(self)
