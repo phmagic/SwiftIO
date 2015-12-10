@@ -194,7 +194,7 @@ public class UDPChannel {
         let data: NSMutableData! = NSMutableData(length: 4096)
 
         var addressData = Array <Int8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
-        let (result, address, port) = addressData.withUnsafeMutableBufferPointer() {
+        let (result, address, port) = try addressData.withUnsafeMutableBufferPointer() {
             (inout ptr: UnsafeMutableBufferPointer <Int8>) -> (Int, Address?, UInt16?) in
             var addrlen: socklen_t = socklen_t(SOCK_MAXADDRLEN)
             let result = Darwin.recvfrom(socket, data.mutableBytes, data.length, 0, UnsafeMutablePointer<sockaddr> (ptr.baseAddress), &addrlen)
@@ -203,7 +203,7 @@ public class UDPChannel {
             }
 
             let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress).memory
-            let address = try! Address(addr: addr)
+            let address = try Address(addr: addr)
 
             let port = UInt16(networkEndian: addr.port)
             return (result, address, port)

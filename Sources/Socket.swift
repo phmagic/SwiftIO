@@ -105,7 +105,7 @@ public extension Socket {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
 
-        let (address, port) = try! Address.fromSockaddr(incoming)
+        let (address, port) = try Address.fromSockaddr(incoming)
         return (Socket(socket), address, port)
     }
 
@@ -116,7 +116,7 @@ public extension Socket {
         if status != 0 {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
-        return try! Address.fromSockaddr(addr)
+        return try Address.fromSockaddr(addr)
     }
 }
 
@@ -125,7 +125,7 @@ public extension Socket {
 public extension Socket {
 
     static func TCP() throws -> Socket {
-        return try! Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
+        return try Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
     }
 
 }

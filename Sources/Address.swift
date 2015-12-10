@@ -214,7 +214,7 @@ public extension Address {
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addrinfo = $0.memory
             let addr = addrinfo.ai_addr.memory
-            let address = try! Address(addr: addr)
+            let address = try Address(addr: addr)
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
 
             let family = ProtocolFamily(rawValue: addrinfo.ai_family)
@@ -259,7 +259,7 @@ public extension Address {
 
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addr = $0.memory.ai_addr.memory
-            let address = try! Address(addr: addr)
+            let address = try Address(addr: addr)
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
             addresses.append(address)
 

@@ -201,7 +201,8 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info
     }
 }
 
-public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> -> Bool) throws {
+public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws
+ {
     var hints = hints
     var info = UnsafeMutablePointer<addrinfo>()
     let result = hostname.withCString() {
@@ -217,7 +218,7 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, bloc
 
     var current = info
     while current != nil {
-        if block(current) == false {
+        if try block(current) == false {
             break
         }
         current = current.memory.ai_next

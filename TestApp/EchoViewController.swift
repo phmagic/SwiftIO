@@ -46,16 +46,16 @@ class EchoViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        start()
+        try! start()
     }
 
-    func start() {
+    func start() throws {
 
         // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
         task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
         sleep(1)
 
-        channel = try! TCPChannel(hostname: "localhost", port: 12345)
+        channel = try TCPChannel(hostname: "localhost", port: 12345)
         channel.stateChangeCallback = {
             (old, new) in
             print("STATE CHANGE: \(old) -> \(new)")
