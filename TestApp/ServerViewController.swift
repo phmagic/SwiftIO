@@ -14,6 +14,7 @@ import SwiftUtilities
 class ServerViewController: NSViewController {
 
     typealias Record = TLVRecord <UInt16, UInt16>
+    let endianess = Endianess.Big
 
     let port = UInt16(40000 + SwiftUtilities.random.random(uniform: 1000))
     var server: Server!
@@ -27,39 +28,36 @@ class ServerViewController: NSViewController {
     }
 
     func startServer() throws {
-        let address = try! Address(address: "localhost", `protocol`: InetProtocol.TCP, family: ProtocolFamily.INET)
-        server = try! Server(address: address, port: port)
+        let address = try Address(address: "localhost", `protocol`: InetProtocol.TCP, family: ProtocolFamily.INET)
+        server = try Server(address: address, port: port)
 
         server.clientWillConnect = {
             (client) in
+
+            var buffer = DispatchData <Void> ()
 
             client.readCallback = {
                 (result) in
 
                 if let data = result.value {
-                    let (records, _): ([Record], DispatchData <Void>) = try! Record.read(data, endianess: .Little)
+
+                    buffer = buffer + data
+
+                    let (records, remaining): ([Record], DispatchData <Void>) = try! Record.read(buffer, endianess: self.endianess)
                     for record in records {
                         print("**** \(record)")
                     }
+                    buffer = remaining
+                    print(buffer)
                 }
             }
         }
-        try! self.server.start()
+        try self.server.start()
     }
 
     func startClient() throws {
 
-        clientChannel = try! TCPChannel(hostname: "localhost", port: port)
-        clientChannel.stateChangeCallback = {
-            (old, new) in
-            print("STATE CHANGE: \(old) -> \(new)")
-        }
-
-        clientChannel.shouldReconnect = {
-            assert(self.clientChannel.state == .Unconnected)
-            print("Disconnected!")
-            return true
-        }
+        clientChannel = try TCPChannel(hostname: "localhost", port: port)
 
         clientChannel.readCallback = {
             (result) in
@@ -68,7 +66,6 @@ class ServerViewController: NSViewController {
                 return
             }
             if let data = result.value {
-
             }
         }
 
@@ -81,14 +78,14 @@ class ServerViewController: NSViewController {
                 return
             }
 
-            let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world"))
-
-            let data = try! record.toDispatchData()
-            self.clientChannel!.write(data) {
-                (result) in
-                print("Write: ", result)
+            for _ in 0..<2 {
+                let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world"))
+                let data = try! record.toDispatchData(self.endianess)
+                self.clientChannel!.write(data) {
+                    (result) in
+                    print("Write: ", result)
+                }
             }
         }
     }
 }
-
