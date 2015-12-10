@@ -34,7 +34,7 @@ import Cocoa
 import SwiftIO
 import SwiftUtilities
 
-class ViewController: NSViewController {
+class EchoViewController: NSViewController {
 
     var channel: TCPChannel!
     var task: NSTask?
@@ -45,6 +45,11 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        start()
+    }
+
+    func start() {
 
         // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
         task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
@@ -141,11 +146,3 @@ class ViewController: NSViewController {
 
 }
 
-struct Async {
-
-    static func main(closure:() -> Void) {
-        dispatch_async(dispatch_get_main_queue(), closure)
-    }
-
-
-}
