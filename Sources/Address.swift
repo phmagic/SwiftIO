@@ -115,17 +115,17 @@ extension Address: CustomReflectable {
 // MARK: -
 
 extension Address {
-    public func withUnsafePointer <Result> (@noescape body: UnsafePointer<Void> -> Result) throws -> Result {
+    public func withUnsafePointer <Result> (@noescape body: UnsafePointer<Void> throws -> Result) throws -> Result {
         switch internalAddress {
             case .INET(var addr):
                 return try Swift.withUnsafePointer(&addr) {
                     let ptr = UnsafePointer <Void> ($0)
-                    return body(ptr)
+                    return try body(ptr)
                 }
             case .INET6(var addr):
                 return try Swift.withUnsafePointer(&addr) {
                     let ptr = UnsafePointer <Void> ($0)
-                    return body(ptr)
+                    return try body(ptr)
                 }
         }
     }
@@ -136,9 +136,11 @@ extension Address {
 
 extension Address {
     public var address: String {
-        return try! withUnsafePointer() {
-            (inputPtr: UnsafePointer<Void>) -> String in
-            return try! inet_ntop(addressFamily: addressFamily, address: inputPtr)
+        return tryElseFatalError() {
+            return try self.withUnsafePointer() {
+                (inputPtr: UnsafePointer<Void>) -> String in
+                return try inet_ntop(addressFamily: self.addressFamily, address: inputPtr)
+            }
         }
     }
 }

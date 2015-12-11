@@ -115,16 +115,21 @@ public class TCPChannel {
                 return
             }
 
-            strong_self.state = .Connecting
+            do {
+                strong_self.state = .Connecting
 
-            let socket = try! Socket.TCP()
+                let socket = try Socket.TCP()
 
-            try! socket.connect(address, port: port)
+                try socket.connect(address, port: port)
 
-            strong_self.socket = socket
-            strong_self.state = .Connected
+                strong_self.socket = socket
+                strong_self.state = .Connected
 
-            callback(Result.Success())
+                callback(.Success())
+            }
+            catch let error {
+                callback(.Failure(error))
+            }
         }
     }
 
@@ -175,7 +180,9 @@ public class TCPChannel {
                         return
                     }
 
-                    try! strong_self.handleDisconnect()
+                    tryElseFatalError() {
+                        try strong_self.handleDisconnect()
+                    }
                 }
                 dispatch_io_set_low_water(channel, 0)
                 self.channel = channel
@@ -200,7 +207,9 @@ public class TCPChannel {
             }
             guard error == 0 else {
                 if error == ECONNRESET {
-                    try! strong_self.handleDisconnect()
+                    tryElseFatalError() {
+                        try strong_self.handleDisconnect()
+                    }
                     return
                 }
                 strong_self.readCallback?(Result.Failure(Errno(rawValue: error)!))

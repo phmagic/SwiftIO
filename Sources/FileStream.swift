@@ -68,7 +68,9 @@ public class FileStream {
 
     deinit {
         if isOpen == true {
-            try! close()
+            tryElseFatalError() {
+                try close()
+            }
         }
     }
 

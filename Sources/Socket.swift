@@ -19,7 +19,9 @@ public class Socket {
 
     deinit {
         if descriptor >= 0 {
-            try! close()
+            tryElseFatalError() {
+                try close()
+            }
         }
     }
 

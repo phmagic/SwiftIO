@@ -52,9 +52,11 @@ public extension BinaryOutputStream {
 public extension BinaryOutputStreamable {
     // TODO: This can be dangerous (many situations exist in which this can return the wrong length). Deprecate?
     var length: Int {
-        let nullStream = NullStream()
-        try! nullStream.write(self)
-        return nullStream.length
+        return tryElseFatalError() {
+            let nullStream = NullStream()
+            try nullStream.write(self)
+            return nullStream.length
+        }
     }
 }
 
@@ -62,9 +64,9 @@ public extension BinaryOutputStreamable {
 
 extension DispatchData: BinaryOutputStreamable {
     public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
-        apply() {
+        try apply() {
             (range, buffer) in
-            try! stream.write(buffer.toUnsafeBufferPointer())
+            try stream.write(buffer.toUnsafeBufferPointer())
             return true
         }
     }
