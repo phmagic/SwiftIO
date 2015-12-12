@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -799,14 +800,131 @@
             <objects>
                 <viewController title="Server" id="Sce-QO-a5y" customClass="ServerViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="usJ-IC-fEI">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="490" height="242"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0ad-VI-Rj5">
+                                <rect key="frame" x="0.0" y="0.0" width="490" height="242"/>
+                                <subviews>
+                                    <scrollView misplaced="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b0v-Xa-VDA">
+                                        <rect key="frame" x="0.0" y="29" width="490" height="213"/>
+                                        <clipView key="contentView" id="wp2-wR-eeV">
+                                            <rect key="frame" x="1" y="1" width="488" height="211"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <textView importsGraphics="NO" richText="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="LTo-W6-bAR">
+                                                    <rect key="frame" x="0.0" y="0.0" width="488" height="211"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <animations/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <size key="minSize" width="488" height="211"/>
+                                                    <size key="maxSize" width="488" height="10000000"/>
+                                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <size key="minSize" width="488" height="211"/>
+                                                    <size key="maxSize" width="488" height="10000000"/>
+                                                    <connections>
+                                                        <binding destination="Sce-QO-a5y" name="value" keyPath="log" id="LXG-nn-EAD"/>
+                                                    </connections>
+                                                </textView>
+                                            </subviews>
+                                            <animations/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </clipView>
+                                        <animations/>
+                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="KUt-Vq-Zfa">
+                                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <animations/>
+                                        </scroller>
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="mC5-8m-LJ7">
+                                            <rect key="frame" x="473" y="1" width="16" height="211"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <animations/>
+                                        </scroller>
+                                    </scrollView>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lPc-k0-yWL">
+                                        <rect key="frame" x="121" y="0.0" width="248" height="21"/>
+                                        <subviews>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TU0-la-hMp">
+                                                <rect key="frame" x="-6" y="-7" width="92" height="32"/>
+                                                <animations/>
+                                                <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vhS-9N-eP6">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="connect:" target="Sce-QO-a5y" id="iKa-eq-Xkj"/>
+                                                    <binding destination="Sce-QO-a5y" name="enabled" keyPath="connected" id="WKx-5M-xmc">
+                                                        <dictionary key="options">
+                                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                        </dictionary>
+                                                    </binding>
+                                                </connections>
+                                            </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tcJ-gE-c4j">
+                                                <rect key="frame" x="82" y="-7" width="109" height="32"/>
+                                                <animations/>
+                                                <buttonCell key="cell" type="push" title="Disconnect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="J88-63-KrQ">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="disconnect:" target="Sce-QO-a5y" id="r3b-4k-6n2"/>
+                                                    <binding destination="Sce-QO-a5y" name="enabled" keyPath="connected" id="Mq6-aJ-oom"/>
+                                                </connections>
+                                            </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sTM-CZ-e0Y">
+                                                <rect key="frame" x="187" y="-7" width="67" height="32"/>
+                                                <animations/>
+                                                <buttonCell key="cell" type="push" title="Ping" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="UG4-xG-GcQ">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="ping:" target="Sce-QO-a5y" id="2RO-gK-RiU"/>
+                                                    <binding destination="Sce-QO-a5y" name="enabled" keyPath="connected" id="adT-Lo-LjN"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <animations/>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                </subviews>
+                                <animations/>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="0ad-VI-Rj5" firstAttribute="leading" secondItem="usJ-IC-fEI" secondAttribute="leading" id="Cnc-wf-uhz"/>
+                            <constraint firstAttribute="bottom" secondItem="0ad-VI-Rj5" secondAttribute="bottom" id="H4N-SS-9gr"/>
+                            <constraint firstAttribute="trailing" secondItem="0ad-VI-Rj5" secondAttribute="trailing" id="WDk-FJ-Oe1"/>
+                            <constraint firstItem="0ad-VI-Rj5" firstAttribute="top" secondItem="usJ-IC-fEI" secondAttribute="top" id="xcK-CH-fBs"/>
+                        </constraints>
                         <animations/>
                     </view>
+                    <connections>
+                        <outlet property="connectButton" destination="TU0-la-hMp" id="KLS-sa-kwo"/>
+                    </connections>
                 </viewController>
                 <customObject id="owT-cD-Nmq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="768" y="818"/>
+            <point key="canvasLocation" x="619" y="1029"/>
         </scene>
         <!--TLV-->
         <scene sceneID="6pR-nP-2SR">
