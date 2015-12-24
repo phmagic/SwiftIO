@@ -39,10 +39,10 @@ public class Socket {
             return reuseSocketFlag != 0
         }
         set {
-            var reuseSocketFlag: Int = reuse ? 1 : 0
+            var reuseSocketFlag: Int = newValue ? 1 : 0
             let status = setsockopt(descriptor, SOL_SOCKET, SO_REUSEADDR, &reuseSocketFlag, socklen_t(sizeof(Int)))
             if status != 0 {
-                fatalError("Coult not call setsockopt() on \(descriptor)")
+                fatalError("Could not call setsockopt() on \(descriptor)")
             }
         }
     }
