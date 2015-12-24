@@ -92,6 +92,7 @@
 		45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E80CF71C18BCD5009AAD98 /* Server.swift */; };
 		45F356421C1A0D920031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F356431C1A0DAD0031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
+		93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,6 +203,7 @@
 		45E662641C331709004737E1 /* StreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
 		45E80CF71C18BCD5009AAD98 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		45F356411C1A0D920031A299 /* BinaryStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryStreamable.swift; sourceTree = "<group>"; };
+		93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPEchoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +295,7 @@
 				45DD2DAD1B76AD850002994A /* AppDelegate.swift */,
 				45DD2DAF1B76AD850002994A /* EchoViewController.swift */,
 				457847141C178D8B00EF9B35 /* TLVViewController.swift */,
+				93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */,
 				45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */,
 				45E80CF71C18BCD5009AAD98 /* Server.swift */,
 				457847161C178E5500EF9B35 /* Utilities.swift */,
@@ -556,6 +559,7 @@
 				45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
 				45DD2DAE1B76AD850002994A /* AppDelegate.swift in Sources */,
+				93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */,
 				457847171C178E5500EF9B35 /* Utilities.swift in Sources */,
 				45DAC1431C17BF2E0013C4D6 /* ServerViewController.swift in Sources */,
 				457847151C178D8B00EF9B35 /* TLVViewController.swift in Sources */,

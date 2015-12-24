@@ -105,7 +105,7 @@ public class TCPChannel {
 
         if queue == nil {
             let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-            queue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
+            queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.receiveQueue", queueAttribute)
         }
 
         dispatch_async(queue) {
@@ -170,7 +170,7 @@ public class TCPChannel {
 
                 if queue == nil {
                     let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-                    queue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
+                    queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.receiveQueue", queueAttribute)
                 }
 
                 let channel = dispatch_io_create(DISPATCH_IO_STREAM, socket.descriptor, queue) {

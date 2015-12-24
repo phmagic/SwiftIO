@@ -129,5 +129,9 @@ public extension Socket {
     static func TCP() throws -> Socket {
         return try Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
     }
+    
+    static func UDP() throws -> Socket {
+        return try Socket(domain: PF_INET, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
+    }
 
 }

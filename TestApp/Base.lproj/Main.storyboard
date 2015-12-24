@@ -766,9 +766,7 @@
             <objects>
                 <tabViewController selectedTabViewItemIndex="2" id="iFd-ar-1Bf" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem id="wTs-Xs-9Qb"/>
-                        <tabViewItem id="7kn-8i-aid"/>
-                        <tabViewItem id="PQo-va-ukp"/>
+                        <tabViewItem id="FK3-iB-q6k"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="MVi-Nx-DPs">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -777,9 +775,7 @@
                         <tabViewItems/>
                     </tabView>
                     <connections>
-                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="tabItems" id="HpQ-52-wG9"/>
-                        <segue destination="VBF-VT-EtE" kind="relationship" relationship="tabItems" id="wt9-yY-7yi"/>
-                        <segue destination="Sce-QO-a5y" kind="relationship" relationship="tabItems" id="aNb-kX-1qo"/>
+                        <segue destination="PvV-ih-ihm" kind="relationship" relationship="tabItems" id="dVL-zH-jgB"/>
                     </connections>
                 </tabViewController>
                 <customObject id="6l4-bt-AeN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1000,6 +996,19 @@
                 <userDefaultsController id="B3v-qF-TBn"/>
             </objects>
             <point key="canvasLocation" x="1195.5" y="646.5"/>
+        </scene>
+        <!--UDP Echo-->
+        <scene sceneID="WnM-SD-0kH">
+            <objects>
+                <viewController title="UDP Echo" id="PvV-ih-ihm" customClass="UDPEchoViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="xfi-3R-orJ">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="dp4-DT-SR5" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1146" y="1058"/>
         </scene>
     </scenes>
 </document>
