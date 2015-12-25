@@ -11,17 +11,38 @@ import Cocoa
 import SwiftIO
 
 class UDPEchoViewController: NSViewController {
+    
+    var udpServer: UDPChannel!
+    var udpClient: UDPChannel!
+    
+    let remoteServer = try! Address(address: "localhost")
 
-    var udp: UDPChannel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        udp = try! UDPChannel(hostname: "localhost", port: 10000) { (data) in
-            print(data)
+        // server
+        udpServer = try! UDPChannel(hostname: "localhost", port: 10000) { (dataGram) in
+            print("UDPEcho: Server received - \(dataGram)")
+            print("UDPEcho: Echo'ing to client")
+            try! self.udpServer.send(dataGram.data, address: dataGram.from.0, port: dataGram.from.1, writeHandler: nil)
+        }
+
+        // spin up server and its queues
+        try! udpServer.resume()
+        
+        // client
+        udpClient = try! UDPChannel(hostname: "localhost", port: 59324) { (dataGram) in
+            print("UDPEcho: Client received - \(dataGram)")
         }
         
-        try! udp.resume()
+        // spin up client and its queues
+        try! udpClient.resume()
+    }
+
+    @IBAction func pingServer(sender: AnyObject) {
+        let data = "0xDEADBEEF".dataUsingEncoding(NSUTF8StringEncoding)
+        try! udpClient.send(data!, address: remoteServer, port: 10000, writeHandler: nil)
     }
     
 }
