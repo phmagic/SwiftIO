@@ -14,7 +14,7 @@ import SwiftUtilities
 class ServerViewController: NSViewController {
 
     typealias Record = TLVRecord <UInt16, UInt16>
-    let endianess = Endianess.Big
+    let endianness = Endianness.Big
 
     let port = UInt16(40000 + SwiftUtilities.random.random(uniform: 1000))
     var server: Server!
@@ -52,7 +52,7 @@ extension ServerViewController {
 
     @IBAction func ping(sender: AnyObject?) {
         let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world: \(count++)"))
-        let data = try! record.toDispatchData(self.endianess)
+        let data = try! record.toDispatchData(self.endianness)
         self.clientChannel!.write(data) {
             (result) in
             self.log_debug(result)
@@ -88,7 +88,7 @@ extension ServerViewController {
 
                     buffer = buffer + data
 
-                    let (records, remaining): ([Record], DispatchData <Void>) = try! Record.read(buffer, endianess: self.endianess)
+                    let (records, remaining): ([Record], DispatchData <Void>) = try! Record.read(buffer, endianness: self.endianness)
                     for record in records {
 
                         dispatch_async(dispatch_get_main_queue()) {
@@ -145,7 +145,7 @@ extension ServerViewController {
 
             for _ in 0..<2 {
                 let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world: \(self.count++)"))
-                let data = try! record.toDispatchData(self.endianess)
+                let data = try! record.toDispatchData(self.endianness)
                 self.clientChannel!.write(data) {
                     (result) in
                     self.log_debug(result)

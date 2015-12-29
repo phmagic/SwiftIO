@@ -56,7 +56,7 @@ public struct Mode: OptionSetType {
 
 public class FileStream {
 
-    public let endianess = Endianess.Native
+    public let endianness = Endianness.Native
 
     public let url: NSURL
     public internal(set) var isOpen: Bool = false

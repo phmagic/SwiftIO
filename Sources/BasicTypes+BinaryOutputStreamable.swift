@@ -9,7 +9,7 @@
 import SwiftUtilities
 
 private func write <Target: BinaryOutputStream, T: EndianConvertable> (stream: Target, value: T) throws {
-    var value = value.toEndianess(stream.endianess)
+    var value = value.toEndianness(stream.endianness)
     let buffer = withUnsafePointer(&value) {
         (pointer: UnsafePointer <T>) -> UnsafeBufferPointer <Void> in
         return UnsafeBufferPointer(start: pointer, count: sizeof(T))

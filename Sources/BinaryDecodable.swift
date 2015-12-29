@@ -31,7 +31,7 @@
 import SwiftUtilities
 
 public protocol BinaryDecodable {
-    static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Self
+    static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Self
 }
 
 // MARK: -
@@ -48,91 +48,89 @@ private func decode <T> (buffer: UnsafeBufferPointer <Void>) throws -> T {
 // MARK: -
 
 extension Int: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Int {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Int {
         let value: Int = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension Int8: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Int8 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Int8 {
         let value: Int8 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension Int16: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Int16 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Int16 {
         let value: Int16 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension Int32: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Int32 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Int32 {
         let value: Int32 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension Int64: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Int64 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Int64 {
         let value: Int64 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 // MARK: -
 
 extension UInt: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> UInt {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> UInt {
         let value: UInt = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension UInt8: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> UInt8 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> UInt8 {
         let value: UInt8 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension UInt16: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> UInt16 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> UInt16 {
         let value: UInt16 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension UInt32: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> UInt32 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> UInt32 {
         let value: UInt32 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 extension UInt64: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> UInt64 {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> UInt64 {
         let value: UInt64 = try SwiftIO.decode(buffer)
-        return value.fromEndianess(endianess)
+        return value.fromEndianness(endianness)
     }
 }
 
 // MARK: -
 
 extension Float: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Float {
-        var value: UInt32 = try SwiftIO.decode(buffer)
-        value = value.fromEndianess(endianess)
-        return unsafeBitCast(value, Float.self)
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Float {
+        let value: UInt32 = try SwiftIO.decode(buffer)
+        return unsafeBitCast(value.fromEndianness(endianness), Float.self)
     }
 }
 
 extension Double: BinaryDecodable {
-    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Double {
-        var value: UInt64 = try SwiftIO.decode(buffer)
-        value = value.fromEndianess(endianess)
-        return unsafeBitCast(value, Double.self)
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianness: Endianness) throws -> Double {
+        let value: UInt64 = try SwiftIO.decode(buffer)
+        return unsafeBitCast(value.fromEndianness(endianness), Double.self)
     }
 }

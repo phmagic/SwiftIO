@@ -11,7 +11,7 @@ private func readFrom <Stream: BinaryInputStream, T: BinaryDecodable> (stream: S
     let data = try stream.readData(length: size)
     return try data.createMap() {
         (data, buffer) in
-        let value = try T.decode(buffer, endianess: stream.endianess)
+        let value = try T.decode(buffer, endianness: stream.endianness)
         return value
     }
 }
@@ -82,9 +82,15 @@ extension Int64: BinaryInputStreamable {
 
 // MARK: -
 
-//extension Float: BinaryInputStreamable {
-//    public static func readFrom<Stream : BinaryInputStream>(stream: Stream) throws -> Float {
-//        return try SwiftIO.readFrom(stream)
-//    }
-//}
-//
+extension Float: BinaryInputStreamable {
+    public static func readFrom<Stream : BinaryInputStream>(stream: Stream) throws -> Float {
+        return try SwiftIO.readFrom(stream)
+    }
+}
+
+extension Double: BinaryInputStreamable {
+    public static func readFrom<Stream : BinaryInputStream>(stream: Stream) throws -> Double {
+        return try SwiftIO.readFrom(stream)
+    }
+}
+

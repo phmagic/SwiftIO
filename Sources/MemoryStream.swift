@@ -32,7 +32,7 @@ import SwiftUtilities
 
 public class MemoryStream: BinaryInputStream, BinaryOutputStream {
 
-    public var endianess = Endianess.Native
+    public var endianness = Endianness.Native
 
     internal var mutableData: NSMutableData = NSMutableData() // TODO: Use DispatchData
 
@@ -81,7 +81,7 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
 extension MemoryStream: CustomStringConvertible {
 
     public var description: String {
-        return "MemoryStream(endianess: \(endianess), length: \(mutableData.length), head: \(head))"
+        return "MemoryStream(endianess: \(endianness), length: \(mutableData.length), head: \(head))"
     }
 
 }
@@ -89,10 +89,8 @@ extension MemoryStream: CustomStringConvertible {
 // MARK:
 
 extension MemoryStream: CustomDebugStringConvertible {
-
     public var debugDescription: String {
-        return "MemoryStream(endianess: \(endianess), length: \(mutableData.length), head: \(head), bytes: \(mutableData))"
+        return "MemoryStream(endianess: \(endianness), length: \(mutableData.length), head: \(head), bytes: \(mutableData))"
     }
-
 }
 

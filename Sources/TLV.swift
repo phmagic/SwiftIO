@@ -55,7 +55,7 @@ extension TLVRecord: BinaryInputStreamable {
 extension TLVRecord: BinaryOutputStreamable {
     public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
         try stream.write(type)
-        let length = Length(UIntMax(data.length.toEndianess(stream.endianess)))
+        let length = Length(UIntMax(data.length.toEndianness(stream.endianness)))
 
         // TODO
 //        guard length <= Length.max else {
@@ -71,11 +71,11 @@ extension TLVRecord: BinaryOutputStreamable {
 // MARK: -
 
 public extension TLVRecord {
-    func toDispatchData(endianess: Endianess) throws -> DispatchData <Void> {
+    func toDispatchData(endianness: Endianness) throws -> DispatchData <Void> {
         let length = Length(UIntMax(self.data.length))
         let data = DispatchData <Void> ()
-            + DispatchData <Void> (value: type.toEndianess(endianess))
-            + DispatchData <Void> (value: length.toEndianess(endianess))
+            + DispatchData <Void> (value: type.toEndianness(endianness))
+            + DispatchData <Void> (value: length.toEndianness(endianness))
             + self.data
         return data
     }
@@ -84,23 +84,23 @@ public extension TLVRecord {
 // MARK: -
 
 public extension TLVRecord {
-    static func read(data: DispatchData <Void>, endianess: Endianess) throws -> (TLVRecord, DispatchData <Void>) {
-        // TODO: Endianess
+    static func read(data: DispatchData <Void>, endianness: Endianness) throws -> (TLVRecord, DispatchData <Void>) {
+        // TODO: Endianness
         let (type, data1): (Type, DispatchData <Void>) = try data.split()
         let (length, data2): (Length, DispatchData <Void>) = try data1.split()
-        let length2 = Int(length.fromEndianess(endianess).toIntMax())
+        let length2 = Int(length.fromEndianness(endianness).toIntMax())
         let (data3, data4) = try data2.split(length2)
-        let record = TLVRecord(type: type.fromEndianess(endianess), data: data3)
+        let record = TLVRecord(type: type.fromEndianness(endianness), data: data3)
         return (record, data4)
     }
 
-    static func read(data: DispatchData <Void>, endianess: Endianess) throws -> ([TLVRecord], DispatchData <Void>) {
+    static func read(data: DispatchData <Void>, endianness: Endianness) throws -> ([TLVRecord], DispatchData <Void>) {
         var records: [TLVRecord] = []
         typealias Record = TLVRecord <UInt16, UInt16>
         var remainingData = data
         while remainingData.length > 0 {
             let record: TLVRecord
-            (record, remainingData) = try read(data, endianess: endianess)
+            (record, remainingData) = try read(data, endianness: endianness)
             records.append(record)
         }
         return (records, remainingData)

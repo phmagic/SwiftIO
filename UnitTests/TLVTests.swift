@@ -28,7 +28,7 @@ class TLVTests: XCTestCase {
         typealias RecordType = TLVRecord <UInt16, UInt16>
         let data = try DispatchData <Void> ("Hello world")
         let memory = MemoryStream()
-        memory.endianess = .Big
+        memory.endianness = .Big
         let original = RecordType(type: 100, data: data)
         try memory.write(original)
         let record: RecordType = try memory.read()

@@ -31,7 +31,7 @@
 import SwiftUtilities
 
 public protocol BinaryInputStream {
-    var endianess: Endianess { get }
+    var endianness: Endianness { get }
     func readData(length length: Int) throws -> DispatchData <Void>
 }
 

@@ -88,6 +88,7 @@
 		45E289781B3C8E7300EDBBAE /* MemoryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289771B3C8E7300EDBBAE /* MemoryStream.swift */; };
 		45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289751B3C8E6D00EDBBAE /* FileStream.swift */; };
 		45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289771B3C8E7300EDBBAE /* MemoryStream.swift */; };
+		45E662651C331709004737E1 /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E662641C331709004737E1 /* StreamTests.swift */; };
 		45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E80CF71C18BCD5009AAD98 /* Server.swift */; };
 		45F356421C1A0D920031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F356431C1A0DAD0031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
@@ -198,6 +199,7 @@
 		45E240261B0E8A950001F5B9 /* Inet+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Inet+Utilities.swift"; sourceTree = "<group>"; };
 		45E289751B3C8E6D00EDBBAE /* FileStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStream.swift; sourceTree = "<group>"; };
 		45E289771B3C8E7300EDBBAE /* MemoryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryStream.swift; sourceTree = "<group>"; };
+		45E662641C331709004737E1 /* StreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
 		45E80CF71C18BCD5009AAD98 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		45F356411C1A0D920031A299 /* BinaryStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryStreamable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -279,6 +281,7 @@
 				4589723D1B76555800251997 /* AddressTests.swift */,
 				459410461B79240A007FFBA0 /* DatagramTests.swift */,
 				45302F581C1612CD00990F60 /* TLVTests.swift */,
+				45E662641C331709004737E1 /* StreamTests.swift */,
 				45B9DE901B753363009FD963 /* Info.plist */,
 			);
 			path = UnitTests;
@@ -542,6 +545,7 @@
 				45302F591C1612CD00990F60 /* TLVTests.swift in Sources */,
 				459410471B79240A007FFBA0 /* DatagramTests.swift in Sources */,
 				4589723E1B76555800251997 /* AddressTests.swift in Sources */,
+				45E662651C331709004737E1 /* StreamTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
