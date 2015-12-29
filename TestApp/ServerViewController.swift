@@ -93,7 +93,7 @@ extension ServerViewController {
 
                         dispatch_async(dispatch_get_main_queue()) {
                             let string = try! String(data: record.data)
-                            self.log_debug(result)
+                            self.log_debug(string)
                         }
                     }
                     buffer = remaining

@@ -80,3 +80,11 @@ extension Int64: BinaryInputStreamable {
     }
 }
 
+// MARK: -
+
+//extension Float: BinaryInputStreamable {
+//    public static func readFrom<Stream : BinaryInputStream>(stream: Stream) throws -> Float {
+//        return try SwiftIO.readFrom(stream)
+//    }
+//}
+//

@@ -80,3 +80,19 @@ extension UInt64: BinaryOutputStreamable {
         try write(stream, value: self)
     }
 }
+
+// MARK: -
+
+extension Float: BinaryOutputStreamable {
+    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
+        let bitValue = unsafeBitCast(self, UInt32.self)
+        try write(stream, value: bitValue)
+    }
+}
+
+extension Double: BinaryOutputStreamable {
+    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
+        let bitValue = unsafeBitCast(self, UInt64.self)
+        try write(stream, value: bitValue)
+    }
+}

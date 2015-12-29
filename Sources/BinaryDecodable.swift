@@ -30,7 +30,7 @@
 
 import SwiftUtilities
 
-public protocol BinaryDecodable: EndianConvertable {
+public protocol BinaryDecodable {
     static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Self
 }
 
@@ -119,3 +119,20 @@ extension UInt64: BinaryDecodable {
     }
 }
 
+// MARK: -
+
+extension Float: BinaryDecodable {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Float {
+        var value: UInt32 = try SwiftIO.decode(buffer)
+        value = value.fromEndianess(endianess)
+        return unsafeBitCast(value, Float.self)
+    }
+}
+
+extension Double: BinaryDecodable {
+    public static func decode(buffer: UnsafeBufferPointer <Void>, endianess: Endianess) throws -> Double {
+        var value: UInt64 = try SwiftIO.decode(buffer)
+        value = value.fromEndianess(endianess)
+        return unsafeBitCast(value, Double.self)
+    }
+}
