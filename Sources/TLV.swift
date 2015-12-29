@@ -41,7 +41,7 @@ public func == <Type, Length> (lhs: TLVRecord <Type, Length>, rhs: TLVRecord <Ty
 // MARK: -
 
 extension TLVRecord: BinaryInputStreamable {
-    public static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> TLVRecord {
+    public static func readFrom(stream: BinaryInputStream) throws -> TLVRecord {
         let type: Type = try stream.read()
         let length: Length = try stream.read()
         let data: DispatchData <Void> = try stream.readData(length: Int(length.toUIntMax()))

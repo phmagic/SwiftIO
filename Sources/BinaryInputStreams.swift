@@ -38,7 +38,7 @@ public protocol BinaryInputStream {
 // MARK: -
 
 public protocol BinaryInputStreamable {
-    static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> Self
+    static func readFrom(stream: BinaryInputStream) throws -> Self
 }
 
 public extension BinaryInputStream {

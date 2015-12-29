@@ -33,7 +33,7 @@ import SwiftUtilities
 
 extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
 
-    public static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> Datagram {
+    public static func readFrom(stream: BinaryInputStream) throws -> Datagram {
 
         let jsonLength = Int32(networkEndian: try stream.read())
         guard jsonLength >= 0 else {
