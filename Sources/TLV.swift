@@ -53,7 +53,7 @@ extension TLVRecord: BinaryInputStreamable {
 // MARK: -
 
 extension TLVRecord: BinaryOutputStreamable {
-    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
+    public func writeTo(stream: BinaryOutputStream) throws {
         try stream.write(type)
         let length = Length(UIntMax(data.length.toEndianness(stream.endianness)))
 

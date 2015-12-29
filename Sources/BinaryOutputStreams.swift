@@ -40,7 +40,7 @@ public protocol BinaryOutputStream {
 // MARK: BinaryOutputStreamable
 
 public protocol BinaryOutputStreamable {
-    func writeTo <Target: BinaryOutputStream> (stream: Target) throws
+    func writeTo(stream: BinaryOutputStream) throws
 }
 
 public extension BinaryOutputStream {
@@ -63,7 +63,7 @@ public extension BinaryOutputStreamable {
 // MARK: -
 
 extension DispatchData: BinaryOutputStreamable {
-    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
+    public func writeTo(stream: BinaryOutputStream) throws {
         try apply() {
             (range, buffer) in
             try stream.write(buffer.toUnsafeBufferPointer())
@@ -75,7 +75,7 @@ extension DispatchData: BinaryOutputStreamable {
 // MARK: -
 
 extension NSData: BinaryOutputStreamable {
-    public func writeTo <Target: BinaryOutputStream> (stream: Target) throws {
+    public func writeTo(stream: BinaryOutputStream) throws {
         let buffer = UnsafeBufferPointer <Void> (start: bytes, count: length)
         try stream.write(buffer)
     }
