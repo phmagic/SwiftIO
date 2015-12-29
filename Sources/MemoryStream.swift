@@ -52,7 +52,7 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         return mutableData.toUnsafeBufferPointer()
     }
 
-    public func read(length length: Int) throws -> DispatchData <Void> {
+    public func readData(length length: Int) throws -> DispatchData <Void> {
         if length > remaining {
             throw Error.Generic("Not enough space (requesting \(length) bytes, only \(remaining) bytes remaining")
         }

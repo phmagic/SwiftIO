@@ -40,7 +40,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             throw Error.Generic("Negative length")
         }
 
-        let jsonBuffer: DispatchData <Void> = try stream.read(length: Int(jsonLength))
+        let jsonBuffer: DispatchData <Void> = try stream.readData(length: Int(jsonLength))
         let jsonData = jsonBuffer.data as! NSData
         let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions()) as! [String: AnyObject]
 
@@ -61,7 +61,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
             throw Error.Generic("Negative length")
         }
 
-        let data: DispatchData <Void> = try stream.read(length: Int(dataLength))
+        let data: DispatchData <Void> = try stream.readData(length: Int(dataLength))
         let datagram = try Datagram(from: (Address(address: address), UInt16(port)), timestamp: Timestamp(absoluteTime: absoluteTime), data: data)
 
         return datagram

@@ -114,7 +114,7 @@ public class FileStream {
 
 extension FileStream: BinaryInputStream {
 
-    public func read(length length: Int) throws -> DispatchData <Void> {
+    public func readData(length length: Int) throws -> DispatchData <Void> {
         guard isOpen == true else {
             throw Error.Generic("Stream not open")
         }
@@ -171,7 +171,7 @@ extension FileStream: RandomAccess {
 extension FileStream: RandomAccessInput {
     public func read(offset offset: Int, length: Int) throws -> DispatchData <Void> {
         try seek(offset)
-        return try read(length: length)
+        return try readData(length: length)
     }
 }
 

@@ -44,7 +44,7 @@ extension TLVRecord: BinaryInputStreamable {
     public static func readFrom <Stream: BinaryInputStream> (stream: Stream) throws -> TLVRecord {
         let type: Type = try stream.read()
         let length: Length = try stream.read()
-        let data: DispatchData <Void> = try stream.read(length: Int(length.toUIntMax()))
+        let data: DispatchData <Void> = try stream.readData(length: Int(length.toUIntMax()))
         let record = TLVRecord(type: type, data: data)
         return record
      }

@@ -8,7 +8,7 @@
 
 private func readFrom <Stream: BinaryInputStream, T: BinaryDecodable> (stream: Stream) throws -> T {
     let size = sizeof(T)
-    let data = try stream.read(length: size)
+    let data = try stream.readData(length: size)
     return try data.createMap() {
         (data, buffer) in
         let value = try T.decode(buffer, endianess: stream.endianess)

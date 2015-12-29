@@ -32,7 +32,7 @@ import SwiftUtilities
 
 public protocol BinaryInputStream {
     var endianess: Endianess { get }
-    func read(length length: Int) throws -> DispatchData <Void>
+    func readData(length length: Int) throws -> DispatchData <Void>
 }
 
 // MARK: -
