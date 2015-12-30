@@ -62,6 +62,10 @@ public class MemoryStream: BinaryInputStream, BinaryOutputStream {
         return result
     }
 
+    public func readData() throws -> DispatchData <Void> {
+        return try readData(length: remaining)
+    }
+
     public func write(buffer: UnsafeBufferPointer <Void>) throws {
         mutableData.appendBytes(buffer.baseAddress, length: buffer.count)
         head = mutableData.length

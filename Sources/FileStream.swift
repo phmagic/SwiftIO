@@ -136,6 +136,11 @@ extension FileStream: BinaryInputStream {
 
         return DispatchData <Void> (buffer: data.toUnsafeBufferPointer())
     }
+
+    public func readData() throws -> DispatchData <Void> {
+        unimplementedFailure()
+    }
+
 }
 
 // MARK: -
