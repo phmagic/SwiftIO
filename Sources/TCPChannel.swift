@@ -139,7 +139,7 @@ public class TCPChannel {
             guard let strong_self = self else {
                 return
             }
-            precondition(strong_self.state == .Connected)
+            precondition(strong_self.state != .Unconnected)
             strong_self.state = .Disconnecting
             strong_self.disconnectCallback = callback
             dispatch_io_close(strong_self.channel, DISPATCH_IO_STOP)
