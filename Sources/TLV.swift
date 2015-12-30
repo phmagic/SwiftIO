@@ -118,7 +118,6 @@ public extension TLVRecord {
         var records: [TLVRecord] = []
         var data = data
         while true {
-            print(data)
             let (maybeRecord, remainingData) = try read(data, endianness: endianness)
             guard let record = maybeRecord else {
                 break
