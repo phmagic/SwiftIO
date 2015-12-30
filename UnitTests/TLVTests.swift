@@ -14,35 +14,61 @@ import SwiftUtilities
 
 class TLVTests: XCTestCase {
 
-    func testReadWrite16Native() throws {
-        typealias RecordType = TLVRecord <UInt16, UInt16>
-        let data = try DispatchData <Void> ("Hello world")
-        let memory = MemoryStream()
-        let original = RecordType(type: 100, data: data)
-        try memory.write(original)
-        let record: RecordType = try memory.read()
-        XCTAssertEqual(record, original)
-    }
+//    func testReadWrite16Native() throws {
+//        typealias RecordType = TLVRecord <UInt16, UInt16>
+//        let data = try DispatchData <Void> ("Hello world")
+//        let memory = MemoryStream()
+//        let original = RecordType(type: 100, data: data)
+//        try memory.write(original)
+//        let record: RecordType = try memory.read()
+//        XCTAssertEqual(record, original)
+//    }
+//
+//    func testReadWrite16Big() throws {
+//        typealias RecordType = TLVRecord <UInt16, UInt16>
+//        let data = try DispatchData <Void> ("Hello world")
+//        let memory = MemoryStream()
+//        memory.endianness = .Big
+//        let original = RecordType(type: 100, data: data)
+//        try memory.write(original)
+//        let record: RecordType = try memory.read()
+//        XCTAssertEqual(record, original)
+//    }
+//
+//    func testReadWrite32Big() throws {
+//        typealias RecordType = TLVRecord <UInt32, UInt32>
+//        let data = try DispatchData <Void> ("Hello world")
+//        let memory = MemoryStream()
+//        let original = RecordType(type: 100, data: data)
+//        try memory.write(original)
+//        let record: RecordType = try memory.read()
+//        XCTAssertEqual(record, original)
+//    }
 
-    func testReadWrite16Big() throws {
-        typealias RecordType = TLVRecord <UInt16, UInt16>
-        let data = try DispatchData <Void> ("Hello world")
-        let memory = MemoryStream()
-        memory.endianness = .Big
-        let original = RecordType(type: 100, data: data)
-        try memory.write(original)
-        let record: RecordType = try memory.read()
-        XCTAssertEqual(record, original)
-    }
+    func testMultipleFrames() {
 
-    func testReadWrite32Big() throws {
-        typealias RecordType = TLVRecord <UInt32, UInt32>
-        let data = try DispatchData <Void> ("Hello world")
+        typealias RecordType = TLVRecord <UInt16, UInt16>
         let memory = MemoryStream()
-        let original = RecordType(type: 100, data: data)
-        try memory.write(original)
-        let record: RecordType = try memory.read()
-        XCTAssertEqual(record, original)
+
+        for _ in 0..<2 {
+            let data = try! DispatchData <Void> ("Hello world")
+            let original = RecordType(type: 100, data: data)
+            try! memory.write(original)
+        }
+
+        let data = DispatchData <Void> (buffer: memory.buffer)
+        print(data)
+
+        let (records, _) = try! RecordType.readMultiple(data, endianness: .Native)
+
+        print("FOO \(records.count)")
+        for record in records {
+            print(record)
+        }
+
+
+
+
     }
 
 }

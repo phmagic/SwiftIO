@@ -84,25 +84,63 @@ public extension TLVRecord {
 // MARK: -
 
 public extension TLVRecord {
-    static func read(data: DispatchData <Void>, endianness: Endianness) throws -> (TLVRecord, DispatchData <Void>) {
-        // TODO: Endianness
-        let (type, data1): (Type, DispatchData <Void>) = try data.split()
-        let (length, data2): (Length, DispatchData <Void>) = try data1.split()
-        let length2 = Int(length.fromEndianness(endianness).toIntMax())
-        let (data3, data4) = try data2.split(length2)
-        let record = TLVRecord(type: type.fromEndianness(endianness), data: data3)
-        return (record, data4)
+    static func read(data: DispatchData <Void>, endianness: Endianness) throws -> (TLVRecord?, DispatchData <Void>) {
+        // If we don't have enough data to read the TLV header exit
+        if data.length < (sizeof(Type) + sizeof(Length)) {
+//            print("Not enough data for header")
+            return (nil, data)
+        }
+        return try data.split() {
+            (type: Type, remaining: DispatchData <Void>) in
+            // Convert the type from endianness
+            let type = type.fromEndianness(endianness)
+            return try remaining.split() {
+                (length: Length, remaining: DispatchData <Void>) in
+                // Convert the length from endianness
+                let length = Int(length.fromEndianness(endianness).toIntMax())
+                // If we don't have enough remaining data to read the payload: exit.
+                if remaining.length < length {
+//                    print("Not enough data for payload (got: \(remaining.length), needed: \(length))")
+                    return (nil, data)
+                }
+                // Get the payload.
+                return try remaining.split(length) {
+                    (payload, remaining) in
+                    // Produce a record.
+                    let record = TLVRecord(type: type.fromEndianness(endianness), data: payload)
+                    return (record, remaining)
+                }
+            }
+        }
     }
 
-    static func read(data: DispatchData <Void>, endianness: Endianness) throws -> ([TLVRecord], DispatchData <Void>) {
+    static func readMultiple(data: DispatchData <Void>, endianness: Endianness) throws -> ([TLVRecord], DispatchData <Void>) {
         var records: [TLVRecord] = []
-        typealias Record = TLVRecord <UInt16, UInt16>
-        var remainingData = data
-        while remainingData.length > 0 {
-            let record: TLVRecord
-            (record, remainingData) = try read(data, endianness: endianness)
+        var data = data
+        while true {
+            print(data)
+            let (maybeRecord, remainingData) = try read(data, endianness: endianness)
+            guard let record = maybeRecord else {
+                break
+            }
             records.append(record)
+            data = remainingData
         }
-        return (records, remainingData)
+        return (records, data)
     }
 }
+
+// TODO: Move to SwiftUtilities?
+private extension DispatchData {
+    func split<T, R>(closure: (T, DispatchData) throws -> R) throws -> R{
+        let (value, remaining): (T, DispatchData) = try split()
+        return try closure(value, remaining)
+    }
+
+    func split <R> (startIndex: Int, closure: (DispatchData, DispatchData) throws -> R) throws -> R {
+        let (left, right) = try split(startIndex)
+        return try closure(left, right)
+    }
+}
+
+

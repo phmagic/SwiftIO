@@ -88,7 +88,7 @@ extension ServerViewController {
 
                     buffer = buffer + data
 
-                    let (records, remaining): ([Record], DispatchData <Void>) = try! Record.read(buffer, endianness: self.endianness)
+                    let (records, remaining) = try! Record.readMultiple(buffer, endianness: self.endianness)
                     for record in records {
 
                         dispatch_async(dispatch_get_main_queue()) {

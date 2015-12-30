@@ -58,6 +58,5 @@ func readWriteValue <T: BinaryStreamable where T: Equatable> (value: T, endianne
     try stream.write(value)
     stream.rewind()
     let newValue: T = try stream.read()
-    print(value, newValue)
     XCTAssertEqual(value, newValue)
 }
