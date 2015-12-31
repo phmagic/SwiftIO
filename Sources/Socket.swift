@@ -11,6 +11,9 @@ import Darwin
 import SwiftUtilities
 
 public class Socket {
+    
+    public typealias SocketType = Int32
+    
     public private(set) var descriptor: Int32
 
     public init(_ descriptor: Int32) {
@@ -30,6 +33,16 @@ public class Socket {
         descriptor = -1
     }
 
+    public var type: SocketType {
+        get {
+            var socketType: Int32 = 0
+            var length = socklen_t(sizeof(Int32))
+            
+            getsockopt(descriptor, SOL_SOCKET, SO_TYPE, &socketType, &length)
+            
+            return socketType
+        }
+    }
 
     public var reuse: Bool {
         get {
@@ -93,6 +106,8 @@ public extension Socket {
     }
 
     func listen(backlog: Int = 1) throws {
+        precondition(type == SOCK_STREAM, "\(__FUNCTION__) should only be used on `SOCK_STREAM` sockets")
+        
         let status = Darwin.listen(descriptor, Int32(backlog))
         if status != 0 {
             throw Errno(rawValue: errno) ?? Error.Unknown
@@ -100,13 +115,15 @@ public extension Socket {
     }
 
     func accept() throws -> (Socket, Address, UInt16) {
+        precondition(type == SOCK_STREAM, "\(__FUNCTION__) should only be used on `SOCK_STREAM` sockets")
+        
         var incoming = sockaddr()
         var incomingSize = socklen_t(sizeof(sockaddr))
         let socket = Darwin.accept(descriptor, &incoming, &incomingSize)
         if socket < 0 {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
-
+        
         let (address, port) = try Address.fromSockaddr(incoming)
         return (Socket(socket), address, port)
     }
