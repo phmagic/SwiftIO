@@ -92,6 +92,7 @@
 		45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E80CF71C18BCD5009AAD98 /* Server.swift */; };
 		45F356421C1A0D920031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F356431C1A0DAD0031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
+		93B802D41C376C3900682E6D /* Inet+UtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B802D31C376C3900682E6D /* Inet+UtilitiesTests.swift */; };
 		93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -203,6 +204,7 @@
 		45E662641C331709004737E1 /* StreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
 		45E80CF71C18BCD5009AAD98 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		45F356411C1A0D920031A299 /* BinaryStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryStreamable.swift; sourceTree = "<group>"; };
+		93B802D31C376C3900682E6D /* Inet+UtilitiesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Inet+UtilitiesTests.swift"; path = "UnitTests/Inet+UtilitiesTests.swift"; sourceTree = SOURCE_ROOT; };
 		93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPEchoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -280,6 +282,7 @@
 		45B9DE8D1B753363009FD963 /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				93B802D31C376C3900682E6D /* Inet+UtilitiesTests.swift */,
 				4589723D1B76555800251997 /* AddressTests.swift */,
 				459410461B79240A007FFBA0 /* DatagramTests.swift */,
 				45302F581C1612CD00990F60 /* TLVTests.swift */,
@@ -545,6 +548,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93B802D41C376C3900682E6D /* Inet+UtilitiesTests.swift in Sources */,
 				45302F591C1612CD00990F60 /* TLVTests.swift in Sources */,
 				459410471B79240A007FFBA0 /* DatagramTests.swift in Sources */,
 				4589723E1B76555800251997 /* AddressTests.swift in Sources */,
