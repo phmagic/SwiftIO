@@ -14,39 +14,39 @@ public class Server {
     public let address: Address
     public let port: UInt16
 
-    public var listeningSocket: Socket?
+    public var clientShouldConnect: ((Address, UInt16) -> Bool)?
+    public var clientWillConnect: (TCPChannel -> Void)?
+    public var clientDidConnect: (TCPChannel -> Void)?
+    public var clientDidDisconnect: (TCPChannel -> Void)?
+
+    public var errorHandler: (ErrorType -> Void)? = {
+        (error) in
+        log?.debug("Server got: \(error)")
+    }
+
+    public private(set) var listeningSocket: Socket?
     public var listening: Bool {
         return listeningSocket != nil
     }
 
     private var source: dispatch_source_t?
     private let queue = dispatch_queue_create("test", DISPATCH_QUEUE_SERIAL)
-
     private var connections = SafeSet <TCPChannel> ()
 
-    public var clientShouldConnect: (TCPChannel -> Bool)?
-    public var clientWillConnect: (TCPChannel -> Void)?
-    public var clientDidConnect: (TCPChannel -> Void)?
-    public var errorHandler: (ErrorType -> Void)? = {
-        (error) in
-        print(error)
-    }
-
     public init(address: Address, port: UInt16) throws {
-
         self.address = address
         self.port = port
     }
 
-    public func start() throws {
+    public func startListening() throws {
         listeningSocket = try Socket.TCP()
         guard let listeningSocket = listeningSocket else {
             throw Error.Generic("Socket() failed")
         }
         listeningSocket.reuse = true
         try listeningSocket.bind(address, port: port)
-        try listeningSocket.listen()
         listeningSocket.nonBlocking = true
+        try listeningSocket.listen()
 
         source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(listeningSocket.descriptor), 0, queue)
         guard let source = source else {
@@ -69,12 +69,21 @@ public class Server {
         dispatch_resume(source)
     }
 
-    public func stop() throws {
+    public func stopListening() throws {
         if let source = source {
             dispatch_source_cancel(source)
             self.source = nil
         }
         listeningSocket = nil
+    }
+
+    public func disconnectAllClients() throws {
+        for connection in connections {
+            connection.disconnect() {
+                (result) in
+                log?.debug("Server disconnect all: \(result)")
+            }
+        }
     }
 
     // MARK: -
@@ -84,51 +93,37 @@ public class Server {
             throw Error.Generic("Socket() failed")
         }
         let (socket, address, port) = try listeningSocket.accept()
-        let channel = try TCPChannel(address: address, port: port, socket: socket)
 
-        if let clientShouldConnect = clientShouldConnect where clientShouldConnect(channel) == false {
+        if let clientShouldConnect = clientShouldConnect where clientShouldConnect(address, port) == false {
             return
         }
-        clientWillConnect?(channel)
 
-        let oldStateChangeCallback = channel.stateChangeCallback
-        channel.stateChangeCallback = {
-            (old, new) in
-            if new == .Unconnected {
-                self.connections.remove(channel)
+        let channel = try TCPChannel(address: address, port: port, socket: socket) {
+            (channel) in
+
+            self.clientWillConnect?(channel)
+
+            let oldStateChangeCallback = channel.stateChanged
+            channel.stateChanged = {
+                [weak self] (old, new) in
+
+                guard let strong_self = self else {
+                    return
+                }
+
+                if new == .Unconnected {
+                    strong_self.connections.remove(channel)
+                    strong_self.clientDidDisconnect?(channel)
+                }
+
+                oldStateChangeCallback?(old, new)
             }
 
-            oldStateChangeCallback?(old, new)
         }
 
-        channel.triggerConnection() // TODO: This is BAD
         connections.insert(channel)
         clientDidConnect?(channel)
     }
 }
 
-
-
-
-class SafeSet <Element: AnyObject> {
-
-    var set = NSMutableSet()
-    var lock = NSLock()
-
-    func insert(value: Element) {
-        lock.with() {
-            set.addObject(value)
-        }
-    }
-
-    func remove(value: Element) {
-        lock.with() {
-            set.removeObject(value)
-        }
-    }
-
-
-}
-
-
-
+// MARK: -

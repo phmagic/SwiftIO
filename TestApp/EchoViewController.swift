@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  EchoViewController.swift
 //  TestApp
 //
 //  Created by Jonathan Wight on 8/8/15.
@@ -41,78 +41,82 @@ class EchoViewController: NSViewController {
     dynamic var connected: Bool = false
 
     dynamic var input: String?
-    dynamic var output: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        try! start()
+//        try! start()
     }
 
-    func start() throws {
+    @IBAction func start(sender: AnyObject?) {
 
-        // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
-        task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
-        sleep(1)
+        do {
+            // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
+            task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
+            sleep(1)
 
-        channel = try TCPChannel(hostname: "localhost", port: 12345)
-        channel.stateChangeCallback = {
-            (old, new) in
-            print("STATE CHANGE: \(old) -> \(new)")
-        }
-
-        channel.shouldReconnect = {
-            assert(self.channel.state == .Unconnected)
-            print("Disconnected!")
-
-            Async.main() {
-                self.updateConnected()
+            channel = try TCPChannel(hostname: "localhost", port: 12345)
+            channel.stateChanged = {
+                (old, new) in
+                log?.debug("STATE CHANGE: \(old) -> \(new)")
             }
-            return true
-        }
 
-        channel.readCallback = {
-            (result) in
-            if let error = result.error {
-                print(error)
-                return
-            }
-            if let data = result.value {
-                let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
+            channel.shouldReconnect = {
+                assert(self.channel.state.value == .Unconnected)
+                log?.debug("Disconnected!")
 
                 Async.main() {
-                    self.output = string
                     self.updateConnected()
+                }
+                return true
+            }
+
+            channel.readCallback = {
+                (result) in
+                if let error = result.error {
+                    log?.debug(error)
+                    return
+                }
+                if let data = result.value {
+                    let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
+
+                    Async.main() {
+                        log?.debug("Received: \(string)")
+                        self.updateConnected()
+                    }
+                }
+            }
+
+            channel.connect() {
+                (result) in
+
+                Async.main() {
+                    self.updateConnected()
+                }
+
+                if let error = result.error {
+                    assert(self.channel.state.value == .Unconnected)
+                    log?.debug("Connection failure: \(error)")
+                    return
+                }
+
+                let data = "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!
+                let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
+                self.channel!.write(dispatchData) {
+                    (result) in
+                    log?.debug("Write: \(result)")
                 }
             }
         }
-
-        channel.connect() {
-            (result) in
-
-            Async.main() {
-                self.updateConnected()
-            }
-
-            if let error = result.error {
-                assert(self.channel.state == .Unconnected)
-                print("Connection failure: \(error)")
-                return
-            }
-
-            let data = "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!
-            let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
-            self.channel!.write(dispatchData) {
-                (result) in
-                print("Write: ", result)
-            }
+        catch let error {
+            log?.debug("Error caught: \(error)")
         }
     }
 
     @IBAction func connect(sender:AnyObject?) {
         channel.connect() {
             (result) in
-            print("Connect \(result)")
+            log?.debug("Connect \(result)")
             self.updateConnected()
         }
     }
@@ -120,7 +124,7 @@ class EchoViewController: NSViewController {
     @IBAction func disconnect(sender:AnyObject?) {
         channel.disconnect() {
             (result) in
-            print("Disconnect \(result)")
+            log?.debug("Disconnect \(result)")
         }
     }
 
@@ -134,14 +138,14 @@ class EchoViewController: NSViewController {
         let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
         self.channel!.write(dispatchData) {
             (result) in
-            print("Write: ", result)
+            log?.debug("Write: \(result)")
         }
 
     }
 
     func updateConnected() {
-        connected = channel.state == .Connected
-        print(channel.state, connected)
+        connected = channel.state.value == .Connected
+        log?.debug("\(channel.state), \(connected)")
     }
 
 }

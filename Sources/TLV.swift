@@ -87,7 +87,6 @@ public extension TLVRecord {
     static func read(data: DispatchData <Void>, endianness: Endianness) throws -> (TLVRecord?, DispatchData <Void>) {
         // If we don't have enough data to read the TLV header exit
         if data.length < (sizeof(Type) + sizeof(Length)) {
-//            print("Not enough data for header")
             return (nil, data)
         }
         return try data.split() {
@@ -100,7 +99,6 @@ public extension TLVRecord {
                 let length = Int(length.fromEndianness(endianness).toIntMax())
                 // If we don't have enough remaining data to read the payload: exit.
                 if remaining.length < length {
-//                    print("Not enough data for payload (got: \(remaining.length), needed: \(length))")
                     return (nil, data)
                 }
                 // Get the payload.

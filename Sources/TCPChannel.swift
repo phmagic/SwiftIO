@@ -43,70 +43,56 @@ public class TCPChannel {
 
     public let address: Address
     public let port: UInt16
-    public var qos = QOS_CLASS_DEFAULT {
-        willSet {
-            precondition(state == .Unconnected, "Cannot change parameter while socket connected")
-        }
-    }
+    public private(set) var state: Atomic <State>
+
+    // MARK: Callbacks
+
     public var readCallback: (Result <DispatchData <Void>> -> Void)? {
         willSet {
-            precondition(state == .Unconnected, "Cannot change parameter while socket connected")
+            preconditionConnected()
         }
     }
 
-    /// Return true from shouldReconnect to initiate a reconnect.
+    /// Return true from shouldReconnect to initiate a reconnect. Does not make sense on a server socket.
     public var shouldReconnect: (Void -> Bool)? {
         willSet {
-            precondition(state == .Unconnected, "Cannot change parameter while socket connected")
+            preconditionConnected()
         }
     }
-
-    public var stateChangeCallback: ((State, State) -> Void)? {
+    public var stateChanged: ((State, State) -> Void)? {
         willSet {
-            precondition(state == .Unconnected, "Cannot change parameter while socket connected")
+            preconditionConnected()
         }
     }
-
     public var reconnectionDelay: NSTimeInterval = 5.0 {
         willSet {
-            precondition(state == .Unconnected, "Cannot change parameter while socket connected")
+            preconditionConnected()
         }
     }
 
-    public private(set) var queue: dispatch_queue_t!
-    public private(set) var socket: Socket!
-    public private(set) var channel: dispatch_io_t!
-    public private(set) var state: State = .Unconnected {
-        didSet {
-            stateChanged(old: oldValue, new: state)
-        }
-    }
+    // MARK: Private properties
+
+    private let queue: dispatch_queue_t
+    private let lock = NSRecursiveLock()
+    private var socket: Socket!
+    private var channel: dispatch_io_t!
     private var disconnectCallback: (Result <Void> -> Void)?
 
-    public init(address: Address, port: UInt16) throws {
+    // MARK: Initialization
+
+    public init(address: Address, port: UInt16, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
         self.address = address
         self.port = port
-    }
-
-    public convenience init(hostname: String, port: UInt16, family: ProtocolFamily? = nil) throws {
-        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
-        try self.init(address: addresses.first!, port: port)
-    }
-
-    public init(address: Address, port: UInt16, socket: Socket) throws {
-        self.address = address
-        self.port = port
-        self.socket = socket
+        let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
+        self.queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.queue", queueAttribute)
+        self.state = Atomic(State.Unconnected, lock: self.lock)
+        self.state.valueChanged = {
+            [weak self] (old, new) in
+            self?.stateChanged?(old, new)
+        }
     }
 
     public func connect(callback: Result <Void> -> Void) {
-
-        precondition(state == .Unconnected)
-
-        if queue == nil {
-            let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-            queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.receiveQueue", queueAttribute)
-        }
 
         dispatch_async(queue) {
             [weak self, address, port] in
@@ -115,19 +101,22 @@ public class TCPChannel {
                 return
             }
 
+            if strong_self.state.value != .Unconnected {
+                callback(.Failure(Error.Generic("Cannot connect channel in state \(strong_self.state.value)")))
+                return
+            }
+
             do {
-                strong_self.state = .Connecting
-
+                strong_self.state.value = .Connecting
                 let socket = try Socket.TCP()
-
                 try socket.connect(address, port: port)
-
                 strong_self.socket = socket
-                strong_self.state = .Connected
-
+                strong_self.state.value = .Connected
+                try strong_self.createStream()
                 callback(.Success())
             }
             catch let error {
+                strong_self.state.value = .Unconnected
                 callback(.Failure(error))
             }
         }
@@ -136,11 +125,17 @@ public class TCPChannel {
     public func disconnect(callback: Result <Void> -> Void) {
         dispatch_async(queue) {
             [weak self] in
+
             guard let strong_self = self else {
                 return
             }
-            precondition(strong_self.state != .Unconnected)
-            strong_self.state = .Disconnecting
+
+            if strong_self.state.value == .Unconnected {
+                callback(.Failure(Error.Generic("Cannot disconnect channel in state \(strong_self.state.value)")))
+                return
+            }
+
+            strong_self.state.value = .Disconnecting
             strong_self.disconnectCallback = callback
             dispatch_io_close(strong_self.channel, DISPATCH_IO_STOP)
         }
@@ -149,9 +144,9 @@ public class TCPChannel {
     // MARK: -
 
     public func write(data: DispatchData <Void>, callback: Result <Void> -> Void) {
-        precondition(state == .Connected)
         dispatch_io_write(channel, 0, data.data, queue) {
             (done, data, error) in
+
             guard error == 0 else {
                 callback(Result.Failure(Errno(rawValue: error)!))
                 return
@@ -160,45 +155,21 @@ public class TCPChannel {
         }
     }
 
-// mark: -
+    private func createStream() throws {
+        channel = dispatch_io_create(DISPATCH_IO_STREAM, socket.descriptor, queue) {
+            [weak self] (error) in
 
-    private func stateChanged(old old: State, new: State) {
-        stateChangeCallback?(old, new)
-
-        switch (old, new) {
-            case (_, .Connected):
-
-                if queue == nil {
-                    let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-                    queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.receiveQueue", queueAttribute)
-                }
-
-                let channel = dispatch_io_create(DISPATCH_IO_STREAM, socket.descriptor, queue) {
-                    [weak self] (error) in
-
-                    guard let strong_self = self else {
-                        return
-                    }
-
-                    tryElseFatalError() {
-                        try strong_self.handleDisconnect()
-                    }
-                }
-                dispatch_io_set_low_water(channel, 0)
-                self.channel = channel
-                startReading()
-            default:
-                break
+            guard let strong_self = self else {
+                return
+            }
+            tryElseFatalError() {
+                try strong_self.handleDisconnect()
+            }
         }
-    }
-
-    /// Callback might be called 0 or more times.
-    private func startReading() {
-
-        precondition(state == .Connected)
-
         assert(channel != nil)
-        assert(queue != nil)
+        dispatch_io_set_low_water(channel, 0)
+
+        precondition(state.value == .Connected)
 
         dispatch_io_read(channel, 0, -1 /* Int(truncatingBitPattern:SIZE_MAX) */, queue) {
             [weak self] (done, data, error) in
@@ -226,11 +197,11 @@ public class TCPChannel {
     }
 
     private func handleDisconnect() throws {
-        let remoteDisconnect = (state != .Disconnecting)
+        let remoteDisconnect = (state.value != .Disconnecting)
 
         try socket.close()
 
-        state = .Unconnected
+        state.value = .Unconnected
 
         if let shouldReconnect = shouldReconnect where remoteDisconnect == true{
             let reconnectFlag = shouldReconnect()
@@ -260,9 +231,29 @@ public class TCPChannel {
         disconnectCallback = nil
     }
 
-    // TODO: Hack
-    public func triggerConnection() {
-        // TODO: Error check
-        self.state = .Connected
+    private func preconditionConnected() {
+        precondition(state.value == .Unconnected, "Cannot change parameter while socket connected")
     }
 }
+
+// MARK: -
+
+extension TCPChannel {
+
+    public convenience init(hostname: String, port: UInt16, family: ProtocolFamily? = nil, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
+        try self.init(address: addresses.first!, port: port)
+    }
+
+    /// Create a TCPChannel from a pre-existing socket. The setup closure is called after the channel is created but before the state has changed to `Connecting`. This gives consumers a chance to configure the channel before it is fully connected.
+    public convenience init(address: Address, port: UInt16, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, setup: (TCPChannel -> Void)? = nil) throws {
+        try self.init(address: address, port: port)
+        self.socket = socket
+        setup?(self)
+        state.value = .Connected
+        try createStream()
+    }
+
+}
+
+

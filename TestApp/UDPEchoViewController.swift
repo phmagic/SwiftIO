@@ -14,35 +14,45 @@ class UDPEchoViewController: NSViewController {
     
     var udpServer: UDPChannel!
     var udpClient: UDPChannel!
-    
-    let remoteServer = try! Address(address: "localhost")
+    var family: ProtocolFamily?
+    let port: UInt16 = 20000
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        // TODO: On my iMac INET6 breaks and seems to be the default when resolving local host
+        family = .INET
+
         // server
-        udpServer = try! UDPChannel(hostname: "localhost", port: 10000) { (dataGram) in
-            print("UDPEcho: Server received - \(dataGram)")
-            print("UDPEcho: Echo'ing to client")
-            try! self.udpServer.send(dataGram.data, address: dataGram.from.0, port: dataGram.from.1, writeHandler: nil)
+        udpServer = try! UDPChannel(hostname: "localhost", port: port, family: family) {
+            (datagram) in
+            log?.debug("UDPEcho: Server received - \(datagram)")
+            try! self.udpServer.send(datagram.data, address: datagram.from.0, port: datagram.from.1, writeHandler: nil)
         }
 
-        // spin up server and its queues
-        try! udpServer.resume()
-        
         // client
-        udpClient = try! UDPChannel(hostname: "localhost", port: 59324) { (dataGram) in
-            print("UDPEcho: Client received - \(dataGram)")
+        // TODO: UDPChannels should not need an address, just to write.
+        udpClient = try! UDPChannel(hostname: "localhost", port: port + 1, family: family) {
+            (datagram) in
+            log?.debug("UDPEcho: Client received - \(datagram)")
         }
-        
-        // spin up client and its queues
         try! udpClient.resume()
     }
 
-    @IBAction func pingServer(sender: AnyObject) {
-        let data = "0xDEADBEEF".dataUsingEncoding(NSUTF8StringEncoding)
-        try! udpClient.send(data!, address: remoteServer, port: 10000, writeHandler: nil)
+    @IBAction func startStopServer(sender: SwitchControl) {
+        if sender.on {
+            try! udpServer.resume()
+        }
+        else {
+            try! udpServer.cancel()
+        }
     }
-    
+
+    @IBAction func pingServer(sender: AnyObject) {
+        let data = "0xDEADBEEF".dataUsingEncoding(NSUTF8StringEncoding)!
+        let remoteServer = try! Address(address: "localhost", family: family)
+        try! udpClient.send(data, address: remoteServer, port: port)
+    }
+
+
 }

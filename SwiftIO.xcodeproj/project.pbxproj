@@ -36,8 +36,8 @@
 		45302F561C16120A00990F60 /* TLV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45302F551C16120A00990F60 /* TLV.swift */; };
 		45302F571C16120A00990F60 /* TLV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45302F551C16120A00990F60 /* TLV.swift */; };
 		45302F591C1612CD00990F60 /* TLVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45302F581C1612CD00990F60 /* TLVTests.swift */; };
-		457847151C178D8B00EF9B35 /* TLVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457847141C178D8B00EF9B35 /* TLVViewController.swift */; };
-		457847171C178E5500EF9B35 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457847161C178E5500EF9B35 /* Utilities.swift */; };
+		453329731C41664700D9C80C /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453329721C41664700D9C80C /* LogViewController.swift */; };
+		457847171C178E5500EF9B35 /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457847161C178E5500EF9B35 /* Scratch.swift */; };
 		4578F9181BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; };
 		4578F9191BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; };
 		457E99681BB9C88D00466389 /* SwiftIOSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 457E99671BB9C88D00466389 /* SwiftIOSupport.m */; };
@@ -52,11 +52,14 @@
 		4594104D1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */; };
 		4596D3D11B7A8496009318E6 /* RandomAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596D3D01B7A8496009318E6 /* RandomAccess.swift */; };
 		4596D3D21B7A8496009318E6 /* RandomAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596D3D01B7A8496009318E6 /* RandomAccess.swift */; };
+		45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45982C701C421AB400FB09D9 /* SwitchControl.swift */; };
 		45A0DB3F1C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A0DB3E1C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift */; };
 		45A0DB401C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A0DB3E1C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift */; };
 		45B822171BBB39530060E57D /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B822161BBB39530060E57D /* Logging.swift */; };
 		45B822181BBB39530060E57D /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B822161BBB39530060E57D /* Logging.swift */; };
 		45B9DE911B753363009FD963 /* SwiftIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; };
+		45BCF0E41C42D80C0002C5CD /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BCF0E31C42D80C0002C5CD /* Utilities.swift */; };
+		45BCF0E51C42D82C0002C5CD /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BCF0E31C42D80C0002C5CD /* Utilities.swift */; };
 		45C377B81B78295900E2153E /* Datagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C377B71B78295900E2153E /* Datagram.swift */; };
 		45C377B91B78295900E2153E /* Datagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C377B71B78295900E2153E /* Datagram.swift */; };
 		45C704721B75321800D6A60B /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
@@ -168,8 +171,8 @@
 		452E96F01B3CA0E2002269CD /* BinaryOutputStreams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryOutputStreams.swift; sourceTree = "<group>"; };
 		45302F551C16120A00990F60 /* TLV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLV.swift; sourceTree = "<group>"; };
 		45302F581C1612CD00990F60 /* TLVTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVTests.swift; sourceTree = "<group>"; };
-		457847141C178D8B00EF9B35 /* TLVViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVViewController.swift; sourceTree = "<group>"; };
-		457847161C178E5500EF9B35 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		453329721C41664700D9C80C /* LogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		457847161C178E5500EF9B35 /* Scratch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
 		4578F9171BB2289F00C90DA6 /* NullStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullStream.swift; sourceTree = "<group>"; };
 		457E99671BB9C88D00466389 /* SwiftIOSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftIOSupport.m; sourceTree = "<group>"; };
 		457E996A1BB9C89600466389 /* SwiftIOSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftIOSupport.h; sourceTree = "<group>"; };
@@ -178,10 +181,13 @@
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
 		4594104B1B794E0C007FFBA0 /* NetworkEndian.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkEndian.swift; sourceTree = "<group>"; };
 		4596D3D01B7A8496009318E6 /* RandomAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomAccess.swift; sourceTree = "<group>"; };
+		45982C701C421AB400FB09D9 /* SwitchControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
+		45982C721C421EB600FB09D9 /* TestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TestApp.entitlements; sourceTree = "<group>"; };
 		45A0DB3E1C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicTypes+BinaryInputStreamable.swift"; sourceTree = "<group>"; };
 		45B822161BBB39530060E57D /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		45B9DE8C1B753363009FD963 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B9DE901B753363009FD963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45BCF0E31C42D80C0002C5CD /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		45C377B71B78295900E2153E /* Datagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datagram.swift; sourceTree = "<group>"; };
 		45CE2A0D1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicTypes+BinaryOutputStreamable.swift"; sourceTree = "<group>"; };
 		45D3F3041BBC8FEA00AF1690 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -295,13 +301,15 @@
 		45DD2DAC1B76AD850002994A /* TestApp */ = {
 			isa = PBXGroup;
 			children = (
+				45982C721C421EB600FB09D9 /* TestApp.entitlements */,
 				45DD2DAD1B76AD850002994A /* AppDelegate.swift */,
 				45DD2DAF1B76AD850002994A /* EchoViewController.swift */,
-				457847141C178D8B00EF9B35 /* TLVViewController.swift */,
 				93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */,
 				45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */,
+				453329721C41664700D9C80C /* LogViewController.swift */,
 				45E80CF71C18BCD5009AAD98 /* Server.swift */,
-				457847161C178E5500EF9B35 /* Utilities.swift */,
+				45982C701C421AB400FB09D9 /* SwitchControl.swift */,
+				457847161C178E5500EF9B35 /* Scratch.swift */,
 				45DD2DB11B76AD850002994A /* Assets.xcassets */,
 				45DD2DB31B76AD850002994A /* Main.storyboard */,
 				45DD2DB61B76AD850002994A /* Info.plist */,
@@ -359,6 +367,7 @@
 				45302F551C16120A00990F60 /* TLV.swift */,
 				45B822161BBB39530060E57D /* Logging.swift */,
 				45005E9A1C18CFC80077B318 /* Socket.swift */,
+				45BCF0E31C42D80C0002C5CD /* Utilities.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -479,6 +488,11 @@
 					};
 					45DD2DAA1B76AD850002994A = {
 						CreatedOnToolsVersion = 7.0;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
 					};
 					45DEC6AA1B0E8FEE00B7C234 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -561,12 +575,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */,
+				45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
 				45DD2DAE1B76AD850002994A /* AppDelegate.swift in Sources */,
+				453329731C41664700D9C80C /* LogViewController.swift in Sources */,
 				93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */,
-				457847171C178E5500EF9B35 /* Utilities.swift in Sources */,
+				457847171C178E5500EF9B35 /* Scratch.swift in Sources */,
 				45DAC1431C17BF2E0013C4D6 /* ServerViewController.swift in Sources */,
-				457847151C178D8B00EF9B35 /* TLVViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,6 +601,7 @@
 				45DEC6CC1B0E94CE00B7C234 /* UDPChannel.swift in Sources */,
 				45B822181BBB39530060E57D /* Logging.swift in Sources */,
 				45DD2DA51B7670490002994A /* Inet.swift in Sources */,
+				45BCF0E51C42D82C0002C5CD /* Utilities.swift in Sources */,
 				452E96EF1B3C9EC6002269CD /* BinaryDecodable.swift in Sources */,
 				45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */,
 				45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */,
@@ -615,6 +631,7 @@
 				452E96E61B3C8F1B002269CD /* BinaryInputStreams.swift in Sources */,
 				45B822171BBB39530060E57D /* Logging.swift in Sources */,
 				45E240231B0E8A7A0001F5B9 /* UDPChannel.swift in Sources */,
+				45BCF0E41C42D80C0002C5CD /* Utilities.swift in Sources */,
 				452E96EE1B3C9EC6002269CD /* BinaryDecodable.swift in Sources */,
 				45E289781B3C8E7300EDBBAE /* MemoryStream.swift in Sources */,
 				45E289761B3C8E6D00EDBBAE /* FileStream.swift in Sources */,

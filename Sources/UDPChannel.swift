@@ -68,7 +68,7 @@ public class UDPChannel {
     // MARK: - Actions
     
     public func resume() throws {
-        debugLog?("Resuming")
+        log?.debug("Resuming")
         
         do {
             socket = try Socket.UDP()
@@ -98,7 +98,7 @@ public class UDPChannel {
                 return
             }
             
-            debugLog?("Cancel handler")
+            log?.debug("Cancel handler")
             
             strong_self.cleanup()
             strong_self.resumed = false
@@ -129,7 +129,7 @@ public class UDPChannel {
                 
                 strong_self.resumed = true
                 
-                debugLog?("Listening on \(strong_self.address)")
+                log?.debug("Listening on \(strong_self.address)")
             }
             catch let error {
                 strong_self.errorHandler?(error)
@@ -152,9 +152,9 @@ public class UDPChannel {
         }
     }
     
-    public func send(data: NSData, address: Address! = nil, port: UInt16, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: NSData, address: Address? = nil, port: UInt16? = nil, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
-        try send(data, address: address, port: port, writeHandler: writeHandler)
+        try send(data, address: address ?? self.address, port: port ?? self.port, writeHandler: writeHandler)
     }
     
     public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
@@ -168,7 +168,7 @@ public class UDPChannel {
                 return
             }
             
-            debugLog?("Send")
+            log?.debug("Send")
             
             let address: Address = address ?? strong_self.address
             var addr = address.to_sockaddr(port: port)

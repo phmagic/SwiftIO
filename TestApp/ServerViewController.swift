@@ -21,58 +21,25 @@ class ServerViewController: NSViewController {
     var clientChannel: TCPChannel!
     var count: Int = 0
 
-    dynamic var log: String = ""
-
+    dynamic var reconnect: Bool = false
+    dynamic var state: String? = nil
     dynamic var connected: Bool = false
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        try! startServer()
-        try! startClient()
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        do {
+            try createServer()
+            try createClient()
+        }
+        catch let error {
+            fatalError("Error: \(error)")
+        }
     }
-
 }
 
 extension ServerViewController {
 
-    @IBAction func connect(sender: AnyObject?) {
-        clientChannel.connect() {
-            (result) in
-            self.log_debug(result)
-        }
-    }
-
-    @IBAction func disconnect(sender: AnyObject?) {
-        clientChannel.disconnect() {
-            (result) in
-            self.log_debug(result)
-        }
-    }
-
-    @IBAction func ping(sender: AnyObject?) {
-        let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world: \(count++)"))
-        let data = try! record.toDispatchData(self.endianness)
-        self.clientChannel!.write(data) {
-            (result) in
-            self.log_debug(result)
-        }
-    }
-
-}
-
-
-extension String {
-    init(data: DispatchData <Void>, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
-        let nsdata = data.toNSData()
-        self = NSString(data: nsdata, encoding: encoding) as! String
-    }
-
-}
-
-extension ServerViewController {
-
-    func startServer() throws {
+    func createServer() throws {
         let address = try Address(address: "localhost", `protocol`: InetProtocol.TCP, family: ProtocolFamily.INET)
         server = try Server(address: address, port: port)
 
@@ -80,35 +47,37 @@ extension ServerViewController {
             (client) in
 
             var buffer = DispatchData <Void> ()
-
             client.readCallback = {
                 (result) in
 
+                log?.debug("Server Got data")
+
                 if let data = result.value {
-
                     buffer = buffer + data
-
                     let (records, remaining) = try! Record.readMultiple(buffer, endianness: self.endianness)
                     for record in records {
-
                         dispatch_async(dispatch_get_main_queue()) {
                             let string = try! String(data: record.data)
-                            self.log_debug(string)
+                            SwiftIO.log?.debug("Server received: \(string)")
                         }
                     }
                     buffer = remaining
                 }
             }
         }
-        try self.server.start()
     }
 
-    func startClient() throws {
-
+    func createClient() throws {
         clientChannel = try TCPChannel(hostname: "localhost", port: port)
-
-        clientChannel.stateChangeCallback = {
+        clientChannel.stateChanged = {
             (old, new) in
+
+            log?.debug("State changed: \(old) -> \(new)")
+
+            Async.main() {
+                self.state = String(new)
+            }
+
 
             switch (old, new) {
                 case (_, .Unconnected):
@@ -127,19 +96,50 @@ extension ServerViewController {
         clientChannel.readCallback = {
             (result) in
             if let error = result.error {
-                print(error)
+                log?.debug("Client read callback: \(error)")
                 return
             }
 //            if let data = result.value {
 //            }
         }
 
+        clientChannel.reconnectionDelay = 1.0
+        clientChannel.shouldReconnect = {
+            return self.reconnect
+        }
+
+
+    }
+
+}
+
+
+extension ServerViewController {
+
+    @IBAction func startStopServer(sender: SwitchControl) {
+        if sender.on {
+            log?.debug("Server start listening")
+            try! server.startListening()
+        }
+        else {
+            log?.debug("Server stop listening")
+            try! server.stopListening()
+        }
+    }
+
+    @IBAction func disconnectAll(sender: AnyObject?) {
+        try! server.disconnectAllClients()
+    }
+
+
+    @IBAction func connect(sender: AnyObject?) {
+
         clientChannel.connect() {
             (result) in
 
             if let error = result.error {
-                assert(self.clientChannel.state == .Unconnected)
-                self.log_debug(error)
+                assert(self.clientChannel.state.value == .Unconnected)
+                SwiftIO.log?.debug("Client connect callback: \(error)")
                 return
             }
 
@@ -148,15 +148,35 @@ extension ServerViewController {
                 let data = try! record.toDispatchData(self.endianness)
                 self.clientChannel!.write(data) {
                     (result) in
-                    self.log_debug(result)
+                    SwiftIO.log?.debug("Client data writer: \(result)")
                 }
             }
         }
     }
 
-    func log_debug(value: Any) {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.log += String(value) + "\n"
+    @IBAction func disconnect(sender: AnyObject?) {
+        clientChannel.disconnect() {
+            (result) in
+            SwiftIO.log?.debug("Client disconnect callback: \(result)")
         }
     }
+
+    @IBAction func ping(sender: AnyObject?) {
+        let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world: \(count++)"))
+        let data = try! record.toDispatchData(self.endianness)
+        self.clientChannel!.write(data) {
+            (result) in
+            SwiftIO.log?.debug("Client wrote data: \(result)")
+        }
+    }
+
 }
+
+
+extension String {
+    init(data: DispatchData <Void>, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
+        let nsdata = data.toNSData()
+        self = NSString(data: nsdata, encoding: encoding) as! String
+    }
+}
+

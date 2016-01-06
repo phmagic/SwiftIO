@@ -8,19 +8,27 @@
 
 import Foundation
 
-public var debugLog: (AnyObject? -> Void)? = nil
+public var logHandler: (Any? -> Void)? = nil
+
+public class Logger {
+    public func debug(subject: Any?) {
+        logHandler?(subject)
+    }
+}
+
+public let log: Logger? = Logger()
 
 internal func loggingReadHandler(datagram: Datagram) {
-    debugLog?("READ")
+    log?.debug(String(datagram))
 }
 
 internal func loggingErrorHandler(error: ErrorType) {
-    debugLog?("ERROR: \(error)")
+    log?.debug("ERROR: \(error)")
 }
 
 internal func loggingWriteHandler(success: Bool, error: ErrorType?) {
     if success {
-        debugLog?("WRITE")
+        log?.debug("WRITE")
     }
     else {
         loggingErrorHandler(error!)
