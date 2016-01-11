@@ -24,7 +24,7 @@ class UDPEchoViewController: NSViewController {
         family = .INET
 
         // server
-        udpServer = try! UDPChannel(hostname: "localhost", port: port, family: family) {
+        udpServer = try! UDPChannel(label: "example.udp.server", hostname: "localhost", port: port, family: family) {
             (datagram) in
             log?.debug("UDPEcho: Server received - \(datagram)")
             try! self.udpServer.send(datagram.data, address: datagram.from.0, port: datagram.from.1, writeHandler: nil)
@@ -32,19 +32,20 @@ class UDPEchoViewController: NSViewController {
 
         // client
         // TODO: UDPChannels should not need an address, just to write.
-        udpClient = try! UDPChannel(hostname: "localhost", port: port + 1, family: family) {
+        udpClient = try! UDPChannel(label: "example.udp.client", hostname: "localhost", port: port + 1, family: family) {
             (datagram) in
             log?.debug("UDPEcho: Client received - \(datagram)")
         }
-        try! udpClient.resume()
     }
 
     @IBAction func startStopServer(sender: SwitchControl) {
         if sender.on {
             try! udpServer.resume()
+            try! udpClient.resume()
         }
         else {
             try! udpServer.cancel()
+            try! udpClient.cancel()
         }
     }
 

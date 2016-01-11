@@ -41,6 +41,7 @@ public class TCPChannel {
         case Disconnecting
     }
 
+    public let label: String?
     public let address: Address
     public let port: UInt16
     public private(set) var state: Atomic <State>
@@ -80,7 +81,8 @@ public class TCPChannel {
 
     // MARK: Initialization
 
-    public init(address: Address, port: UInt16, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+    public init(label: String? = nil, address: Address, port: UInt16, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+        self.label = label
         self.address = address
         self.port = port
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
@@ -240,14 +242,14 @@ public class TCPChannel {
 
 extension TCPChannel {
 
-    public convenience init(hostname: String, port: UInt16, family: ProtocolFamily? = nil, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+    public convenience init(label: String? = nil, hostname: String, port: UInt16, family: ProtocolFamily? = nil, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
         let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
-        try self.init(address: addresses.first!, port: port)
+        try self.init(label: label, address: addresses.first!, port: port)
     }
 
     /// Create a TCPChannel from a pre-existing socket. The setup closure is called after the channel is created but before the state has changed to `Connecting`. This gives consumers a chance to configure the channel before it is fully connected.
-    public convenience init(address: Address, port: UInt16, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, setup: (TCPChannel -> Void)? = nil) throws {
-        try self.init(address: address, port: port)
+    public convenience init(label: String? = nil, address: Address, port: UInt16, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, setup: (TCPChannel -> Void)? = nil) throws {
+        try self.init(label: label, address: address, port: port)
         self.socket = socket
         setup?(self)
         state.value = .Connected

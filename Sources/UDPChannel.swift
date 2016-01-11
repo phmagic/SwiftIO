@@ -36,7 +36,9 @@ import SwiftUtilities
  *  A GCD based UDP listener.
  */
 public class UDPChannel {
-    
+
+    public let label: String?
+
     public let address: Address
     public let port: UInt16
     public var qos = QOS_CLASS_DEFAULT
@@ -52,7 +54,8 @@ public class UDPChannel {
     
     // MARK: - Initialization
     
-    public init(address: Address, port: UInt16, readHandler: (Datagram -> Void)? = nil) throws {
+    public init(label: String? = nil, address: Address, port: UInt16, readHandler: (Datagram -> Void)? = nil) throws {
+        self.label = label
         self.address = address
         self.port = port
         if let readHandler = readHandler {
@@ -60,15 +63,15 @@ public class UDPChannel {
         }
     }
     
-    public convenience init(hostname: String = "0.0.0.0", port: UInt16, family: ProtocolFamily? = nil, readHandler: (Datagram -> Void)? = nil) throws {
+    public convenience init(label: String? = nil, hostname: String = "0.0.0.0", port: UInt16, family: ProtocolFamily? = nil, readHandler: (Datagram -> Void)? = nil) throws {
         let addresses: [Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family)
-        try self.init(address: addresses[0], port: port, readHandler: readHandler)
+        try self.init(label: label, address: addresses[0], port: port, readHandler: readHandler)
     }
     
     // MARK: - Actions
-    
+
     public func resume() throws {
-        log?.debug("Resuming")
+        log?.debug("\(self): resume.")
         
         do {
             socket = try Socket.UDP()
@@ -98,7 +101,7 @@ public class UDPChannel {
                 return
             }
             
-            log?.debug("Cancel handler")
+            log?.debug("\(strong_self): Cancel handler.")
             
             strong_self.cleanup()
             strong_self.resumed = false
@@ -129,7 +132,7 @@ public class UDPChannel {
                 
                 strong_self.resumed = true
                 
-                log?.debug("Listening on \(strong_self.address)")
+                log?.debug("\(strong_self): Listening on \(strong_self.address)")
             }
             catch let error {
                 strong_self.errorHandler?(error)
@@ -168,7 +171,7 @@ public class UDPChannel {
                 return
             }
             
-            log?.debug("Send")
+            log?.debug("\(strong_self): Send")
             
             let address: Address = address ?? strong_self.address
             var addr = address.to_sockaddr(port: port)
@@ -190,8 +193,22 @@ public class UDPChannel {
             }
         }
     }
-    
-    internal func read() throws {
+}
+
+// MARK: -
+
+extension UDPChannel: CustomStringConvertible {
+    public var description: String {
+        return "\(self.dynamicType)(\"\(label ?? "")\")"
+    }
+}
+
+
+// MARK: -
+
+private extension UDPChannel {
+
+    func read() throws {
         
         let data: NSMutableData! = NSMutableData(length: 4096)
         
@@ -224,7 +241,7 @@ public class UDPChannel {
     
     // MARK: - GCD
     
-    private func createReceiveQueue(withQueueAttribute attribute: dispatch_queue_attr_t!) throws {
+    func createReceiveQueue(withQueueAttribute attribute: dispatch_queue_attr_t!) throws {
         receiveQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", attribute)
         guard receiveQueue != nil else {
             cleanup()
@@ -232,7 +249,7 @@ public class UDPChannel {
         }
     }
     
-    private func createSendQueue(withQueueAttribute attribute: dispatch_queue_attr_t!) throws {
+    func createSendQueue(withQueueAttribute attribute: dispatch_queue_attr_t!) throws {
         sendQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.sendQueue", attribute)
         guard sendQueue != nil else {
             cleanup()
@@ -242,7 +259,7 @@ public class UDPChannel {
     
     // MARK: - Cleanup
     
-    internal func cleanup() {
+    func cleanup() {
         defer {
             socket = nil
             receiveQueue = nil
