@@ -142,6 +142,40 @@ public class TCPChannel {
         }
     }
 
+    var retrier: Retrier? = nil
+    var retryOptions = Retrier.Options()
+
+    public func connect(retryDelay retryDelay: NSTimeInterval, callback: Result <Void> -> Void) {
+        var options = Retrier.Options()
+        options.delay = retryDelay
+        connect(retryOptions: options, callback: callback)
+    }
+
+    private func connect(retryOptions retryOptions: Retrier.Options, callback: Result <Void> -> Void) {
+        self.retryOptions = retryOptions
+        let retrier = Retrier(options: retryOptions) {
+            (retryCallback) in
+            self.connect() {
+                (result: Result <Void>) -> Void in
+
+                if let error = result.error {
+                    if retryCallback(.Failure(error)) == false {
+                        callback(result)
+                        self.retrier = nil
+                    }
+                }
+                else {
+                    retryCallback(.Success())
+                    callback(result)
+                    self.retrier = nil
+                }
+            }
+        }
+        self.retrier = retrier
+        retrier.resume()
+    }
+
+
     // MARK: -
 
     public func write(data: DispatchData <Void>, callback: Result <Void> -> Void) {
@@ -226,7 +260,7 @@ public class TCPChannel {
     }
 
     private func reconnect() {
-        self.connect() {
+        connect(retryOptions: retryOptions) {
             [weak self] (result) in
 
             guard let strong_self = self else {
@@ -234,7 +268,6 @@ public class TCPChannel {
             }
 
             if result.isFailure {
-                strong_self.shouldReconnect?()
                 strong_self.disconnectCallback?(result)
                 strong_self.disconnectCallback = nil
             }

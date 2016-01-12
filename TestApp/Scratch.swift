@@ -162,50 +162,50 @@ struct ObjectEnumeratorGenerator <Element: AnyObject>: GeneratorType {
 }
 
 // MARK: -
-
-extension TCPChannel {
-
-    static private var key = 1
-
-    func connect(retryDelay retryDelay: NSTimeInterval, callback: Result <Void> -> Void) {
-        var options = Retrier.Options()
-        options.delay = retryDelay
-        connect(retryOptions: options, callback: callback)
-    }
-
-    func connect(retryOptions retryOptions: Retrier.Options, callback: Result <Void> -> Void) {
-        let retrier = Retrier(options: retryOptions) {
-            (retryCallback) in
-            self.connect() {
-                (result: Result <Void>) -> Void in
-
-                if let error = result.error {
-                    if retryCallback(.Failure(error)) == false {
-                        callback(result)
-                        self.retrier = nil
-                    }
-                }
-                else {
-                    retryCallback(.Success())
-                    callback(result)
-                    self.retrier = nil
-                }
-            }
-        }
-        self.retrier = retrier
-        retrier.resume()
-    }
-
-    var retrier: Retrier? {
-        get {
-            return objc_getAssociatedObject(self, &TCPChannel.key) as? Retrier
-        }
-        set {
-            objc_setAssociatedObject(self, &TCPChannel.key, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-
-}
-
-
-
+//
+//extension TCPChannel {
+//
+//    static private var key = 1
+//
+//    func connect(retryDelay retryDelay: NSTimeInterval, callback: Result <Void> -> Void) {
+//        var options = Retrier.Options()
+//        options.delay = retryDelay
+//        connect(retryOptions: options, callback: callback)
+//    }
+//
+//    func connect(retryOptions retryOptions: Retrier.Options, callback: Result <Void> -> Void) {
+//        let retrier = Retrier(options: retryOptions) {
+//            (retryCallback) in
+//            self.connect() {
+//                (result: Result <Void>) -> Void in
+//
+//                if let error = result.error {
+//                    if retryCallback(.Failure(error)) == false {
+//                        callback(result)
+//                        self.retrier = nil
+//                    }
+//                }
+//                else {
+//                    retryCallback(.Success())
+//                    callback(result)
+//                    self.retrier = nil
+//                }
+//            }
+//        }
+//        self.retrier = retrier
+//        retrier.resume()
+//    }
+//
+//    var retrier: Retrier? {
+//        get {
+//            return objc_getAssociatedObject(self, &TCPChannel.key) as? Retrier
+//        }
+//        set {
+//            objc_setAssociatedObject(self, &TCPChannel.key, newValue, .OBJC_ASSOCIATION_RETAIN)
+//        }
+//    }
+//
+//}
+//
+//
+//
