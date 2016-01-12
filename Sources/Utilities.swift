@@ -13,27 +13,186 @@ public class Atomic <T> {
     public var value: T {
         get {
             return lock.with() {
-                return internalValue
+                return _value
             }
         }
         set {
-            var oldValue: T?
-            lock.with() {
-                oldValue = internalValue
-                internalValue = newValue
+            let valueChanged: (Void -> Void)? = lock.with() {
+                let oldValue = _value
+                _value = newValue
+                guard let valueChanged = _valueChanged else {
+                    return nil
+                }
+                return {
+                    valueChanged(oldValue, newValue)
+                }
             }
-            valueChanged?(oldValue!, newValue)
+            valueChanged?()
         }
     }
-    private var internalValue: T
-    private var lock: Locking
-    public var valueChanged: ((T, T) -> Void)?
 
-    public init(_ value: T, lock: Locking = NSLock(), valueChanged: ((T, T) -> Void)? = nil) {
-        self.internalValue = value
-        self.lock = lock
-        self.valueChanged = valueChanged
+    /// Called whenever value changes. NOT called during init.
+    public var valueChanged: ((T, T) -> Void)? {
+        get {
+            return lock.with() {
+                return _valueChanged
+            }
+        }
+        set {
+            lock.with() {
+                _valueChanged = newValue
+            }
+        }
     }
+
+    private var lock: Locking
+
+    private var _value: T
+    private var _valueChanged: ((T, T) -> Void)?
+
+    /** - Parameters:
+            - Parameter value: Initial value.
+            - Parameter lock: Instance conforming to `Locking`. Used to protect access to `value`. The same lock can be shared between multiple Atomic instances.
+            - Parameter valueChanged: Closure called whenever value is changed
+    */
+    public init(_ value: T, lock: Locking = NSLock(), valueChanged: ((T, T) -> Void)? = nil) {
+        self._value = value
+        self.lock = lock
+        self._valueChanged = valueChanged
+    }
+
 }
 
 
+public extension Atomic {
+
+    /// Perform a locking transaction on the instance.
+//    func with <R> (@noescape closure: T -> R) -> R {
+//        return lock.with() {
+//            return closure(value)
+//        }
+//    }
+
+    /// Perform a locking transaction on the instance. This version allows you to modify the value.
+    func with <R> (@noescape closure: inout T -> R) -> R {
+        return lock.with() {
+            return closure(&_value)
+        }
+    }
+
+
+}
+
+// MARK: -
+
+
+/// Helper to retry closures ('retryClosure') with truncated exponential backoff. See: https://en.wikipedia.org/wiki/Exponential_backoff
+public class Retrier {
+
+    // MARK:  Public Properties
+
+    /// Configuration options for Retrier. Bundled into struct to add reuse.
+    public struct Options {
+        public var delay: NSTimeInterval = 0.25
+        public var multiplier: Double = 2
+        public var maximumDelay: NSTimeInterval = 8
+        public var maximumAttempts: Int? = nil
+
+        public init() {
+        }
+    }
+    public let options: Options
+
+    /// Pass in a Result describing success or failure. Return true if `Retrier` will retry.
+    public typealias RetryStatus = Result <Void> -> Bool
+
+    /// This is the action closure that is called repeated until it succeeds or a (optional) maximum attempts is exceeded. This closure is passed a `RetryStatus` closure that is used to pass success or failure back to `Retrier`.
+    public let retryClosure: RetryStatus -> Void
+
+    // MARK: Internal/Private Properties
+
+    private let queue = dispatch_queue_create("retrier", DISPATCH_QUEUE_SERIAL)
+    private var attempts = Atomic(0)
+    private var running = Atomic(false)
+
+    // MARK: Public methods
+
+    /// Initialisation. `Retrier` is created in an un-resumed state, you should call `resume()`.
+    public init(options: Options, retryClosure: RetryStatus -> Void) {
+        self.options = options
+        self.retryClosure = retryClosure
+    }
+
+    /// Resume a `Retrier`
+    public func resume() {
+        running.with() {
+            (inout running: Bool) in
+            if running == false {
+                running = true
+                attempt()
+            }
+        }
+    }
+
+    /// Cancel a `retrier`. This will not cancel `retryClosure` already running, but will prevent subsequent retry attempts.
+    public func cancel() {
+        running.with() {
+            (inout running: Bool) in
+            if running == true {
+                running = false
+            }
+        }
+    }
+
+    // Computer the next delay before retrying `retryClosure`.
+    public func delayForAttempt(attempt: Int) -> NSTimeInterval {
+        let expotentialDelay = options.delay * pow(NSTimeInterval(options.multiplier), NSTimeInterval(attempt))
+        let truncatedDelay = min(expotentialDelay, options.maximumDelay)
+        return truncatedDelay
+    }
+
+    // MARK: Internal/Private Methods
+
+    private func attempt() {
+        dispatch_async(queue) {
+            [weak self] in
+
+            guard let strong_self = self else {
+                return
+            }
+            if strong_self.running.value == true {
+                strong_self.attempts.value += 1
+                strong_self.retryClosure(strong_self.callback)
+            }
+        }
+    }
+
+    private func retry() {
+        let delay = delayForAttempt(attempts.value - 1)
+        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * NSTimeInterval(NSEC_PER_SEC)))
+        dispatch_after(time, queue) {
+            self.attempt()
+        }
+    }
+
+    private func callback(result: Result <Void>) -> Bool {
+        if result.isFailure {
+            if let maximumAttempts = options.maximumAttempts where attempts.value > maximumAttempts {
+                return false
+            }
+            retry()
+        }
+        return true
+    }
+}
+
+extension Retrier {
+    convenience init(delay: NSTimeInterval = 0.25, multiplier: Double = 2.0, maximumDelay: NSTimeInterval = 8, maximumAttempts: Int? = nil, retryClosure: RetryStatus -> Void) {
+        var options = Options()
+        options.delay = delay
+        options.multiplier = multiplier
+        options.maximumDelay = maximumDelay
+        options.maximumAttempts = maximumAttempts
+        self.init(options: options, retryClosure: retryClosure)
+    }
+}

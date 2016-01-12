@@ -99,16 +99,12 @@ extension ServerViewController {
                 log?.debug("Client read callback: \(error)")
                 return
             }
-//            if let data = result.value {
-//            }
         }
 
         clientChannel.reconnectionDelay = 1.0
         clientChannel.shouldReconnect = {
             return self.reconnect
         }
-
-
     }
 
 }
@@ -134,7 +130,7 @@ extension ServerViewController {
 
     @IBAction func connect(sender: AnyObject?) {
 
-        clientChannel.connect() {
+        clientChannel.connect(retryDelay: 1) {
             (result) in
 
             if let error = result.error {
