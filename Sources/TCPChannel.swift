@@ -44,7 +44,7 @@ public class TCPChannel {
     public let label: String?
     public let address: Address
     public let port: UInt16
-    public private(set) var state: Atomic <State>
+    public private(set) var state: Atomic <State>!
 
     // MARK: Callbacks
 
@@ -87,8 +87,7 @@ public class TCPChannel {
         self.port = port
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
         self.queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.queue", queueAttribute)
-        self.state = Atomic(State.Unconnected, lock: self.lock)
-        self.state.valueChanged = {
+        self.state = Atomic(State.Unconnected, lock: self.lock) {
             [weak self] (old, new) in
             self?.stateChanged?(old, new)
         }
@@ -205,32 +204,41 @@ public class TCPChannel {
 
         state.value = .Unconnected
 
-        if let shouldReconnect = shouldReconnect where remoteDisconnect == true{
+        if let shouldReconnect = shouldReconnect where remoteDisconnect == true {
             let reconnectFlag = shouldReconnect()
             if reconnectFlag == true {
-            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(reconnectionDelay * 1000000000))
+                let time = dispatch_time(DISPATCH_TIME_NOW, Int64(reconnectionDelay * 1000000000))
                 dispatch_after(time, queue) {
-                    self.connect() {
-                        [weak self] (result) in
+                    [weak self] (result) in
 
-                        guard let strong_self = self else {
-                            return
-                        }
-
-                        if result.isFailure {
-                            strong_self.shouldReconnect?()
-                            strong_self.disconnectCallback?(result)
-                            strong_self.disconnectCallback = nil
-                        }
+                    guard let strong_self = self else {
+                        return
                     }
+
+                    strong_self.reconnect()
                 }
                 return
             }
         }
 
-        shouldReconnect?()
         disconnectCallback?(Result.Success())
         disconnectCallback = nil
+    }
+
+    private func reconnect() {
+        self.connect() {
+            [weak self] (result) in
+
+            guard let strong_self = self else {
+                return
+            }
+
+            if result.isFailure {
+                strong_self.shouldReconnect?()
+                strong_self.disconnectCallback?(result)
+                strong_self.disconnectCallback = nil
+            }
+        }
     }
 
     private func preconditionConnected() {
