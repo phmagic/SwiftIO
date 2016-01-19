@@ -145,9 +145,20 @@ public class TCPChannel {
     var retrier: Retrier? = nil
     var retryOptions = Retrier.Options()
 
-    public func connect(retryDelay retryDelay: NSTimeInterval, callback: Result <Void> -> Void) {
+    public func connect(retryDelay retryDelay: NSTimeInterval?, retryMultiplier: Double? = nil, retryMaximumDelay: NSTimeInterval? = nil, retryMaximumAttempts: Int? = nil, callback: Result <Void> -> Void) {
         var options = Retrier.Options()
-        options.delay = retryDelay
+        if let retryDelay = retryDelay {
+            options.delay = retryDelay
+        }
+        if let retryMultiplier = retryMultiplier {
+            options.multiplier = retryMultiplier
+        }
+        if let retryMaximumDelay = retryMaximumDelay {
+            options.maximumDelay = retryMaximumDelay
+        }
+        if let retryMaximumAttempts = retryMaximumAttempts {
+            options.maximumAttempts = retryMaximumAttempts
+        }
         connect(retryOptions: options, callback: callback)
     }
 
