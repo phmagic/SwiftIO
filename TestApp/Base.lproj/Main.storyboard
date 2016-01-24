@@ -808,7 +808,7 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="bD2-1e-9Ti"/>
             </objects>
-            <point key="canvasLocation" x="883.5" y="1169"/>
+            <point key="canvasLocation" x="791.5" y="801"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="ARm-Ol-miP">
@@ -897,6 +897,7 @@
                         <tabViewItem id="ZHN-g8-qZF"/>
                         <tabViewItem id="7Pl-8v-Vnx"/>
                         <tabViewItem id="FK3-iB-q6k"/>
+                        <tabViewItem id="5Nv-hr-Yvp"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="MVi-Nx-DPs">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -908,6 +909,7 @@
                         <segue destination="Sce-QO-a5y" kind="relationship" relationship="tabItems" id="3Oo-yn-IOK"/>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="tabItems" id="CwI-6t-232"/>
                         <segue destination="PvV-ih-ihm" kind="relationship" relationship="tabItems" id="dVL-zH-jgB"/>
+                        <segue destination="wk9-DO-JcA" kind="relationship" relationship="tabItems" id="eDa-HU-nmk"/>
                     </connections>
                 </tabViewController>
                 <customObject id="6l4-bt-AeN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1146,6 +1148,71 @@
                 <customObject id="dp4-DT-SR5" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="367" y="817"/>
+        </scene>
+        <!--HTTP Server-->
+        <scene sceneID="NxV-FL-FL5">
+            <objects>
+                <viewController title="HTTP Server" id="wk9-DO-JcA" customClass="HTTPServerViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="8tS-Us-J1p">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="240"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R3V-aV-7lj">
+                                <rect key="frame" x="104" y="110" width="112" height="20"/>
+                                <subviews>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZBd-1v-7zW">
+                                        <rect key="frame" x="0.0" y="0.0" width="112" height="20"/>
+                                        <subviews>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NrM-NX-hMH">
+                                                <rect key="frame" x="-2" y="3" width="48" height="17"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server:" id="Gm5-Ts-TvQ">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="5Wj-Lo-9Tu" customClass="SwitchControl" customModule="TestApp" customModuleProvider="target">
+                                                <rect key="frame" x="52" y="0.0" width="60" height="20"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="60" id="Dgn-rR-DvL"/>
+                                                    <constraint firstAttribute="height" constant="20" id="EET-Tf-d8S"/>
+                                                </constraints>
+                                                <connections>
+                                                    <action selector="startStopServer:" target="wk9-DO-JcA" id="bQB-h0-xug"/>
+                                                </connections>
+                                            </customView>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="R3V-aV-7lj" firstAttribute="centerY" secondItem="8tS-Us-J1p" secondAttribute="centerY" id="Dgr-sj-erz"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="R3V-aV-7lj" secondAttribute="trailing" constant="20" id="FxT-eR-09C"/>
+                            <constraint firstItem="R3V-aV-7lj" firstAttribute="top" relation="greaterThanOrEqual" secondItem="8tS-Us-J1p" secondAttribute="top" constant="20" id="IAQ-zj-Ysj"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="R3V-aV-7lj" secondAttribute="bottom" constant="20" id="OhT-M0-SBZ"/>
+                            <constraint firstItem="R3V-aV-7lj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8tS-Us-J1p" secondAttribute="leading" constant="20" id="ZyI-dF-MqH"/>
+                            <constraint firstItem="R3V-aV-7lj" firstAttribute="centerX" secondItem="8tS-Us-J1p" secondAttribute="centerX" id="lqY-CK-qgM"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="GIF-ih-BVn" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1199" y="817"/>
         </scene>
     </scenes>
 </document>

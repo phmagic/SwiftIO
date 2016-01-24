@@ -168,11 +168,3 @@ extension ServerViewController {
 
 }
 
-
-extension String {
-    init(data: DispatchData <Void>, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
-        let nsdata = data.toNSData()
-        self = NSString(data: nsdata, encoding: encoding) as! String
-    }
-}
-

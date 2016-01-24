@@ -8,7 +8,6 @@
 
 import AppKit
 
-import SwiftIO
 import SwiftUtilities
 
 struct Async {
@@ -209,3 +208,12 @@ struct ObjectEnumeratorGenerator <Element: AnyObject>: GeneratorType {
 //
 //
 //
+// MARK: -
+
+extension String {
+    init(data: DispatchData <Void>, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
+        let nsdata = data.toNSData()
+        self = NSString(data: nsdata, encoding: encoding) as! String
+    }
+}
+
