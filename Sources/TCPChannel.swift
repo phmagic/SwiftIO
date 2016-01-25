@@ -107,6 +107,8 @@ public class TCPChannel {
                 return
             }
 
+            log?.debug("\(strong_self): Trying to connect.")
+
             do {
                 strong_self.state.value = .Connecting
                 let socket = try Socket.TCP()
@@ -114,10 +116,12 @@ public class TCPChannel {
                 strong_self.socket = socket
                 strong_self.state.value = .Connected
                 try strong_self.createStream()
+                log?.debug("\(strong_self): Connection success.")
                 callback(.Success())
             }
             catch let error {
                 strong_self.state.value = .Unconnected
+                log?.debug("\(strong_self): Connection failure: \(error).")
                 callback(.Failure(error))
             }
         }
@@ -135,6 +139,8 @@ public class TCPChannel {
                 callback(.Failure(Error.Generic("Cannot disconnect channel in state \(strong_self.state.value)")))
                 return
             }
+
+            log?.debug("\(strong_self): Trying to disconnect.")
 
             strong_self.state.value = .Disconnecting
             strong_self.disconnectCallback = callback
@@ -165,20 +171,27 @@ public class TCPChannel {
     private func connect(retryOptions retryOptions: Retrier.Options, callback: Result <Void> -> Void) {
         self.retryOptions = retryOptions
         let retrier = Retrier(options: retryOptions) {
-            (retryCallback) in
-            self.connect() {
+            [weak self] (retryCallback) in
+
+            guard let strong_self = self else {
+                return
+            }
+
+            strong_self.connect() {
                 (result: Result <Void>) -> Void in
 
                 if let error = result.error {
                     if retryCallback(.Failure(error)) == false {
+                        log?.debug("\(strong_self): Connection retry failed with \(error).")
                         callback(result)
-                        self.retrier = nil
+                        strong_self.retrier = nil
                     }
                 }
                 else {
                     retryCallback(.Success())
+                    log?.debug("\(strong_self): Connection retry succeeded.")
                     callback(result)
-                    self.retrier = nil
+                    strong_self.retrier = nil
                 }
             }
         }
