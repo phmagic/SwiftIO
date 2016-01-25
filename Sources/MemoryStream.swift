@@ -97,4 +97,3 @@ extension MemoryStream: CustomDebugStringConvertible {
         return "MemoryStream(endianess: \(endianness), length: \(mutableData.length), head: \(head), bytes: \(mutableData))"
     }
 }
-

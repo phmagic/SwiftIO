@@ -35,5 +35,5 @@ class LogViewController: NSViewController {
             self.logTextView.scrollToEndOfDocument(nil)
         }
     }
-    
+
 }

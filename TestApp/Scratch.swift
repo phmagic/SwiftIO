@@ -54,7 +54,7 @@ class LayerView: NSView {
     }
 
     convenience init() {
-        self.init(frame: CGRectZero)
+        self.init(frame: CGRect.zero)
     }
 
     var backgroundColor: NSColor? {

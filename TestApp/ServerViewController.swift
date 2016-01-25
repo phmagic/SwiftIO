@@ -175,4 +175,3 @@ extension String {
         self = NSString(data: nsdata, encoding: encoding) as! String
     }
 }
-

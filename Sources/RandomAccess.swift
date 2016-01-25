@@ -50,4 +50,3 @@ public protocol RandomAccessInput: RandomAccess {
 public protocol RandomAccessOutput: RandomAccess {
     func write(offset offset: Int, buffer: UnsafeBufferPointer <Void>) throws
 }
-

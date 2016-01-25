@@ -93,4 +93,3 @@ extension Double: BinaryInputStreamable {
         return try SwiftIO.readFrom(stream)
     }
 }
-

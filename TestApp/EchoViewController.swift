@@ -113,7 +113,7 @@ class EchoViewController: NSViewController {
         }
     }
 
-    @IBAction func connect(sender:AnyObject?) {
+    @IBAction func connect(sender: AnyObject?) {
         channel.connect() {
             (result) in
             log?.debug("Connect \(result)")
@@ -121,14 +121,14 @@ class EchoViewController: NSViewController {
         }
     }
 
-    @IBAction func disconnect(sender:AnyObject?) {
+    @IBAction func disconnect(sender: AnyObject?) {
         channel.disconnect() {
             (result) in
             log?.debug("Disconnect \(result)")
         }
     }
 
-    @IBAction func write(sender:AnyObject?) {
+    @IBAction func write(sender: AnyObject?) {
 
         guard let input = input else {
             return
@@ -149,4 +149,3 @@ class EchoViewController: NSViewController {
     }
 
 }
-

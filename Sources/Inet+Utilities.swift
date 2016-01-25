@@ -51,7 +51,7 @@ extension in_addr: CustomStringConvertible {
                 return try inet_ntop(addressFamily: AF_INET, address: ptr)
             }
         }
-        
+
     }
 }
 
@@ -73,7 +73,7 @@ extension in6_addr: CustomStringConvertible {
                 return try inet_ntop(addressFamily: AF_INET6, address: ptr)
             }
         }
-        
+
     }
 }
 
@@ -178,7 +178,7 @@ extension sockaddr_in6 {
 public func inet_ntop(addressFamily addressFamily: Int32, address: UnsafePointer <Void>) throws -> String {
     var buffer: Array <Int8>
     var size: Int
-    
+
     switch addressFamily {
     case AF_INET:
         size = Int(INET_ADDRSTRLEN)
@@ -187,9 +187,9 @@ public func inet_ntop(addressFamily addressFamily: Int32, address: UnsafePointer
     default:
         fatalError("Unknown address family")
     }
-    
+
     buffer = Array <Int8> (count: size, repeatedValue: 0)
-    
+
     return buffer.withUnsafeMutableBufferPointer() {
         (inout outputBuffer: UnsafeMutableBufferPointer <Int8>) -> String in
         let result = inet_ntop(addressFamily, address, outputBuffer.baseAddress, socklen_t(size))
@@ -242,8 +242,7 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info
     }
 }
 
-public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws
- {
+public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws {
     var hints = hints
     var info = UnsafeMutablePointer<addrinfo>()
     let result = hostname.withCString() {

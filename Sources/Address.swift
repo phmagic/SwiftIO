@@ -227,7 +227,7 @@ public extension Address {
                 canonicalName = String(CString: addrinfo.ai_canonname, encoding: NSASCIIStringEncoding)
             }
 
-            let result = (address,`protocol`!,family!,canonicalName)
+            let result = (address, `protocol`!, family!, canonicalName)
             results.append(result)
 
 
@@ -282,7 +282,7 @@ public extension Address {
 public extension Address {
     static func addressesForInterfaces() throws -> [String:Address] {
         let addressesForInterfaces = getAddressesForInterfaces() as! [String:NSData]
-        let pairs:[(String,Address)] = try addressesForInterfaces.map() {
+        let pairs: [(String,Address)] = try addressesForInterfaces.map() {
             (interface, addressData) in
             let sockAddr = UnsafePointer <sockaddr> (addressData.bytes)
             return (interface, try Address(addr: sockAddr.memory))
@@ -300,4 +300,3 @@ private extension Dictionary {
         }
     }
 }
-

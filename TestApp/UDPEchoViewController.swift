@@ -11,7 +11,7 @@ import Cocoa
 import SwiftIO
 
 class UDPEchoViewController: NSViewController {
-    
+
     var udpServer: UDPChannel!
     var udpClient: UDPChannel!
     var family: ProtocolFamily?

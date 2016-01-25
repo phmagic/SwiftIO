@@ -129,7 +129,7 @@ public extension TLVRecord {
 
 // TODO: Move to SwiftUtilities?
 private extension DispatchData {
-    func split<T, R>(closure: (T, DispatchData) throws -> R) throws -> R{
+    func split<T, R>(closure: (T, DispatchData) throws -> R) throws -> R {
         let (value, remaining): (T, DispatchData) = try split()
         return try closure(value, remaining)
     }
@@ -139,5 +139,3 @@ private extension DispatchData {
         return try closure(left, right)
     }
 }
-
-

@@ -186,4 +186,3 @@ extension FileStream: RandomAccessOutput {
         try write(buffer)
     }
 }
-
