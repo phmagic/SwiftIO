@@ -1,4 +1,12 @@
 language: objective-c
 osx_image: xcode7.2
+before_install:
+- brew update
+- brew install carthage
+before_script:
+- carthage bootstrap
 script:
-   - ./Scripts/build.sh
+- xctool -project SwiftIO.xcodeproj -scheme SwiftIO_iOS -sdk iphonesimulator build test
+- xctool -project SwiftIO.xcodeproj -scheme SwiftIO_OSX build test
+- xctool -project SwiftIO.xcodeproj -scheme TestApp build test
+
