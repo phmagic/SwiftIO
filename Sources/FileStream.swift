@@ -164,10 +164,10 @@ extension FileStream: BinaryOutputStream {
 
 extension FileStream: RandomAccess {
     public func tell() throws -> Int {
-        return try seek(0, whence: .current)
+        return try seek(0, whence: .Current)
     }
 
-    public func seek(offset: Int, whence: Whence = .set) throws -> Int {
+    public func seek(offset: Int, whence: Whence = .Set) throws -> Int {
         let result = lseek(fd, off_t(offset), Int32(whence.rawValue))
         return Int(result)
     }

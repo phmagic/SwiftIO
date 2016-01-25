@@ -38,7 +38,7 @@ import SwiftUtilities
 extension in_addr: Equatable {
 }
 
-public func ==(lhs: in_addr, rhs: in_addr) -> Bool {
+public func == (lhs: in_addr, rhs: in_addr) -> Bool {
     return unsafeBitwiseEquality(lhs, rhs)
 }
 
@@ -60,7 +60,7 @@ extension in_addr: CustomStringConvertible {
 extension in6_addr: Equatable {
 }
 
-public func ==(lhs: in6_addr, rhs: in6_addr) -> Bool {
+public func == (lhs: in6_addr, rhs: in6_addr) -> Bool {
     return unsafeBitwiseEquality(lhs, rhs)
 }
 

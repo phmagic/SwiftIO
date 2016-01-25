@@ -32,9 +32,9 @@
 import SwiftUtilities
 
 public enum Whence: Int {
-    case set = 0
-    case current = 1
-    case end = 2
+    case Set = 0
+    case Current = 1
+    case End = 2
 }
 
 public protocol RandomAccess {

@@ -36,7 +36,7 @@ public struct Datagram {
     public let timestamp: Timestamp
     public let data: DispatchData <Void>
 
-    public init(from: (Address,UInt16), timestamp: Timestamp = Timestamp(), data: DispatchData <Void>) {
+    public init(from: (Address, UInt16), timestamp: Timestamp = Timestamp(), data: DispatchData <Void>) {
         self.from = from
         self.timestamp = timestamp
         self.data = data
@@ -48,7 +48,7 @@ public struct Datagram {
 extension Datagram: Equatable {
 }
 
-public func ==(lhs: Datagram, rhs: Datagram) -> Bool {
+public func == (lhs: Datagram, rhs: Datagram) -> Bool {
 
     if lhs.from.0 != rhs.from.0 {
         return false

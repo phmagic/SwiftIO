@@ -67,7 +67,7 @@ public struct Address {
 extension Address: Equatable {
 }
 
-public func ==(lhs: Address, rhs: Address) -> Bool {
+public func == (lhs: Address, rhs: Address) -> Bool {
     switch (lhs.internalAddress, rhs.internalAddress) {
         case (.INET(let lhs_addr), .INET(let rhs_addr)):
             return lhs_addr == rhs_addr
@@ -198,8 +198,8 @@ public extension Address {
         self = addresses.first!
     }
 
-    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [(Address,InetProtocol,ProtocolFamily,String?)] {
-        var results: [(Address,InetProtocol,ProtocolFamily,String?)] = []
+    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [(Address, InetProtocol, ProtocolFamily, String?)] {
+        var results: [(Address, InetProtocol, ProtocolFamily, String?)] = []
 
         var hints = addrinfo()
 //        hints.ai_flags |= AI_ADDRCONFIG // If the AI_ADDRCONFIG bit is set, IPv4 addresses shall be returned only if an IPv4 address is configured on the local system, and IPv6 addresses shall be returned only if an IPv6 address is con- figured on the local system.
@@ -282,7 +282,7 @@ public extension Address {
 public extension Address {
     static func addressesForInterfaces() throws -> [String:Address] {
         let addressesForInterfaces = getAddressesForInterfaces() as! [String:NSData]
-        let pairs: [(String,Address)] = try addressesForInterfaces.map() {
+        let pairs: [(String, Address)] = try addressesForInterfaces.map() {
             (interface, addressData) in
             let sockAddr = UnsafePointer <sockaddr> (addressData.bytes)
             return (interface, try Address(addr: sockAddr.memory))

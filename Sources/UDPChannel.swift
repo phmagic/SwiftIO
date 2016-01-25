@@ -155,12 +155,12 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: NSData, address: Address? = nil, port: UInt16? = nil, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: NSData, address: Address? = nil, port: UInt16? = nil, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
         try send(data, address: address ?? self.address, port: port ?? self.port, writeHandler: writeHandler)
     }
 
-    public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool,ErrorType?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
         precondition(receiveQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 
