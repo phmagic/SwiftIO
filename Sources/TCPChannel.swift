@@ -75,7 +75,7 @@ public class TCPChannel {
 
     private let queue: dispatch_queue_t
     private let lock = NSRecursiveLock()
-    private var socket: Socket!
+    public private(set) var socket: Socket!
     private var channel: dispatch_io_t!
     private var disconnectCallback: (Result <Void> -> Void)?
 
@@ -118,12 +118,16 @@ public class TCPChannel {
                 try strong_self.createStream()
                 log?.debug("\(strong_self): Connection success.")
                 callback(.Success())
+
+
             }
             catch let error {
                 strong_self.state.value = .Unconnected
                 log?.debug("\(strong_self): Connection failure: \(error).")
                 callback(.Failure(error))
             }
+
+
         }
     }
 
@@ -214,9 +218,27 @@ public class TCPChannel {
         }
     }
 
+    private var source: dispatch_source_t!
+
     private func createStream() throws {
+
+        source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(socket.descriptor), 0, queue)
+
+        dispatch_source_set_cancel_handler(source) {
+            print("CANCEL")
+        }
+        dispatch_source_set_event_handler(source) {
+            print("EVENT")
+        }
+
+        dispatch_resume(source)
+
+        //
+
         channel = dispatch_io_create(DISPATCH_IO_STREAM, socket.descriptor, queue) {
             [weak self] (error) in
+
+            print(error)
 
             guard let strong_self = self else {
                 return
@@ -227,11 +249,13 @@ public class TCPChannel {
         }
         assert(channel != nil)
         dispatch_io_set_low_water(channel, 0)
-
+//        dispatch_io_set_high_water(channel, 0)
         precondition(state.value == .Connected)
 
         dispatch_io_read(channel, 0, -1 /* Int(truncatingBitPattern:SIZE_MAX) */, queue) {
             [weak self] (done, data, error) in
+
+            print(CFAbsoluteTimeGetCurrent(), done, error)
             guard let strong_self = self else {
                 return
             }

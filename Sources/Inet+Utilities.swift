@@ -73,7 +73,6 @@ extension in6_addr: CustomStringConvertible {
                 return try inet_ntop(addressFamily: AF_INET6, address: ptr)
             }
         }
-
     }
 }
 

@@ -60,12 +60,36 @@ public class Socket {
         }
     }
 
+    public var keepalive: Bool {
+        get {
+            var value: Int = 1
+            var length = socklen_t(sizeof(Int))
+            getsockopt(descriptor, SOL_SOCKET, SO_KEEPALIVE, &value, &length)
+            return value != 0
+        }
+        set {
+            var value: Int = newValue ? 1 : 0
+            let status = setsockopt(descriptor, SOL_SOCKET, SO_KEEPALIVE, &value, socklen_t(sizeof(Int)))
+            if status != 0 {
+                fatalError("Could not call setsockopt() on \(descriptor)")
+            }
+        }
+    }
+
     public var nonBlocking: Bool {
         get {
             fatalError()
         }
         set {
             setNonblocking(descriptor, newValue)
+        }
+    }
+
+    public func setNoDelay(noDelay: Bool) throws {
+        var flag: Int32 = noDelay ? 1 : 0
+        let result = setsockopt(descriptor, IPPROTO_TCP, TCP_NODELAY, &flag, socklen_t(sizeofValue(flag)))
+        if result != 0 {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 }

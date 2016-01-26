@@ -68,6 +68,7 @@
 		45CE2A0F1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CE2A0D1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift */; };
 		45D663AC1C56DA3800967B24 /* Retrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AB1C56DA3800967B24 /* Retrier.swift */; };
 		45D663AD1C56DA3800967B24 /* Retrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AB1C56DA3800967B24 /* Retrier.swift */; };
+		45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */; };
 		45DAC1431C17BF2E0013C4D6 /* ServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */; };
 		45DD2D9E1B7656E90002994A /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
 		45DD2DA01B7657390002994A /* SwiftUtilities.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -194,6 +195,7 @@
 		45CE2A0D1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicTypes+BinaryOutputStreamable.swift"; sourceTree = "<group>"; };
 		45D3F3041BBC8FEA00AF1690 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		45D663AB1C56DA3800967B24 /* Retrier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Retrier.swift; sourceTree = "<group>"; };
+		45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientViewController.swift; sourceTree = "<group>"; };
 		45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerViewController.swift; sourceTree = "<group>"; };
 		45DD2DA11B766FC70002994A /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		45DD2DA31B76700B0002994A /* Inet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inet.swift; sourceTree = "<group>"; };
@@ -313,6 +315,7 @@
 				45E80CF71C18BCD5009AAD98 /* Server.swift */,
 				45982C701C421AB400FB09D9 /* SwitchControl.swift */,
 				457847161C178E5500EF9B35 /* Scratch.swift */,
+				45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */,
 				45DD2DB11B76AD850002994A /* Assets.xcassets */,
 				45DD2DB31B76AD850002994A /* Main.storyboard */,
 				45DD2DB61B76AD850002994A /* Info.plist */,
@@ -596,6 +599,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */,
 				45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */,
 				45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
