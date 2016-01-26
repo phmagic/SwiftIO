@@ -69,6 +69,9 @@ extension ServerViewController {
 
     func createClient() throws {
         clientChannel = try TCPChannel(hostname: "localhost", port: port)
+        clientChannel.configureSocket = {
+            socket in
+        }
         clientChannel.stateChanged = {
             (old, new) in
 
@@ -87,6 +90,8 @@ extension ServerViewController {
                 case (_, .Connected):
                     dispatch_async(dispatch_get_main_queue()) {
                         self.connected = true
+                        print(self.clientChannel.socket.socketOptions.all)
+                        print(self.clientChannel.socket.socketOptions.tcpAll)
                     }
                 default:
                     break

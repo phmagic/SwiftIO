@@ -37,6 +37,19 @@ class TCPClientViewController: NSViewController {
 
     func createClient() throws {
         clientChannel = try TCPChannel(hostname: "10.1.1.10", port: port)
+        clientChannel.configureSocket = {
+            socket in
+
+            socket.socketOptions.keepAlive = true
+            socket.socketOptions.sendTimeout = 2
+            socket.socketOptions.receiveTimeout = 2
+
+            socket.socketOptions.noDelay = true
+            socket.socketOptions.keepAliveIdleTime = 10
+            socket.socketOptions.connectionTimeout = 10
+            socket.socketOptions.keepAliveInterval = 10
+            socket.socketOptions.keepAliveCount = 10
+        }
         clientChannel.stateChanged = {
             (old, new) in
 
@@ -55,8 +68,6 @@ class TCPClientViewController: NSViewController {
                 case (_, .Connected):
                     dispatch_async(dispatch_get_main_queue()) {
                         self.connected = true
-
-                        try! self.clientChannel.socket.setNoDelay(true)
                     }
                 default:
                     break
@@ -94,6 +105,14 @@ class TCPClientViewController: NSViewController {
         clientChannel.disconnect() {
             (result) in
             SwiftIO.log?.debug("Client disconnect callback: \(result)")
+        }
+    }
+
+    @IBAction func ping(sender: AnyObject?) {
+        clientChannel.write(DispatchData <Void> ()) {
+            result in
+
+            print(result)
         }
     }
 

@@ -675,10 +675,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GfL-7D-yi6">
-                                <rect key="frame" x="30" y="68" width="271" height="58"/>
+                                <rect key="frame" x="30.5" y="68" width="270.5" height="58"/>
                                 <subviews>
                                     <stackView distribution="equalCentering" orientation="horizontal" alignment="firstBaseline" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IgO-tK-fJE">
-                                        <rect key="frame" x="0.0" y="33" width="271" height="25"/>
+                                        <rect key="frame" x="0.0" y="33" width="270.5" height="25"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pje-GV-YTK">
                                                 <rect key="frame" x="-6" y="-7" width="70" height="32"/>
@@ -697,8 +697,8 @@
                                                     </binding>
                                                 </connections>
                                             </button>
-                                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dMU-2O-eI4">
-                                                <rect key="frame" x="80" y="-7" width="92" height="32"/>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dMU-2O-eI4">
+                                                <rect key="frame" x="79.5" y="-7" width="92" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="z1g-xC-2yi">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -712,8 +712,8 @@
                                                     </binding>
                                                 </connections>
                                             </button>
-                                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IC1-Ql-t4u">
-                                                <rect key="frame" x="168" y="-7" width="109" height="32"/>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IC1-Ql-t4u">
+                                                <rect key="frame" x="167.5" y="-7" width="109" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Disconnect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jGv-Wh-TYH">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -736,7 +736,7 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="firstBaseline" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BsS-Of-I8h">
-                                        <rect key="frame" x="0.0" y="0.0" width="271" height="25"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="270.5" height="25"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OVO-SX-XvI">
                                                 <rect key="frame" x="-2" y="3" width="39" height="17"/>
@@ -747,7 +747,7 @@
                                                 </textFieldCell>
                                             </textField>
                                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ov5-WH-CrK">
-                                                <rect key="frame" x="43" y="0.0" width="161" height="22"/>
+                                                <rect key="frame" x="43" y="0.0" width="160.5" height="22"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Eq6-qI-lCV">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -761,8 +761,8 @@
                                                     </binding>
                                                 </connections>
                                             </textField>
-                                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zAe-cA-bUK">
-                                                <rect key="frame" x="206" y="-7" width="71" height="32"/>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zAe-cA-bUK">
+                                                <rect key="frame" x="205.5" y="-7" width="71" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0he-eV-MiQ">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -938,8 +938,8 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0cG-vd-BaB" customClass="SwitchControl" customModule="TestApp" customModuleProvider="target">
-                                                <rect key="frame" x="52" y="1" width="60" height="20"/>
+                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="0cG-vd-BaB" customClass="SwitchControl" customModule="TestApp" customModuleProvider="target">
+                                                <rect key="frame" x="52" y="0.5" width="60" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="0DB-8M-n7T"/>
                                                     <constraint firstAttribute="width" constant="60" id="hVF-Iu-lu6"/>
@@ -1157,11 +1157,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="559" height="242"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HxC-h4-wy7">
-                                <rect key="frame" x="135" y="114" width="226" height="43"/>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HxC-h4-wy7">
+                                <rect key="frame" x="135" y="99.5" width="289" height="43"/>
                                 <subviews>
                                     <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ks1-qD-DSB">
-                                        <rect key="frame" x="0.0" y="22" width="226" height="21"/>
+                                        <rect key="frame" x="0.0" y="22" width="289" height="21"/>
                                         <subviews>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CC7-v9-vSu">
                                                 <rect key="frame" x="-6" y="-7" width="92" height="32"/>
@@ -1200,13 +1200,25 @@
                                                     <binding destination="6as-30-l2P" name="value" keyPath="state" id="UIw-Os-737"/>
                                                 </connections>
                                             </textField>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5Bm-oO-Slb">
+                                                <rect key="frame" x="228" y="-7" width="67" height="32"/>
+                                                <buttonCell key="cell" type="push" title="Ping" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wsy-9Z-wtN">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="ping:" target="6as-30-l2P" id="jn1-MF-BHA"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <visibilityPriorities>
                                             <integer value="1000"/>
                                             <integer value="1000"/>
                                             <integer value="1000"/>
+                                            <integer value="1000"/>
                                         </visibilityPriorities>
                                         <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>

@@ -43,9 +43,11 @@ public class Server {
         guard let listeningSocket = listeningSocket else {
             throw Error.Generic("Socket() failed")
         }
-        listeningSocket.reuse = true
+
+        listeningSocket.socketOptions.reuseAddress = true
+
         try listeningSocket.bind(address, port: port)
-        listeningSocket.nonBlocking = true
+        try listeningSocket.setNonBlocking(true)
         try listeningSocket.listen()
 
         source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(listeningSocket.descriptor), 0, queue)

@@ -69,6 +69,8 @@
 		45D663AC1C56DA3800967B24 /* Retrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AB1C56DA3800967B24 /* Retrier.swift */; };
 		45D663AD1C56DA3800967B24 /* Retrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AB1C56DA3800967B24 /* Retrier.swift */; };
 		45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */; };
+		45D663B11C571FF000967B24 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663B01C571FF000967B24 /* SocketOptions.swift */; };
+		45D663B21C571FF000967B24 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663B01C571FF000967B24 /* SocketOptions.swift */; };
 		45DAC1431C17BF2E0013C4D6 /* ServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */; };
 		45DD2D9E1B7656E90002994A /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
 		45DD2DA01B7657390002994A /* SwiftUtilities.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -196,6 +198,7 @@
 		45D3F3041BBC8FEA00AF1690 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		45D663AB1C56DA3800967B24 /* Retrier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Retrier.swift; sourceTree = "<group>"; };
 		45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientViewController.swift; sourceTree = "<group>"; };
+		45D663B01C571FF000967B24 /* SocketOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketOptions.swift; sourceTree = "<group>"; };
 		45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerViewController.swift; sourceTree = "<group>"; };
 		45DD2DA11B766FC70002994A /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		45DD2DA31B76700B0002994A /* Inet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inet.swift; sourceTree = "<group>"; };
@@ -373,6 +376,7 @@
 				45302F551C16120A00990F60 /* TLV.swift */,
 				45B822161BBB39530060E57D /* Logging.swift */,
 				45005E9A1C18CFC80077B318 /* Socket.swift */,
+				45D663B01C571FF000967B24 /* SocketOptions.swift */,
 				45BCF0E31C42D80C0002C5CD /* Utilities.swift */,
 				45D663AB1C56DA3800967B24 /* Retrier.swift */,
 			);
@@ -633,6 +637,7 @@
 				45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */,
 				45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */,
 				45DD2DA61B76704E0002994A /* Address.swift in Sources */,
+				45D663B21C571FF000967B24 /* SocketOptions.swift in Sources */,
 				452C74911BBB7CE7005A46FB /* TCPChannel.swift in Sources */,
 				4596D3D21B7A8496009318E6 /* RandomAccess.swift in Sources */,
 				4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */,
@@ -664,6 +669,7 @@
 				45E289781B3C8E7300EDBBAE /* MemoryStream.swift in Sources */,
 				45E289761B3C8E6D00EDBBAE /* FileStream.swift in Sources */,
 				45DD2DA41B76700B0002994A /* Inet.swift in Sources */,
+				45D663B11C571FF000967B24 /* SocketOptions.swift in Sources */,
 				452C74901BBB7CE7005A46FB /* TCPChannel.swift in Sources */,
 				4596D3D11B7A8496009318E6 /* RandomAccess.swift in Sources */,
 				4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */,

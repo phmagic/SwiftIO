@@ -82,7 +82,7 @@ public class UDPChannel {
         }
 
         // set reuse socket option
-        socket.reuse = true
+        socket.socketOptions.reuseAddress = true
 
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
 

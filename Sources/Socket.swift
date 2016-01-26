@@ -12,8 +12,6 @@ import SwiftUtilities
 
 public class Socket {
 
-    public typealias SocketType = Int32
-
     public private(set) var descriptor: Int32
 
     public init(_ descriptor: Int32) {
@@ -33,65 +31,24 @@ public class Socket {
         descriptor = -1
     }
 
+}
+
+// MARK: Socket options
+
+extension Socket {
+
+    public typealias SocketType = Int32
+
     public var type: SocketType {
         get {
-            var socketType: Int32 = 0
-            var length = socklen_t(sizeof(Int32))
-
-            getsockopt(descriptor, SOL_SOCKET, SO_TYPE, &socketType, &length)
-
-            return socketType
+            return socketOptions.type
         }
     }
 
-    public var reuse: Bool {
-        get {
-            var reuseSocketFlag: Int = 1
-            var length = socklen_t(sizeof(Int))
-            getsockopt(descriptor, SOL_SOCKET, SO_REUSEADDR, &reuseSocketFlag, &length)
-            return reuseSocketFlag != 0
-        }
-        set {
-            var reuseSocketFlag: Int = newValue ? 1 : 0
-            let status = setsockopt(descriptor, SOL_SOCKET, SO_REUSEADDR, &reuseSocketFlag, socklen_t(sizeof(Int)))
-            if status != 0 {
-                fatalError("Could not call setsockopt() on \(descriptor)")
-            }
-        }
+    public func setNonBlocking(nonBlocking: Bool) throws {
+        SwiftIO.setNonblocking(descriptor, nonBlocking)
     }
 
-    public var keepalive: Bool {
-        get {
-            var value: Int = 1
-            var length = socklen_t(sizeof(Int))
-            getsockopt(descriptor, SOL_SOCKET, SO_KEEPALIVE, &value, &length)
-            return value != 0
-        }
-        set {
-            var value: Int = newValue ? 1 : 0
-            let status = setsockopt(descriptor, SOL_SOCKET, SO_KEEPALIVE, &value, socklen_t(sizeof(Int)))
-            if status != 0 {
-                fatalError("Could not call setsockopt() on \(descriptor)")
-            }
-        }
-    }
-
-    public var nonBlocking: Bool {
-        get {
-            fatalError()
-        }
-        set {
-            setNonblocking(descriptor, newValue)
-        }
-    }
-
-    public func setNoDelay(noDelay: Bool) throws {
-        var flag: Int32 = noDelay ? 1 : 0
-        let result = setsockopt(descriptor, IPPROTO_TCP, TCP_NODELAY, &flag, socklen_t(sizeofValue(flag)))
-        if result != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
-        }
-    }
 }
 
 // MARK: -
@@ -109,7 +66,6 @@ public extension Socket {
 }
 
 // MARK: -
-
 
 public extension Socket {
 
