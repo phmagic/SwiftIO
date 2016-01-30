@@ -184,7 +184,7 @@ public extension Address {
             case .INET(let addr):
                 return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
             case .INET6(let addr):
-                return sockaddr_in6(sin6_family: sa_family_t(AF_INET), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr).to_sockaddr()
+                return sockaddr_in6(sin6_family: sa_family_t(AF_INET6), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr).to_sockaddr()
         }
     }
 }
