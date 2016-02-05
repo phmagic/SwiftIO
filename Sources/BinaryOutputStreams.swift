@@ -30,6 +30,8 @@
 
 import SwiftUtilities
 
+import Foundation
+
 // MARK: BinaryOutputStream
 
 public protocol BinaryOutputStream {

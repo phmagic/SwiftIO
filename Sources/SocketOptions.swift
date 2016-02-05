@@ -6,6 +6,9 @@
 //  Copyright © 2016 schwa.io. All rights reserved.
 //
 
+import Darwin
+import Foundation
+
 import SwiftUtilities
 
 extension Socket {
