@@ -16,7 +16,7 @@ class ServerViewController: NSViewController {
     typealias Record = TLVRecord <UInt16, UInt16>
     let endianness = Endianness.Big
 
-    let port = UInt16(40000 + SwiftUtilities.random.random(uniform: 1000))
+    let port = UInt16(40000 + arc4random_uniform(1000))
     var server: Server!
     var clientChannel: TCPChannel!
     var count: Int = 0

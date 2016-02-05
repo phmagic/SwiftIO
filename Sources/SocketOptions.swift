@@ -569,5 +569,3 @@ public extension SocketOptions {
     }
 
 }
-
-
