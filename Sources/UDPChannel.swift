@@ -52,8 +52,10 @@ public class UDPChannel {
     private var receiveQueue: dispatch_queue_t!
     private var sendQueue: dispatch_queue_t!
     private var source: dispatch_source_t!
-    private var socket: Socket!
 
+    public private(set) var socket: Socket!
+    public var configureSocket: (Socket -> Void)?
+    
     // MARK: - Initialization
 
     public init(label: String? = nil, address: Address, port: UInt16, readHandler: (Datagram -> Void)? = nil) throws {
@@ -83,8 +85,7 @@ public class UDPChannel {
             errorHandler?(error)
         }
 
-        // set reuse socket option
-        socket.socketOptions.reuseAddress = true
+        configureSocket?(socket)
 
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
 

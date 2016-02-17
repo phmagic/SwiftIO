@@ -29,12 +29,20 @@ class UDPEchoViewController: NSViewController {
             log?.debug("UDPEcho: Server received - \(datagram)")
             try! self.udpServer.send(datagram.data, address: datagram.from.0, port: datagram.from.1, writeHandler: nil)
         }
+        
+        udpServer.configureSocket = { socket in
+            socket.socketOptions.reuseAddress = true
+        }
 
         // client
         // TODO: UDPChannels should not need an address, just to write.
         udpClient = try! UDPChannel(label: "example.udp.client", hostname: "localhost", port: port + 1, family: family) {
             (datagram) in
             log?.debug("UDPEcho: Client received - \(datagram)")
+        }
+        
+        udpClient.configureSocket = { socket in
+            socket.socketOptions.reuseAddress = true
         }
     }
 
