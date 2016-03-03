@@ -52,7 +52,7 @@ extension ServerViewController {
 
                 log?.debug("Server Got data")
 
-                if let data = result.value {
+                if case .Success(let data) = result {
                     buffer = buffer + data
                     let (records, remaining) = try! Record.readMultiple(buffer, endianness: self.endianness)
                     for record in records {
@@ -69,6 +69,9 @@ extension ServerViewController {
 
     func createClient() throws {
         clientChannel = try TCPChannel(hostname: "localhost", port: port)
+
+        print(clientChannel.address)
+
         clientChannel.configureSocket = {
             socket in
         }
@@ -100,7 +103,7 @@ extension ServerViewController {
 
         clientChannel.readCallback = {
             (result) in
-            if let error = result.error {
+            if case .Failure(let error) = result {
                 log?.debug("Client read callback: \(error)")
                 return
             }
@@ -138,7 +141,7 @@ extension ServerViewController {
         clientChannel.connect(retryDelay: 1) {
             (result) in
 
-            if let error = result.error {
+            if case .Failure(let error) = result {
                 assert(self.clientChannel.state.value == .Unconnected)
                 SwiftIO.log?.debug("Client connect callback: \(error)")
                 return

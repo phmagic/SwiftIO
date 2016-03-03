@@ -104,7 +104,7 @@ public class Retrier {
     }
 
     private func callback(result: Result <Void>) -> Bool {
-        if result.isFailure {
+        if case .Failure = result {
             if let maximumAttempts = options.maximumAttempts where attempts.value > maximumAttempts {
                 return false
             }

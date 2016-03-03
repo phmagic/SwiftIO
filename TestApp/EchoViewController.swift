@@ -73,11 +73,11 @@ class EchoViewController: NSViewController {
 
             channel.readCallback = {
                 (result) in
-                if let error = result.error {
+                if case .Failure(let error) = result {
                     log?.debug(error)
                     return
                 }
-                if let data = result.value {
+                if case .Success(let data) = result {
                     let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
 
                     Async.main() {
@@ -94,7 +94,7 @@ class EchoViewController: NSViewController {
                     self.updateConnected()
                 }
 
-                if let error = result.error {
+                if case .Failure(let error) = result {
                     assert(self.channel.state.value == .Unconnected)
                     log?.debug("Connection failure: \(error)")
                     return

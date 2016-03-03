@@ -187,7 +187,7 @@ public class TCPChannel {
             strong_self.connect() {
                 (result: Result <Void>) -> Void in
 
-                if let error = result.error {
+                if case .Failure(let error) = result {
                     if retryCallback(.Failure(error)) == false {
                         log?.debug("\(strong_self): Connection retry failed with \(error).")
                         callback(result)
@@ -300,7 +300,7 @@ public class TCPChannel {
                 return
             }
 
-            if result.isFailure {
+            if case .Failure = result {
                 strong_self.disconnectCallback?(result)
                 strong_self.disconnectCallback = nil
             }

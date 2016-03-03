@@ -76,7 +76,7 @@ class TCPClientViewController: NSViewController {
 
         clientChannel.readCallback = {
             (result) in
-            if let error = result.error {
+            if case .Failure(let error) = result {
                 log?.debug("Client read callback: \(error)")
                 return
             }
@@ -93,7 +93,7 @@ class TCPClientViewController: NSViewController {
         clientChannel.connect(retryDelay: 1 / 8) {
             (result) in
 
-            if let error = result.error {
+            if case .Failure(let error) = result {
                 assert(self.clientChannel.state.value == .Unconnected)
                 SwiftIO.log?.debug("Client connect callback: \(error)")
                 return
