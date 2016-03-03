@@ -113,7 +113,15 @@ public class TCPChannel {
 
             do {
                 strong_self.state.value = .Connecting
-                let socket = try Socket.TCP()
+                let socket: Socket
+
+                if address.addressFamily == AF_INET6 {
+                    socket = try Socket(domain: PF_INET6, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
+                }
+                else {
+                    socket = try Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
+                }
+
                 strong_self.configureSocket?(socket)
                 try socket.connect(address, port: port)
                 strong_self.socket = socket
