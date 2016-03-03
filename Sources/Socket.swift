@@ -71,7 +71,7 @@ public extension Socket {
 
     func connect(address: Address, port: UInt16) throws {
         var addr = address.to_sockaddr(port: port)
-        let status = Darwin.connect(descriptor, &addr, socklen_t(sizeof(sockaddr)))
+        let status = Darwin.connect(descriptor, &addr, socklen_t(addr.sa_len))
         guard status == 0 else {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
