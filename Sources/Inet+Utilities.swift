@@ -229,13 +229,7 @@ public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout
 
 public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info: UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) throws {
     var hints = hints
-    let result = hostname.withCString() {
-        (hostnameBuffer: UnsafePointer <Int8>) -> Int32 in
-        return service.withCString() {
-            (serviceBuffer: UnsafePointer <Int8>) -> Int32 in
-            return getaddrinfo(hostnameBuffer, serviceBuffer, &hints, info)
-        }
-    }
+    let result = getaddrinfo(hostname, service, &hints, info)
     guard result == 0 else {
         throw Errno(rawValue: errno) ?? Error.Unknown
     }
@@ -244,13 +238,8 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info
 public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws {
     var hints = hints
     var info = UnsafeMutablePointer<addrinfo>()
-    let result = hostname.withCString() {
-        (hostnameBuffer: UnsafePointer <Int8>) -> Int32 in
-        return service.withCString() {
-            (serviceBuffer: UnsafePointer <Int8>) -> Int32 in
-            return getaddrinfo(hostnameBuffer, serviceBuffer, &hints, &info)
-        }
-    }
+    let result = getaddrinfo(hostname, service, &hints, &info)
+
     guard result == 0 else {
         throw Errno(rawValue: errno) ?? Error.Unknown
     }

@@ -91,9 +91,7 @@ public class FileStream {
             flags |= (append ? O_APPEND : 0) | (create ? O_CREAT : 0)
         }
 
-        let fd = path.withCString() {
-            return Darwin.open($0, flags, 0o644)
-        }
+        let fd = Darwin.open(path, flags, 0o644)
         guard fd > 0 else {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
