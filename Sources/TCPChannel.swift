@@ -34,7 +34,7 @@ import Foundation
 
 import SwiftUtilities
 
-public class TCPChannel {
+public class TCPChannel: Connectable {
 
     public enum State {
         case Unconnected
