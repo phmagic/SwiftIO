@@ -194,7 +194,7 @@ public extension Address {
 public extension Address {
 
     init(address: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws {
-        let addresses: [Address] = try Address.addresses(address, family: family)
+        let addresses: [Address] = try Address.addresses(address, `protocol`: `protocol`, family: family)
         self = addresses.first!
     }
 
@@ -261,8 +261,8 @@ public extension Address {
 
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addr = $0.memory.ai_addr.memory
-            let address = try Address(addr: addr)
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
+            let address = try Address(addr: addr)
             addresses.append(address)
 
 //    public var ai_family: Int32 /* PF_xxx */
