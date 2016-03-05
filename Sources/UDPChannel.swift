@@ -42,7 +42,6 @@ public class UDPChannel {
     public let label: String?
 
     public let address: Address
-    public let port: UInt16
     public var qos = QOS_CLASS_DEFAULT
 
     public var readHandler: (Datagram -> Void)? = loggingReadHandler
@@ -58,18 +57,18 @@ public class UDPChannel {
     
     // MARK: - Initialization
 
-    public init(label: String? = nil, address: Address, port: UInt16, readHandler: (Datagram -> Void)? = nil) throws {
+    public init(label: String? = nil, address: Address, readHandler: (Datagram -> Void)? = nil) throws {
         self.label = label
         self.address = address
-        self.port = port
+        assert(self.address.port != nil)
         if let readHandler = readHandler {
             self.readHandler = readHandler
         }
     }
 
     public convenience init(label: String? = nil, hostname: String = "0.0.0.0", port: UInt16, family: ProtocolFamily? = nil, readHandler: (Datagram -> Void)? = nil) throws {
-        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family)
-        try self.init(label: label, address: addresses[0], port: port, readHandler: readHandler)
+        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family, port: port)
+        try self.init(label: label, address: addresses[0], readHandler: readHandler)
     }
 
     // MARK: - Actions
@@ -131,7 +130,7 @@ public class UDPChannel {
             }
 
             do {
-                try strong_self.socket.bind(strong_self.address, port: strong_self.port)
+                try strong_self.socket.bind(strong_self.address)
 
                 strong_self.resumed = true
 
@@ -158,12 +157,13 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: NSData, address: Address? = nil, port: UInt16? = nil, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: NSData, address: Address? = nil, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
-        try send(data, address: address ?? self.address, port: port ?? self.port, writeHandler: writeHandler)
+
+        try send(data, address: address ?? self.address, writeHandler: writeHandler)
     }
 
-    public func send(data: DispatchData <Void>, address: Address! = nil, port: UInt16, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
+    public func send(data: DispatchData <Void>, address: Address! = nil, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
         precondition(receiveQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 
@@ -177,8 +177,7 @@ public class UDPChannel {
             log?.debug("\(strong_self): Send")
 
             let address: Address = address ?? strong_self.address
-            var addr = address.to_sockaddr(port: port)
-
+            var addr = address.to_sockaddr()
             let result = data.createMap() {
                 (_, buffer) in
                 return Darwin.sendto(strong_self.socket.descriptor, buffer.baseAddress, buffer.count, 0, &addr, socklen_t(addr.sa_len))
@@ -216,19 +215,19 @@ private extension UDPChannel {
         let data: NSMutableData! = NSMutableData(length: 4096)
 
         var addressData = Array <Int8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
-        let (result, address, port) = try addressData.withUnsafeMutableBufferPointer() {
-            (inout ptr: UnsafeMutableBufferPointer <Int8>) -> (Int, Address?, UInt16?) in
+        let (result, address) = try addressData.withUnsafeMutableBufferPointer() {
+            (inout ptr: UnsafeMutableBufferPointer <Int8>) -> (Int, Address?) in
             var addrlen: socklen_t = socklen_t(SOCK_MAXADDRLEN)
             let result = Darwin.recvfrom(socket.descriptor, data.mutableBytes, data.length, 0, UnsafeMutablePointer<sockaddr> (ptr.baseAddress), &addrlen)
             guard result >= 0 else {
-                return (result, nil, nil)
+                return (result, nil)
             }
 
             let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress).memory
-            let address = try Address(addr: addr)
-
             let port = UInt16(networkEndian: addr.port)
-            return (result, address, port)
+            let address = try Address(addr: addr, port: port)
+
+            return (result, address)
         }
 
         guard result >= 0 else {
@@ -238,7 +237,7 @@ private extension UDPChannel {
         }
 
         data.length = result
-        let datagram = Datagram(from: (address!, port!), timestamp: Timestamp(), data: DispatchData <Void> (buffer: data.toUnsafeBufferPointer()))
+        let datagram = Datagram(from: address!, timestamp: Timestamp(), data: DispatchData <Void> (buffer: data.toUnsafeBufferPointer()))
         readHandler?(datagram)
     }
 

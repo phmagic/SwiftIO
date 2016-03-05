@@ -69,16 +69,16 @@ public extension Socket {
 
 public extension Socket {
 
-    func connect(address: Address, port: UInt16) throws {
-        var addr = address.to_sockaddr(port: port)
+    func connect(address: Address) throws {
+        var addr = address.to_sockaddr()
         let status = Darwin.connect(descriptor, &addr, socklen_t(addr.sa_len))
         guard status == 0 else {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 
-    func bind(address: Address, port: UInt16) throws {
-        var addr = address.to_sockaddr(port: port)
+    func bind(address: Address) throws {
+        var addr = address.to_sockaddr()
         let status = Darwin.bind(descriptor, &addr, socklen_t(addr.sa_len))
         if status != 0 {
             throw Errno(rawValue: errno) ?? Error.Unknown
@@ -94,7 +94,7 @@ public extension Socket {
         }
     }
 
-    func accept() throws -> (Socket, Address, UInt16) {
+    func accept() throws -> (Socket, Address) {
         precondition(type == SOCK_STREAM, "\(__FUNCTION__) should only be used on `SOCK_STREAM` sockets")
 
         var incoming = sockaddr()
@@ -104,11 +104,11 @@ public extension Socket {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
 
-        let (address, port) = try Address.fromSockaddr(incoming)
-        return (Socket(socket), address, port)
+        let address = try Address.fromSockaddr(incoming)
+        return (Socket(socket), address)
     }
 
-    func getPeer() throws -> (Address, UInt16) {
+    func getPeer() throws -> Address {
         var addr = sockaddr()
         var addrSize = socklen_t(sizeof(sockaddr))
         let status = getpeername(descriptor, &addr, &addrSize)

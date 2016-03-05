@@ -40,8 +40,8 @@ class ServerViewController: NSViewController {
 extension ServerViewController {
 
     func createServer() throws {
-        let address = try Address(address: "localhost", `protocol`: InetProtocol.TCP, family: ProtocolFamily.INET)
-        server = try Server(address: address, port: port)
+        let address = try Address(address: "localhost", `protocol`: InetProtocol.TCP, family: ProtocolFamily.INET, port: self.port)
+        server = try Server(address: address)
 
         server.clientWillConnect = {
             (client) in
@@ -68,9 +68,7 @@ extension ServerViewController {
     }
 
     func createClient() throws {
-        clientChannel = try TCPChannel(hostname: "localhost", port: port)
-
-        print(clientChannel.address)
+        clientChannel = try TCPChannel(hostname: "127.0.0.1", port: port)
 
         clientChannel.configureSocket = {
             socket in

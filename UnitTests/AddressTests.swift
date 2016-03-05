@@ -50,10 +50,10 @@ class AddressTests: XCTestCase {
 //        XCTAssertEqual(address.address, "::")
 //    }
 
-    func testLocahost3() {
-        let addresses: [(Address,InetProtocol,ProtocolFamily,String?)] = try! Address.addresses("apple.com")
-        addresses.forEach() { print($0) }
-    }
+//    func testLocahost3() {
+//        let addresses: [(Address,InetProtocol,ProtocolFamily,String?)] = try! Address.addresses("apple.com")
+//        addresses.forEach() { print($0) }
+//    }
 
     func testInterfaces() {
         let addresses = try! Address.addressesForInterfaces()

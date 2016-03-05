@@ -63,7 +63,7 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
         }
 
         let data: DispatchData <Void> = try stream.readData(length: Int(dataLength))
-        let datagram = try Datagram(from: (Address(address: address), UInt16(port)), timestamp: Timestamp(absoluteTime: absoluteTime), data: data)
+        let datagram = try Datagram(from: Address(address: address, port: UInt16(port)), timestamp: Timestamp(absoluteTime: absoluteTime), data: data)
 
         return datagram
     }
@@ -71,8 +71,8 @@ extension Datagram: BinaryInputStreamable, BinaryOutputStreamable {
     public func writeTo(stream: BinaryOutputStream) throws {
 
         let metadata: [String: AnyObject] = [
-            "address": from.0.address,
-            "port": Int(from.1),
+            "address": from.address,
+            "port": Int(from.port ?? 0),
             "timestamp": timestamp.absoluteTime,
         ]
         let json = try NSJSONSerialization.dataWithJSONObject(metadata, options: NSJSONWritingOptions())

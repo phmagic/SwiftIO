@@ -45,7 +45,6 @@ public class TCPChannel: Connectable {
 
     public let label: String?
     public let address: Address
-    public let port: UInt16
     public private(set) var state: Atomic <State>!
 
     // MARK: Callbacks
@@ -83,22 +82,24 @@ public class TCPChannel: Connectable {
 
     // MARK: Initialization
 
-    public init(label: String? = nil, address: Address, port: UInt16, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+    public init(label: String? = nil, address: Address, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+        assert(address.port != nil)
+
         self.label = label
         self.address = address
-        self.port = port
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
         self.queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.queue", queueAttribute)
         self.state = Atomic(State.Unconnected, lock: self.lock) {
             [weak self] (old, new) in
             self?.stateChanged?(old, new)
         }
+
     }
 
     public func connect(callback: Result <Void> -> Void) {
 
         dispatch_async(queue) {
-            [weak self, address, port] in
+            [weak self, address] in
 
             guard let strong_self = self else {
                 return
@@ -123,7 +124,7 @@ public class TCPChannel: Connectable {
                 }
 
                 strong_self.configureSocket?(socket)
-                try socket.connect(address, port: port)
+                try socket.connect(address)
                 strong_self.socket = socket
                 strong_self.state.value = .Connected
                 try strong_self.createStream()
@@ -329,13 +330,13 @@ public class TCPChannel: Connectable {
 extension TCPChannel {
 
     public convenience init(label: String? = nil, hostname: String, port: UInt16, family: ProtocolFamily? = nil, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
-        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family)
-        try self.init(label: label, address: addresses.first!, port: port)
+        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family, port: port)
+        try self.init(label: label, address: addresses.first!)
     }
 
     /// Create a TCPChannel from a pre-existing socket. The setup closure is called after the channel is created but before the state has changed to `Connecting`. This gives consumers a chance to configure the channel before it is fully connected.
-    public convenience init(label: String? = nil, address: Address, port: UInt16, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, setup: (TCPChannel -> Void)? = nil) throws {
-        try self.init(label: label, address: address, port: port)
+    public convenience init(label: String? = nil, address: Address, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, setup: (TCPChannel -> Void)? = nil) throws {
+        try self.init(label: label, address: address)
         self.socket = socket
         setup?(self)
         state.value = .Connected

@@ -55,7 +55,7 @@ class EchoViewController: NSViewController {
             task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
             sleep(1)
 
-            channel = try TCPChannel(hostname: "localhost", port: 12345)
+            channel = try TCPChannel(hostname: "127.0.0.1", port: 12345)
             channel.stateChanged = {
                 (old, new) in
                 log?.debug("STATE CHANGE: \(old) -> \(new)")

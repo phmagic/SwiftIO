@@ -37,5 +37,12 @@ import SwiftIO
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
+
+
+        let addresses: [Address] = try! Address.addresses("0.0.0.0", port: 12345)
+        for address in addresses {
+            debugPrint(address)
+        }
+
     }
 }

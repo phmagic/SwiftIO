@@ -12,9 +12,8 @@ import SwiftUtilities
 public class Server {
 
     public let address: Address
-    public let port: UInt16
 
-    public var clientShouldConnect: ((Address, UInt16) -> Bool)?
+    public var clientShouldConnect: (Address -> Bool)?
     public var clientWillConnect: (TCPChannel -> Void)?
     public var clientDidConnect: (TCPChannel -> Void)?
     public var clientDidDisconnect: (TCPChannel -> Void)?
@@ -33,9 +32,8 @@ public class Server {
     private let queue = dispatch_queue_create("test", DISPATCH_QUEUE_SERIAL)
     private var connections = SafeSet <TCPChannel> ()
 
-    public init(address: Address, port: UInt16) throws {
+    public init(address: Address) throws {
         self.address = address
-        self.port = port
     }
 
     public func startListening() throws {
@@ -46,7 +44,7 @@ public class Server {
 
         listeningSocket.socketOptions.reuseAddress = true
 
-        try listeningSocket.bind(address, port: port)
+        try listeningSocket.bind(address)
         try listeningSocket.setNonBlocking(true)
         try listeningSocket.listen()
 
@@ -94,13 +92,13 @@ public class Server {
         guard let listeningSocket = listeningSocket else {
             throw Error.Generic("Socket() failed")
         }
-        let (socket, address, port) = try listeningSocket.accept()
+        let (socket, address) = try listeningSocket.accept()
 
-        if let clientShouldConnect = clientShouldConnect where clientShouldConnect(address, port) == false {
+        if let clientShouldConnect = clientShouldConnect where clientShouldConnect(address) == false {
             return
         }
 
-        let channel = try TCPChannel(address: address, port: port, socket: socket) {
+        let channel = try TCPChannel(address: address, socket: socket) {
             (channel) in
 
             self.clientWillConnect?(channel)

@@ -24,10 +24,10 @@ class UDPEchoViewController: NSViewController {
         family = .INET
 
         // server
-        udpServer = try! UDPChannel(label: "example.udp.server", hostname: "localhost", port: port, family: family) {
+        udpServer = try! UDPChannel(label: "example.udp.server", hostname: "127.0.0.1", port: port, family: family) {
             (datagram) in
             log?.debug("UDPEcho: Server received - \(datagram)")
-            try! self.udpServer.send(datagram.data, address: datagram.from.0, port: datagram.from.1, writeHandler: nil)
+            try! self.udpServer.send(datagram.data, address: datagram.from, writeHandler: nil)
         }
         
         udpServer.configureSocket = { socket in
@@ -36,7 +36,7 @@ class UDPEchoViewController: NSViewController {
 
         // client
         // TODO: UDPChannels should not need an address, just to write.
-        udpClient = try! UDPChannel(label: "example.udp.client", hostname: "localhost", port: port + 1, family: family) {
+        udpClient = try! UDPChannel(label: "example.udp.client", hostname: "127.0.0.1", port: port + 1, family: family) {
             (datagram) in
             log?.debug("UDPEcho: Client received - \(datagram)")
         }
@@ -59,8 +59,8 @@ class UDPEchoViewController: NSViewController {
 
     @IBAction func pingServer(sender: AnyObject) {
         let data = "0xDEADBEEF".dataUsingEncoding(NSUTF8StringEncoding)!
-        let remoteServer = try! Address(address: "localhost", family: family)
-        try! udpClient.send(data, address: remoteServer, port: port)
+        let remoteServer = try! Address(address: "127.0.0.1", family: family, port: port)
+        try! udpClient.send(data, address: remoteServer)
     }
 
 

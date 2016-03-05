@@ -45,13 +45,16 @@ public struct Address {
     }
 
     let internalAddress: InternalAddress
+    public let port: UInt16?
 
-    init(addr: in_addr) {
+    public init(addr: in_addr, port: UInt16? = nil) {
         internalAddress = .INET(addr)
+        self.port = port
     }
 
-    init(addr: in6_addr) {
+    public init(addr: in6_addr, port: UInt16? = nil) {
         internalAddress = .INET6(addr)
+        self.port = port
     }
 
     var addressFamily: Int32 {
@@ -62,6 +65,10 @@ public struct Address {
                 return AF_INET6
         }
     }
+
+    var family: ProtocolFamily {
+        return ProtocolFamily(rawValue: addressFamily)!
+    }
 }
 
 extension Address: Equatable {
@@ -70,9 +77,9 @@ extension Address: Equatable {
 public func == (lhs: Address, rhs: Address) -> Bool {
     switch (lhs.internalAddress, rhs.internalAddress) {
         case (.INET(let lhs_addr), .INET(let rhs_addr)):
-            return lhs_addr == rhs_addr
+            return lhs_addr == rhs_addr && lhs.port == rhs.port
         case (.INET6(let lhs_addr), .INET6(let rhs_addr)):
-            return lhs_addr == rhs_addr
+            return lhs_addr == rhs_addr && lhs.port == rhs.port
         default:
             return false
     }
@@ -87,19 +94,20 @@ extension Address: Hashable {
 
 extension Address: CustomStringConvertible {
     public var description: String {
-        return address
+        if let port = port {
+            return "\(address):\(port)"
+        }
+        else {
+            return address
+        }
     }
 }
 
 
 extension Address: CustomDebugStringConvertible {
     public var debugDescription: String {
-        switch internalAddress {
-            case .INET:
-                return "INET(\(address))"
-            case .INET6:
-                return "INET6(\(address))"
-        }
+
+        return "Address(address: \"\(address)\", port: \((port != nil ? String(port!) : "nil")), family: \(family))"
     }
 }
 
@@ -108,6 +116,7 @@ extension Address: CustomReflectable {
         return Mirror(self, children: [
             "family": String(addressFamily),
             "address": String(address),
+            "port": port,
         ])
     }
 }
@@ -149,24 +158,22 @@ extension Address {
 
 public extension Address {
 
-    static func fromSockaddr(addr: sockaddr) throws -> (Address, UInt16) {
+    static func fromSockaddr(addr: sockaddr) throws -> Address {
         switch Int32(addr.sa_family) {
             case AF_INET:
                 let addr = addr.to_sockaddr_in()
-                let address = Address(addr: addr.sin_addr)
-                let port = addr.sin_port
-                return (address, port)
+                let address = Address(addr: addr.sin_addr, port: addr.sin_port)
+                return address
             case AF_INET6:
                 let addr = addr.to_sockaddr_in6()
-                let address = Address(addr: addr.sin6_addr)
-                let port = addr.sin6_port
-                return (address, port)
+                let address = Address(addr: addr.sin6_addr, port: addr.sin6_port)
+                return address
             default:
                 throw Error.Generic("Invalid sockaddr family")
         }
     }
 
-    init(addr: sockaddr) throws {
+    init(addr: sockaddr, port: UInt16? = nil) throws {
         switch Int32(addr.sa_family) {
             case AF_INET:
                 let sockaddr = addr.to_sockaddr_in()
@@ -177,9 +184,13 @@ public extension Address {
             default:
                 throw Error.Generic("Invalid sockaddr family")
         }
+        self.port = port
     }
 
-    func to_sockaddr(port port: UInt16) -> sockaddr {
+    func to_sockaddr() -> sockaddr {
+        guard let port = port else {
+            fatalError("No port")
+        }
         switch internalAddress {
             case .INET(let addr):
                 return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
@@ -193,12 +204,12 @@ public extension Address {
 
 public extension Address {
 
-    init(address: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws {
-        let addresses: [Address] = try Address.addresses(address, `protocol`: `protocol`, family: family)
+    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws {
+        let addresses: [Address] = try Address.addresses(address, port: port, `protocol`: `protocol`, family: family)
         self = addresses.first!
     }
 
-    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [(Address, InetProtocol, ProtocolFamily, String?)] {
+    static func addresses(hostname: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [(Address, InetProtocol, ProtocolFamily, String?)] {
         var results: [(Address, InetProtocol, ProtocolFamily, String?)] = []
 
         var hints = addrinfo()
@@ -216,7 +227,7 @@ public extension Address {
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addrinfo = $0.memory
             let addr = addrinfo.ai_addr.memory
-            let address = try Address(addr: addr)
+            let address = try Address(addr: addr, port: port)
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
 
             let family = ProtocolFamily(rawValue: addrinfo.ai_family)
@@ -244,7 +255,7 @@ public extension Address {
     }
 
 
-    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [Address] {
+    static func addresses(hostname: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [Address] {
         var addresses: [Address] = []
 
         var hints = addrinfo()
@@ -262,7 +273,7 @@ public extension Address {
         try getaddrinfo(hostname, service: "", hints: hints) {
             let addr = $0.memory.ai_addr.memory
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
-            let address = try Address(addr: addr)
+            let address = try Address(addr: addr, port: port)
             addresses.append(address)
 
 //    public var ai_family: Int32 /* PF_xxx */

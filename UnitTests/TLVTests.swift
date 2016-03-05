@@ -59,9 +59,9 @@ class TLVTests: XCTestCase {
         let data = DispatchData <Void> (buffer: memory.buffer)
 
         let (records, _) = try! RecordType.readMultiple(data, endianness: .Native)
-        for record in records {
-            print(record)
-        }
+//        for record in records {
+//            print(record)
+//        }
 
         // TODO: Actually test the data here!
     }

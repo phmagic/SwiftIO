@@ -37,15 +37,15 @@ import SwiftUtilities
 class DatagramTests: XCTestCase {
 
     func testExample() {
-        let address = try! Address(address: "localhost")
+        let address = try! Address(address: "127.0.0.1", port: 12345)
 
-        let port: UInt16 = 12345
         let buffer = DispatchData <Void> (buffer: "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!.toUnsafeBufferPointer())
-        let datagram = Datagram(from: (address, port), data: buffer)
+        let datagram = Datagram(from: address, data: buffer)
         let encodedData = try! NSData(streamable: datagram)
         let stream = MemoryStream(buffer: encodedData.toUnsafeBufferPointer())
         let decodedDatagram = try! Datagram.readFrom(stream)
 
+        XCTAssertEqual(datagram.from, decodedDatagram.from)
         XCTAssertEqual(datagram, decodedDatagram)
     }
 
