@@ -50,25 +50,18 @@ class TCPClientViewController: NSViewController {
             socket.socketOptions.keepAliveInterval = 10
             socket.socketOptions.keepAliveCount = 10
         }
-        clientChannel.stateChanged = {
+        clientChannel.state.addObserver(self, queue: dispatch_get_main_queue()) {
             (old, new) in
 
             log?.debug("State changed: \(old) -> \(new)")
 
-            Async.main() {
-                self.state = String(new)
-            }
-
+            self.state = String(new)
 
             switch (old, new) {
                 case (_, .Unconnected):
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.connected = false
-                    }
+                    self.connected = false
                 case (_, .Connected):
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.connected = true
-                    }
+                    self.connected = true
                 default:
                     break
             }

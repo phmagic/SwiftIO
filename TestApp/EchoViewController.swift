@@ -56,7 +56,7 @@ class EchoViewController: NSViewController {
             sleep(1)
 
             channel = try TCPChannel(hostname: "127.0.0.1", port: 12345)
-            channel.stateChanged = {
+            channel.state.addObserver(self, queue: dispatch_get_main_queue()) {
                 (old, new) in
                 log?.debug("STATE CHANGE: \(old) -> \(new)")
             }

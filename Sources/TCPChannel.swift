@@ -45,7 +45,7 @@ public class TCPChannel: Connectable {
 
     public let label: String?
     public let address: Address
-    public private(set) var state: Atomic <State>!
+    public let state = ObservableProperty(State.Unconnected)
 
     // MARK: Callbacks
 
@@ -57,11 +57,6 @@ public class TCPChannel: Connectable {
 
     /// Return true from shouldReconnect to initiate a reconnect. Does not make sense on a server socket.
     public var shouldReconnect: (Void -> Bool)? {
-        willSet {
-            preconditionConnected()
-        }
-    }
-    public var stateChanged: ((State, State) -> Void)? {
         willSet {
             preconditionConnected()
         }
@@ -89,10 +84,6 @@ public class TCPChannel: Connectable {
         self.address = address
         let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
         self.queue = dispatch_queue_create("io.schwa.SwiftIO.TCP.queue", queueAttribute)
-        self.state = Atomic(State.Unconnected, lock: self.lock) {
-            [weak self] (old, new) in
-            self?.stateChanged?(old, new)
-        }
 
     }
 

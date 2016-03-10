@@ -103,8 +103,7 @@ public class Server {
 
             self.clientWillConnect?(channel)
 
-            let oldStateChangeCallback = channel.stateChanged
-            channel.stateChanged = {
+            channel.state.addObserver(self, queue: dispatch_get_main_queue()) {
                 [weak self] (old, new) in
 
                 guard let strong_self = self else {
@@ -115,8 +114,6 @@ public class Server {
                     strong_self.connections.remove(channel)
                     strong_self.clientDidDisconnect?(channel)
                 }
-
-                oldStateChangeCallback?(old, new)
             }
 
         }
