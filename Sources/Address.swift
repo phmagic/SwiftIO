@@ -299,7 +299,7 @@ public extension Address {
                 let address = try Address(addr: sockAddr.memory)
                 return address
             }
-            return (interface, addresses)
+            return (interface, addresses.sort(<))
         }
         return Dictionary <String, [Address]> (pairs)
     }
