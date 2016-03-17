@@ -27,7 +27,7 @@ class Inet_UtilitiesTests: XCTestCase {
         var converted: String = ""
 
         if case .INET(var addr) = address.internalAddress {
-            converted = try! inet_ntop(addressFamily: address.addressFamily, address: &addr)
+            converted = try! inet_ntop(addressFamily: address.family.rawValue, address: &addr)
         }
 
         XCTAssertEqual(ipv4, converted, "Addresses not equal")
@@ -39,7 +39,7 @@ class Inet_UtilitiesTests: XCTestCase {
         var converted: String = ""
 
         if case .INET6(var addr) = address.internalAddress {
-            converted = try! inet_ntop(addressFamily: address.addressFamily, address: &addr)
+            converted = try! inet_ntop(addressFamily: address.family.rawValue, address: &addr)
         }
 
         XCTAssertEqual(ipv6, converted, "Addresses not equal")
