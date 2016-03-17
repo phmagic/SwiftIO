@@ -9,6 +9,8 @@
 #ifndef SwiftIOSupport_h
 #define SwiftIOSupport_h
 
+// Generally contains code that cannot be represented as pure Swift for whatever reasons.
+
 extern NSDictionary *getAddressesForInterfaces();
 extern int setNonblocking(int socket, BOOL flag);
 
