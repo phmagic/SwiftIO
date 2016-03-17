@@ -25,13 +25,29 @@ NSDictionary *getAddressesForInterfaces() {
     // Loop through linked list of interfaces
     struct ifaddrs *current = interfaces;
     while (current != NULL) {
-        if (current->ifa_addr->sa_family == AF_INET) {
-            NSString *interfaceName = [NSString stringWithUTF8String:current->ifa_name];
-
-            NSData *addressData = [NSData dataWithBytes:current->ifa_addr length:current->ifa_addr->sa_len];
-
-            addressesForInterfaces[interfaceName] = addressData;
+        NSString *interfaceName = [NSString stringWithUTF8String:current->ifa_name];
+        NSArray *addressesForInterface = addressesForInterfaces[interfaceName];
+        if (addressesForInterface == nil) {
+            addressesForInterface = @[];
         }
+
+
+        if (current->ifa_addr->sa_family == AF_INET) {
+            NSData *addressData = [NSData dataWithBytes:current->ifa_addr length:current->ifa_addr->sa_len];
+            addressesForInterface = [addressesForInterface arrayByAddingObject: addressData];
+        }
+        else if (current->ifa_addr->sa_family == AF_INET6) {
+            NSData *addressData = [NSData dataWithBytes:current->ifa_addr length:current->ifa_addr->sa_len];
+            addressesForInterface = [addressesForInterface arrayByAddingObject: addressData];
+        }
+        else if (current->ifa_addr->sa_family == AF_LINK ){
+            // TODO: Nothing to do here.
+        } else {
+            NSLog(@"Unknown family: %d", current->ifa_addr->sa_family);
+        }
+
+        addressesForInterfaces[interfaceName] = addressesForInterface;
+
         current = current->ifa_next;
     }
 

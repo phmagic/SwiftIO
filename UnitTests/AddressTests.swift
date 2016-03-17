@@ -56,7 +56,7 @@ class AddressTests: XCTestCase {
 //    }
 
     func testInterfaces() {
-        let addresses = try! Address.addressesForInterfaces()
-        XCTAssertEqual(addresses["lo0"]!.address, "127.0.0.1")
+        let addresses = try! Address.addressesForInterfaces()["lo0"]![0]
+        XCTAssertEqual(addresses.address, "127.0.0.1")
     }
 }

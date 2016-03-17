@@ -6,22 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		45A2209B1B84320E00809FDB /* All */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 45A2209E1B84320E00809FDB /* Build configuration list for PBXAggregateTarget "All" */;
-			buildPhases = (
-			);
-			dependencies = (
-				4569C2AA1C178BAD005E5215 /* PBXTargetDependency */,
-				45A220A41B8432B100809FDB /* PBXTargetDependency */,
-				45A220A61B8432B100809FDB /* PBXTargetDependency */,
-			);
-			name = All;
-			productName = All;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		45005E9B1C18CFC80077B318 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45005E9A1C18CFC80077B318 /* Socket.swift */; };
 		45005E9C1C18CFC80077B318 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45005E9A1C18CFC80077B318 /* Socket.swift */; };
@@ -71,7 +55,7 @@
 		45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */; };
 		45D663B11C571FF000967B24 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663B01C571FF000967B24 /* SocketOptions.swift */; };
 		45D663B21C571FF000967B24 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663B01C571FF000967B24 /* SocketOptions.swift */; };
-		45DAC1431C17BF2E0013C4D6 /* ServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */; };
+		45DAC1431C17BF2E0013C4D6 /* TCPServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */; };
 		45DD2D9E1B7656E90002994A /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
 		45DD2DA01B7657390002994A /* SwiftUtilities.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		45DD2DA21B766FC70002994A /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DD2DA11B766FC70002994A /* Address.swift */; };
@@ -97,7 +81,7 @@
 		45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289751B3C8E6D00EDBBAE /* FileStream.swift */; };
 		45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289771B3C8E7300EDBBAE /* MemoryStream.swift */; };
 		45E662651C331709004737E1 /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E662641C331709004737E1 /* StreamTests.swift */; };
-		45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E80CF71C18BCD5009AAD98 /* Server.swift */; };
+		45E80CF81C18BCD5009AAD98 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E80CF71C18BCD5009AAD98 /* TCPServer.swift */; };
 		45F356421C1A0D920031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F356431C1A0DAD0031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F98E371C88E28000A8A099 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F98E361C88E28000A8A099 /* Connectable.swift */; };
@@ -107,28 +91,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4569C2A91C178BAD005E5215 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45DD2DAA1B76AD850002994A;
-			remoteInfo = TestApp;
-		};
 		45A220A11B84321800809FDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45DEC6AA1B0E8FEE00B7C234;
-			remoteInfo = SwiftIO_OSX;
-		};
-		45A220A31B8432B100809FDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45E240051B0E8A700001F5B9;
-			remoteInfo = SwiftIO_iOS;
-		};
-		45A220A51B8432B100809FDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
 			proxyType = 1;
@@ -201,7 +164,7 @@
 		45D663AB1C56DA3800967B24 /* Retrier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Retrier.swift; sourceTree = "<group>"; };
 		45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientViewController.swift; sourceTree = "<group>"; };
 		45D663B01C571FF000967B24 /* SocketOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketOptions.swift; sourceTree = "<group>"; };
-		45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerViewController.swift; sourceTree = "<group>"; };
+		45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerViewController.swift; sourceTree = "<group>"; };
 		45DD2DA11B766FC70002994A /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		45DD2DA31B76700B0002994A /* Inet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inet.swift; sourceTree = "<group>"; };
 		45DD2DAB1B76AD850002994A /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -218,7 +181,7 @@
 		45E289751B3C8E6D00EDBBAE /* FileStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStream.swift; sourceTree = "<group>"; };
 		45E289771B3C8E7300EDBBAE /* MemoryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryStream.swift; sourceTree = "<group>"; };
 		45E662641C331709004737E1 /* StreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
-		45E80CF71C18BCD5009AAD98 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
+		45E80CF71C18BCD5009AAD98 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
 		45F356411C1A0D920031A299 /* BinaryStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryStreamable.swift; sourceTree = "<group>"; };
 		45F98E361C88E28000A8A099 /* Connectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connectable.swift; sourceTree = "<group>"; };
 		93B802D31C376C3900682E6D /* Inet+UtilitiesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Inet+UtilitiesTests.swift"; path = "UnitTests/Inet+UtilitiesTests.swift"; sourceTree = SOURCE_ROOT; };
@@ -316,9 +279,9 @@
 				45DD2DAD1B76AD850002994A /* AppDelegate.swift */,
 				45DD2DAF1B76AD850002994A /* EchoViewController.swift */,
 				93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */,
-				45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */,
+				45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */,
 				453329721C41664700D9C80C /* LogViewController.swift */,
-				45E80CF71C18BCD5009AAD98 /* Server.swift */,
+				45E80CF71C18BCD5009AAD98 /* TCPServer.swift */,
 				45982C701C421AB400FB09D9 /* SwitchControl.swift */,
 				457847161C178E5500EF9B35 /* Scratch.swift */,
 				45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */,
@@ -496,9 +459,6 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = schwa.io;
 				TargetAttributes = {
-					45A2209B1B84320E00809FDB = {
-						CreatedOnToolsVersion = 7.0;
-					};
 					45B9DE8B1B753363009FD963 = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -531,7 +491,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				45A2209B1B84320E00809FDB /* All */,
 				45E240051B0E8A700001F5B9 /* SwiftIO_iOS */,
 				45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */,
 				45B9DE8B1B753363009FD963 /* UnitTests */,
@@ -608,14 +567,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */,
-				45E80CF81C18BCD5009AAD98 /* Server.swift in Sources */,
+				45E80CF81C18BCD5009AAD98 /* TCPServer.swift in Sources */,
 				45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
 				45DD2DAE1B76AD850002994A /* AppDelegate.swift in Sources */,
 				453329731C41664700D9C80C /* LogViewController.swift in Sources */,
 				93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */,
 				457847171C178E5500EF9B35 /* Scratch.swift in Sources */,
-				45DAC1431C17BF2E0013C4D6 /* ServerViewController.swift in Sources */,
+				45DAC1431C17BF2E0013C4D6 /* TCPServerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -688,25 +647,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		4569C2AA1C178BAD005E5215 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45DD2DAA1B76AD850002994A /* TestApp */;
-			targetProxy = 4569C2A91C178BAD005E5215 /* PBXContainerItemProxy */;
-		};
 		45A220A21B84321800809FDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
 			targetProxy = 45A220A11B84321800809FDB /* PBXContainerItemProxy */;
-		};
-		45A220A41B8432B100809FDB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45E240051B0E8A700001F5B9 /* SwiftIO_iOS */;
-			targetProxy = 45A220A31B8432B100809FDB /* PBXContainerItemProxy */;
-		};
-		45A220A61B8432B100809FDB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
-			targetProxy = 45A220A51B8432B100809FDB /* PBXContainerItemProxy */;
 		};
 		45B9DE931B753363009FD963 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -727,20 +671,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		45A2209C1B84320E00809FDB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		45A2209D1B84320E00809FDB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		45B9DE941B753363009FD963 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1007,15 +937,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		45A2209E1B84320E00809FDB /* Build configuration list for PBXAggregateTarget "All" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				45A2209C1B84320E00809FDB /* Debug */,
-				45A2209D1B84320E00809FDB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		45B9DE961B753363009FD963 /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

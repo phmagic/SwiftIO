@@ -55,7 +55,9 @@ class EchoViewController: NSViewController {
             task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
             sleep(1)
 
-            channel = try TCPChannel(hostname: "127.0.0.1", port: 12345)
+            let address = try! Address(address: "127.0.0.1", port: 12345)
+
+            channel = try TCPChannel(address: address)
             channel.state.addObserver(self, queue: dispatch_get_main_queue()) {
                 (old, new) in
                 log?.debug("STATE CHANGE: \(old) -> \(new)")
@@ -65,7 +67,7 @@ class EchoViewController: NSViewController {
                 assert(self.channel.state.value == .Unconnected)
                 log?.debug("Disconnected!")
 
-                Async.main() {
+                dispatch_async(dispatch_get_main_queue()) {
                     self.updateConnected()
                 }
                 return true
@@ -80,7 +82,7 @@ class EchoViewController: NSViewController {
                 if case .Success(let data) = result {
                     let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
 
-                    Async.main() {
+                    dispatch_async(dispatch_get_main_queue()) {
                         log?.debug("Received: \(string)")
                         self.updateConnected()
                     }
@@ -90,7 +92,7 @@ class EchoViewController: NSViewController {
             channel.connect() {
                 (result) in
 
-                Async.main() {
+                dispatch_async(dispatch_get_main_queue()) {
                     self.updateConnected()
                 }
 

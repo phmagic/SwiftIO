@@ -107,12 +107,7 @@ public class TCPChannel: Connectable {
                 strong_self.state.value = .Connecting
                 let socket: Socket
 
-                if address.addressFamily == AF_INET6 {
-                    socket = try Socket(domain: PF_INET6, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
-                }
-                else {
-                    socket = try Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
-                }
+                socket = try Socket(domain: address.family.rawValue, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
 
                 strong_self.configureSocket?(socket)
                 try socket.connect(address)
@@ -121,16 +116,12 @@ public class TCPChannel: Connectable {
                 try strong_self.createStream()
                 log?.debug("\(strong_self): Connection success.")
                 callback(.Success())
-
-
             }
             catch let error {
                 strong_self.state.value = .Unconnected
                 log?.debug("\(strong_self): Connection failure: \(error).")
                 callback(.Failure(error))
             }
-
-
         }
     }
 
@@ -320,18 +311,21 @@ public class TCPChannel: Connectable {
 
 extension TCPChannel {
 
-    public convenience init(label: String? = nil, hostname: String, port: UInt16, family: ProtocolFamily? = nil, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
-        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .TCP, family: family, port: port)
-        try self.init(label: label, address: addresses.first!)
-    }
-
     /// Create a TCPChannel from a pre-existing socket. The setup closure is called after the channel is created but before the state has changed to `Connecting`. This gives consumers a chance to configure the channel before it is fully connected.
-    public convenience init(label: String? = nil, address: Address, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, setup: (TCPChannel -> Void)? = nil) throws {
+    public convenience init(label: String? = nil, address: Address, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, @noescape setup: (TCPChannel -> Void)) throws {
         try self.init(label: label, address: address)
         self.socket = socket
-        setup?(self)
+        setup(self)
         state.value = .Connected
         try createStream()
     }
 
+}
+
+// MARK: -
+
+extension TCPChannel: CustomStringConvertible {
+    public var description: String {
+        return "TCPChannel(label: \(label), address: \(address)), state: \(state.value))"
+    }
 }

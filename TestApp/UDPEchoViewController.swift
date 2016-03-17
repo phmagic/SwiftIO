@@ -24,23 +24,26 @@ class UDPEchoViewController: NSViewController {
         family = .INET
 
         // server
-        udpServer = try! UDPChannel(label: "example.udp.server", hostname: "127.0.0.1", port: port, family: family) {
+        let serverAddress = try! Address(address: "127.0.0.1", port: port, family: family)
+        udpServer = try! UDPChannel(label: "example.udp.server", address: serverAddress) {
             (datagram) in
             log?.debug("UDPEcho: Server received - \(datagram)")
             try! self.udpServer.send(datagram.data, address: datagram.from, writeHandler: nil)
         }
-        
+
         udpServer.configureSocket = { socket in
             socket.socketOptions.reuseAddress = true
         }
 
         // client
         // TODO: UDPChannels should not need an address, just to write.
-        udpClient = try! UDPChannel(label: "example.udp.client", hostname: "127.0.0.1", port: port + 1, family: family) {
+        let address = try! Address(address: "127.0.0.1", port: port + 1, family: family)
+
+        udpClient = try! UDPChannel(label: "example.udp.client", address: address) {
             (datagram) in
             log?.debug("UDPEcho: Client received - \(datagram)")
         }
-        
+
         udpClient.configureSocket = { socket in
             socket.socketOptions.reuseAddress = true
         }
