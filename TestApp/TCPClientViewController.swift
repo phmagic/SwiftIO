@@ -24,7 +24,7 @@ class TCPClientViewController: NSViewController {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         do {
-//            try createClient()
+            try createClient()
         }
         catch let error {
             fatalError("Error: \(error)")

@@ -224,9 +224,6 @@ public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout
 
 // MARK: -
 
-//public func getaddrinfo(hostname: String, service: String, hints: addrinfo) throws -> addrinfo {
-//}
-
 public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info: UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) throws {
     var hints = hints
     let result = getaddrinfo(hostname, service, &hints, info)

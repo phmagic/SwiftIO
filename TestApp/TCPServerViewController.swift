@@ -41,9 +41,6 @@ extension TCPServerViewController {
 
     func createServer() throws {
 
-//        let address = try Address("localhost:40000")
-//        server = try TCPServer(address: address)
-
         let address = try Address(address: "0.0.0.0", port: self.port)
         server = try TCPServer(address: address)
 

@@ -42,7 +42,6 @@ public protocol RandomAccess {
     func seek(offset: Int, whence: Whence) throws -> Int
 }
 
-
 public protocol RandomAccessInput: RandomAccess {
     func read(offset offset: Int, length: Int) throws -> DispatchData <Void>
 }

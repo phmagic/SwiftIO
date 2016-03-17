@@ -148,14 +148,6 @@ extension Address: CustomStringConvertible {
     }
 }
 
-
-//extension Address: CustomDebugStringConvertible {
-//    public var debugDescription: String {
-//
-//        return "Address(address: \"\(address)\", port: \((port != nil ? String(port!) : "nil")), family: \(family))"
-//    }
-//}
-
 extension Address: CustomReflectable {
     public func customMirror() -> Mirror {
         return Mirror(self, children: [
@@ -268,8 +260,6 @@ public extension Address {
         var addresses: [Address] = []
 
         var hints = addrinfo()
-//        hints.ai_flags |= AI_ADDRCONFIG // If the AI_ADDRCONFIG bit is set, IPv4 addresses shall be returned only if an IPv4 address is configured on the local system, and IPv6 addresses shall be returned only if an IPv6 address is con- figured on the local system.
-//        hints.ai_flags |= AI_CANONNAME
         hints.ai_flags |= AI_V4MAPPED // If the AI_V4MAPPED flag is specified along with an ai_family of AF_INET6, then getaddrinfo() shall return IPv4-mapped IPv6 addresses on finding no matching IPv6 addresses ( ai_addrlen shall be 16).  The AI_V4MAPPED flag shall be ignored unlessai_family equals AF_INET6.
 
         if let `protocol` = `protocol` {
@@ -311,13 +301,9 @@ public extension Address {
             }
             return (interface, addresses)
         }
-
-
-
         return Dictionary <String, [Address]> (pairs)
     }
 }
-
 
 private extension Dictionary {
     init(_ pairs: [Element]) {
