@@ -81,8 +81,8 @@ extension in6_addr: CustomStringConvertible {
 extension sockaddr {
 
     func to_sockaddr_in() -> sockaddr_in {
-        assert(sa_family == sa_family_t(AF_INET))
-        assert(Int(sa_len) == sizeof(sockaddr_in))
+        precondition(sa_family == sa_family_t(AF_INET))
+        precondition(Int(sa_len) == sizeof(sockaddr_in))
         var copy = self
         return withUnsafePointer(&copy) {
             (ptr: UnsafePointer <sockaddr>) -> sockaddr_in in
@@ -92,8 +92,8 @@ extension sockaddr {
     }
 
     func to_sockaddr_in6() -> sockaddr_in6 {
-        assert(sa_family == sa_family_t(AF_INET6))
-        assert(Int(sa_len) == sizeof(sockaddr_in6))
+        precondition(sa_family == sa_family_t(AF_INET6))
+        precondition(Int(sa_len) == sizeof(sockaddr_in6))
         var copy = self
         return withUnsafePointer(&copy) {
             (ptr: UnsafePointer <sockaddr>) -> sockaddr_in6 in

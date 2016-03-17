@@ -88,6 +88,15 @@ extension Address {
                 return AF_INET6
         }
     }
+
+    public func to_in_addr() -> in_addr? {
+        switch internalAddress {
+            case .INET(let addr):
+                return addr
+            default:
+                return nil
+        }
+    }
 }
 
 // MARK: -
