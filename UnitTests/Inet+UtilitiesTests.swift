@@ -8,8 +8,7 @@
 
 import XCTest
 
-@testable
-import SwiftIO
+@testable import SwiftIO
 
 class Inet_UtilitiesTests: XCTestCase {
 

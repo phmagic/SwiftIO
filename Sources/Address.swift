@@ -35,23 +35,42 @@ import Foundation
 /**
  *  A wrapper for a POSIX sockaddr structure.
  *
- *  sockaddr generally store IP address (either IPv4 or IPv6), port, protocol family and type.
+ *  sockaddr generally stores IP address (either IPv4 or IPv6), port, protocol family and type.
  */
 public struct Address {
 
-    enum InternalAddress {
+    /// Optional native endian port of the address
+    public let port: UInt16?
+
+
+    /// Create a new Address with a different port
+    public func addressWithPort(port: UInt16) -> Address {
+        return Address(internalAddress: internalAddress, port: port)
+    }
+
+    internal enum InternalAddress {
         case INET(in_addr)
         case INET6(in6_addr)
     }
 
-    let internalAddress: InternalAddress
-    public let port: UInt16?
+    internal let internalAddress: InternalAddress
 
+    internal init(internalAddress: InternalAddress, port: UInt16) {
+        self.internalAddress = internalAddress
+        self.port = port
+    }
+
+}
+
+extension Address {
+
+    /// Create an address from a POSIX in_addr (IPV4) structure and optional port
     public init(addr: in_addr, port: UInt16? = nil) {
         internalAddress = .INET(addr)
         self.port = port
     }
 
+    /// Create an address from a POSIX in6_addr (IPV6) structure and optional port
     public init(addr: in6_addr, port: UInt16? = nil) {
         internalAddress = .INET6(addr)
         self.port = port
@@ -61,16 +80,7 @@ public struct Address {
         return ProtocolFamily(rawValue: addressFamily)!
     }
 
-    public func addressWithPort(port: UInt16) -> Address {
-        return Address(internalAddress: internalAddress, port: port)
-    }
-
-    private init(internalAddress: InternalAddress, port: UInt16) {
-        self.internalAddress = internalAddress
-        self.port = port
-    }
-
-    private var addressFamily: Int32 {
+    internal var addressFamily: Int32 {
         switch internalAddress {
             case .INET:
                 return AF_INET
@@ -78,9 +88,9 @@ public struct Address {
                 return AF_INET6
         }
     }
-
-
 }
+
+// MARK: -
 
 extension Address: Equatable {
 }
@@ -96,12 +106,16 @@ public func == (lhs: Address, rhs: Address) -> Bool {
     }
 }
 
+// MARK: -
+
 extension Address: Hashable {
     public var hashValue: Int {
         // TODO: cheating
         return description.hashValue
     }
 }
+
+// MARK: -
 
 extension Address: Comparable {
 }
@@ -130,6 +144,7 @@ public func < (lhs: Address, rhs: Address) -> Bool {
 
 }
 
+// MARK: -
 
 extension Address: CustomStringConvertible {
     public var description: String {
@@ -145,16 +160,6 @@ extension Address: CustomStringConvertible {
         else {
             return address
         }
-    }
-}
-
-extension Address: CustomReflectable {
-    public func customMirror() -> Mirror {
-        return Mirror(self, children: [
-            "family": String(addressFamily),
-            "address": String(address),
-            "port": port,
-        ])
     }
 }
 
@@ -177,7 +182,6 @@ extension Address {
     }
 }
 
-
 // MARK: -
 
 extension Address {
@@ -196,21 +200,6 @@ extension Address {
 // MARK: sockaddr support
 
 public extension Address {
-
-    static func fromSockaddr(addr: sockaddr) throws -> Address {
-        switch Int32(addr.sa_family) {
-            case AF_INET:
-                let addr = addr.to_sockaddr_in()
-                let address = Address(addr: addr.sin_addr, port: addr.sin_port.networkEndian)
-                return address
-            case AF_INET6:
-                let addr = addr.to_sockaddr_in6()
-                let address = Address(addr: addr.sin6_addr, port: addr.sin6_port.networkEndian)
-                return address
-            default:
-                throw Error.Generic("Invalid sockaddr family")
-        }
-    }
 
     init(addr: sockaddr, port: UInt16? = nil) throws {
         switch Int32(addr.sa_family) {

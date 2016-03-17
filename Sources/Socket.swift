@@ -104,7 +104,7 @@ public extension Socket {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
 
-        let address = try Address.fromSockaddr(incoming)
+        let address = try Address(addr: incoming)
         return (Socket(socket), address)
     }
 
@@ -115,7 +115,7 @@ public extension Socket {
         if status != 0 {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
-        return try Address.fromSockaddr(addr)
+        return try Address(addr: addr)
     }
 
     func getPeer() throws -> Address {
@@ -125,7 +125,7 @@ public extension Socket {
         if status != 0 {
             throw Errno(rawValue: errno) ?? Error.Unknown
         }
-        return try Address.fromSockaddr(addr)
+        return try Address(addr: addr)
     }
 }
 
