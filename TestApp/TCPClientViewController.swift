@@ -24,7 +24,7 @@ class TCPClientViewController: NSViewController {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         do {
-            try createClient()
+//            try createClient()
         }
         catch let error {
             fatalError("Error: \(error)")
@@ -36,7 +36,8 @@ class TCPClientViewController: NSViewController {
     }
 
     func createClient() throws {
-        clientChannel = try TCPChannel(hostname: "10.1.1.10", port: port)
+        let address = try Address(address: "10.1.1.10", port: port)
+        clientChannel = try TCPChannel(address: address)
         clientChannel.configureSocket = {
             socket in
 

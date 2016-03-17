@@ -919,7 +919,7 @@
         <!--TCP Server-->
         <scene sceneID="fPI-1u-qyx">
             <objects>
-                <viewController title="TCP Server" id="Sce-QO-a5y" customClass="ServerViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="TCP Server" id="Sce-QO-a5y" customClass="TCPServerViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="usJ-IC-fEI">
                         <rect key="frame" x="0.0" y="0.0" width="559" height="242"/>
                         <autoresizingMask key="autoresizingMask"/>

@@ -26,6 +26,7 @@ class LogViewController: NSViewController {
         dispatch_async(dispatch_get_main_queue()) {
             if let subject = subject {
                 let message = String(subject)
+                print(message)
                 self.logText += message + "\n"
             }
             else {

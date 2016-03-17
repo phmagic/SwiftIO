@@ -54,7 +54,7 @@ public class UDPChannel {
 
     public private(set) var socket: Socket!
     public var configureSocket: (Socket -> Void)?
-    
+
     // MARK: - Initialization
 
     public init(label: String? = nil, address: Address, readHandler: (Datagram -> Void)? = nil) throws {
@@ -66,18 +66,14 @@ public class UDPChannel {
         }
     }
 
-    public convenience init(label: String? = nil, hostname: String = "0.0.0.0", port: UInt16, family: ProtocolFamily? = nil, readHandler: (Datagram -> Void)? = nil) throws {
-        let addresses: [Address] = try Address.addresses(hostname, `protocol`: .UDP, family: family, port: port)
-        try self.init(label: label, address: addresses[0], readHandler: readHandler)
-    }
-
     // MARK: - Actions
 
     public func resume() throws {
         log?.debug("\(self): resume.")
 
         do {
-            socket = try Socket.UDP()
+            socket = try Socket(domain: address.family.rawValue, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
+
         }
         catch let error {
             cleanup()

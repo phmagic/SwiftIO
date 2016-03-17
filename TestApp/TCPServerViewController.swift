@@ -1,5 +1,5 @@
 //
-//  ServerViewController.swift
+//  TCPServerViewController.swift
 //  SwiftIO
 //
 //  Created by Jonathan Wight on 12/8/15.
@@ -11,13 +11,13 @@ import AppKit
 import SwiftIO
 import SwiftUtilities
 
-class ServerViewController: NSViewController {
+class TCPServerViewController: NSViewController {
 
     typealias Record = TLVRecord <UInt16, UInt16>
     let endianness = Endianness.Big
 
-    let port = UInt16(40000 + arc4random_uniform(1000))
-    var server: Server!
+    let port: UInt16 = 40001
+    var server: TCPServer!
     var clientChannel: TCPChannel!
     var count: Int = 0
 
@@ -37,14 +37,20 @@ class ServerViewController: NSViewController {
     }
 }
 
-extension ServerViewController {
+extension TCPServerViewController {
 
     func createServer() throws {
-        let address = try Address(address: "localhost", `protocol`: InetProtocol.TCP, family: ProtocolFamily.INET, port: self.port)
-        server = try Server(address: address)
+
+//        let address = try Address("localhost:40000")
+//        server = try TCPServer(address: address)
+
+        let address = try Address(address: "0.0.0.0", port: self.port)
+        server = try TCPServer(address: address)
 
         server.clientWillConnect = {
             (client) in
+
+            log?.debug("clientWillConnect: \(try! client.socket.getPeer())")
 
             var buffer = DispatchData <Void> ()
             client.readCallback = {
@@ -65,10 +71,19 @@ extension ServerViewController {
                 }
             }
         }
+        server.clientDidDisconnect = {
+            (client) in
+
+            log?.debug("clientDidDisconnect")
+        }
     }
 
     func createClient() throws {
-        clientChannel = try TCPChannel(hostname: "127.0.0.1", port: port)
+
+        let address = try Address(address: "mote.local.", port: port)
+
+        clientChannel = try TCPChannel(address: address)
+        print(clientChannel)
 
         clientChannel.configureSocket = {
             socket in
@@ -85,8 +100,6 @@ extension ServerViewController {
                     self.connected = false
                 case (_, .Connected):
                     self.connected = true
-                    print(self.clientChannel.socket.socketOptions.all)
-                    print(self.clientChannel.socket.socketOptions.tcpAll)
                 default:
                     break
             }
@@ -109,7 +122,7 @@ extension ServerViewController {
 }
 
 
-extension ServerViewController {
+extension TCPServerViewController {
 
     @IBAction func startStopServer(sender: SwitchControl) {
         if sender.on {
@@ -126,15 +139,13 @@ extension ServerViewController {
         try! server.disconnectAllClients()
     }
 
-
     @IBAction func connect(sender: AnyObject?) {
-
-        clientChannel.connect(retryDelay: 1) {
+        clientChannel.connect() {
             (result) in
 
             if case .Failure(let error) = result {
                 assert(self.clientChannel.state.value == .Unconnected)
-                SwiftIO.log?.debug("Client connect callback: \(error)")
+                SwiftIO.log?.debug("\(self.clientChannel): Client connect callback: \(error)")
                 return
             }
 

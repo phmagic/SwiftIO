@@ -108,6 +108,16 @@ public extension Socket {
         return (Socket(socket), address)
     }
 
+    func getAddress() throws -> Address {
+        var addr = sockaddr()
+        var addrSize = socklen_t(sizeof(sockaddr))
+        let status = getsockname(descriptor, &addr, &addrSize)
+        if status != 0 {
+            throw Errno(rawValue: errno) ?? Error.Unknown
+        }
+        return try Address.fromSockaddr(addr)
+    }
+
     func getPeer() throws -> Address {
         var addr = sockaddr()
         var addrSize = socklen_t(sizeof(sockaddr))
@@ -123,10 +133,12 @@ public extension Socket {
 
 public extension Socket {
 
+    @available(*, deprecated, message="Hardcoded for IPV4")
     static func TCP() throws -> Socket {
         return try Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
     }
 
+    @available(*, deprecated, message="Hardcoded for IPV4")
     static func UDP() throws -> Socket {
         return try Socket(domain: PF_INET, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
     }

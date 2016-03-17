@@ -38,11 +38,34 @@ import SwiftIO
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
 
+        print("> \(try! Address.addresses("localhost")))")
 
-        let addresses: [Address] = try! Address.addresses("0.0.0.0", port: 12345)
-        for address in addresses {
-            debugPrint(address)
-        }
+//        let address = try! Address("127.0.0.1:40000")
+//        print(address)
+
+//        for (interface, addresses) in try! Address.addressesForInterfaces() {
+//            print(interface, addresses)
+//        }
+//
+//        for address in try! Address.addresses("0.0.0.0", port: 12345) {
+//            debugPrint(address)
+//        }
+//
+//        for address in try! Address.addresses("::", port: 12345) {
+//            debugPrint(address)
+//        }
 
     }
 }
+
+//extension Address {
+//
+//    init(_ string: String) throws {
+//
+//
+//        throw Error.Unimplemented
+//
+//    }
+//
+//}
+//
