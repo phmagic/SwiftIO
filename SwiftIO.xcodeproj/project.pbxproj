@@ -6,22 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		45A2209B1B84320E00809FDB /* All */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 45A2209E1B84320E00809FDB /* Build configuration list for PBXAggregateTarget "All" */;
-			buildPhases = (
-			);
-			dependencies = (
-				4569C2AA1C178BAD005E5215 /* PBXTargetDependency */,
-				45A220A41B8432B100809FDB /* PBXTargetDependency */,
-				45A220A61B8432B100809FDB /* PBXTargetDependency */,
-			);
-			name = All;
-			productName = All;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		45005E9B1C18CFC80077B318 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45005E9A1C18CFC80077B318 /* Socket.swift */; };
 		45005E9C1C18CFC80077B318 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45005E9A1C18CFC80077B318 /* Socket.swift */; };
@@ -107,28 +91,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4569C2A91C178BAD005E5215 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45DD2DAA1B76AD850002994A;
-			remoteInfo = TestApp;
-		};
 		45A220A11B84321800809FDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45DEC6AA1B0E8FEE00B7C234;
-			remoteInfo = SwiftIO_OSX;
-		};
-		45A220A31B8432B100809FDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 45E240051B0E8A700001F5B9;
-			remoteInfo = SwiftIO_iOS;
-		};
-		45A220A51B8432B100809FDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 45E23FFD1B0E8A700001F5B9 /* Project object */;
 			proxyType = 1;
@@ -316,7 +279,6 @@
 				45DD2DAD1B76AD850002994A /* AppDelegate.swift */,
 				45DD2DAF1B76AD850002994A /* EchoViewController.swift */,
 				93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */,
-				45DAC1421C17BF2E0013C4D6 /* ServerViewController.swift */,
 				45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */,
 				453329721C41664700D9C80C /* LogViewController.swift */,
 				45E80CF71C18BCD5009AAD98 /* TCPServer.swift */,
@@ -497,9 +459,6 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = schwa.io;
 				TargetAttributes = {
-					45A2209B1B84320E00809FDB = {
-						CreatedOnToolsVersion = 7.0;
-					};
 					45B9DE8B1B753363009FD963 = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -532,7 +491,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				45A2209B1B84320E00809FDB /* All */,
 				45E240051B0E8A700001F5B9 /* SwiftIO_iOS */,
 				45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */,
 				45B9DE8B1B753363009FD963 /* UnitTests */,
@@ -689,25 +647,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		4569C2AA1C178BAD005E5215 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45DD2DAA1B76AD850002994A /* TestApp */;
-			targetProxy = 4569C2A91C178BAD005E5215 /* PBXContainerItemProxy */;
-		};
 		45A220A21B84321800809FDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
 			targetProxy = 45A220A11B84321800809FDB /* PBXContainerItemProxy */;
-		};
-		45A220A41B8432B100809FDB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45E240051B0E8A700001F5B9 /* SwiftIO_iOS */;
-			targetProxy = 45A220A31B8432B100809FDB /* PBXContainerItemProxy */;
-		};
-		45A220A61B8432B100809FDB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 45DEC6AA1B0E8FEE00B7C234 /* SwiftIO_OSX */;
-			targetProxy = 45A220A51B8432B100809FDB /* PBXContainerItemProxy */;
 		};
 		45B9DE931B753363009FD963 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -728,20 +671,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		45A2209C1B84320E00809FDB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		45A2209D1B84320E00809FDB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		45B9DE941B753363009FD963 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1008,15 +937,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		45A2209E1B84320E00809FDB /* Build configuration list for PBXAggregateTarget "All" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				45A2209C1B84320E00809FDB /* Debug */,
-				45A2209D1B84320E00809FDB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		45B9DE961B753363009FD963 /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
