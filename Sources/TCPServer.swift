@@ -33,7 +33,6 @@ public class TCPServer {
 
     public func startListening() throws {
         for address in addresses {
-            print("startListening on \(address)")
             try startListening(address)
         }
     }

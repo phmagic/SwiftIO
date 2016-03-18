@@ -36,7 +36,7 @@ class TCPClientViewController: NSViewController {
     }
 
     func createClient() throws {
-        let address = try Address(address: "10.1.1.10", port: port)
+        let address = try Address(address: "localhost", port: port)
         clientChannel = try TCPChannel(address: address)
         clientChannel.configureSocket = {
             socket in
@@ -105,8 +105,6 @@ class TCPClientViewController: NSViewController {
     @IBAction func ping(sender: AnyObject?) {
         clientChannel.write(DispatchData <Void> ()) {
             result in
-
-            print(result)
         }
     }
 

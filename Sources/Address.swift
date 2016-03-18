@@ -39,73 +39,36 @@ import Foundation
  */
 public struct Address {
 
-    /// Optional native endian port of the address
-    public let port: UInt16?
-
-
-    /// Create a new Address with a different port
-    public func addressWithPort(port: UInt16) -> Address {
-        return Address(internalAddress: internalAddress, port: port)
-    }
-
-    internal enum InternalAddress {
+    /// Enum representing the INET or INET6 address. Generally you can avoid this type.
+    public enum InetAddress {
         case INET(in_addr)
         case INET6(in6_addr)
     }
 
-    internal let internalAddress: InternalAddress
+    public let inetAddress: InetAddress
 
-    internal init(internalAddress: InternalAddress, port: UInt16) {
-        self.internalAddress = internalAddress
+    /// Optional native endian port of the address
+    public let port: UInt16?
+
+    public init(inetAddress: InetAddress, port: UInt16) {
+        self.inetAddress = inetAddress
         self.port = port
+    }
+
+    /// Create a new Address with a different port
+    public func addressWithPort(port: UInt16) -> Address {
+        return Address(inetAddress: inetAddress, port: port)
     }
 
 }
 
-extension Address {
-
-    /// Create an address from a POSIX in_addr (IPV4) structure and optional port
-    public init(addr: in_addr, port: UInt16? = nil) {
-        internalAddress = .INET(addr)
-        self.port = port
-    }
-
-    /// Create an address from a POSIX in6_addr (IPV6) structure and optional port
-    public init(addr: in6_addr, port: UInt16? = nil) {
-        internalAddress = .INET6(addr)
-        self.port = port
-    }
-
-    public var family: ProtocolFamily {
-        return ProtocolFamily(rawValue: addressFamily)!
-    }
-
-    internal var addressFamily: Int32 {
-        switch internalAddress {
-            case .INET:
-                return AF_INET
-            case .INET6:
-                return AF_INET6
-        }
-    }
-
-    public func to_in_addr() -> in_addr? {
-        switch internalAddress {
-            case .INET(let addr):
-                return addr
-            default:
-                return nil
-        }
-    }
-}
-
-// MARK: -
+// MARK: Equatable
 
 extension Address: Equatable {
 }
 
 public func == (lhs: Address, rhs: Address) -> Bool {
-    switch (lhs.internalAddress, rhs.internalAddress) {
+    switch (lhs.inetAddress, rhs.inetAddress) {
         case (.INET(let lhs_addr), .INET(let rhs_addr)):
             return lhs_addr == rhs_addr && lhs.port == rhs.port
         case (.INET6(let lhs_addr), .INET6(let rhs_addr)):
@@ -115,7 +78,7 @@ public func == (lhs: Address, rhs: Address) -> Bool {
     }
 }
 
-// MARK: -
+// MARK: Hashable
 
 extension Address: Hashable {
     public var hashValue: Int {
@@ -124,7 +87,7 @@ extension Address: Hashable {
     }
 }
 
-// MARK: -
+// MARK: Comparable
 
 extension Address: Comparable {
 }
@@ -150,10 +113,9 @@ public func < (lhs: Address, rhs: Address) -> Bool {
         }
     }
     return false
-
 }
 
-// MARK: -
+// MARK: CustomStringConvertible
 
 extension Address: CustomStringConvertible {
     public var description: String {
@@ -164,7 +126,6 @@ extension Address: CustomStringConvertible {
                 case .INET6:
                     return "[\(address)]:\(port)"
             }
-
         }
         else {
             return address
@@ -175,18 +136,18 @@ extension Address: CustomStringConvertible {
 // MARK: -
 
 extension Address {
-    public func withUnsafePointer <Result> (@noescape body: UnsafePointer<Void> throws -> Result) throws -> Result {
-        switch internalAddress {
-            case .INET(var addr):
-                return try Swift.withUnsafePointer(&addr) {
-                    let ptr = UnsafePointer <Void> ($0)
-                    return try body(ptr)
-                }
-            case .INET6(var addr):
-                return try Swift.withUnsafePointer(&addr) {
-                    let ptr = UnsafePointer <Void> ($0)
-                    return try body(ptr)
-                }
+
+    // TODO: Rename to "name"
+
+    /// A string representation of the Address _without_ the port
+    public var address: String {
+        return tryElseFatalError() {
+            switch inetAddress {
+                case .INET(var addr):
+                    return try inet_ntop(addressFamily: self.family.rawValue, address: &addr)
+                case .INET6(var addr):
+                    return try inet_ntop(addressFamily: self.family.rawValue, address: &addr)
+            }
         }
     }
 }
@@ -195,40 +156,81 @@ extension Address {
 
 extension Address {
 
-    /// A string representation of the Address _without_ the port
-    public var address: String {
-        return tryElseFatalError() {
-            return try withUnsafePointer() {
-                (inputPtr: UnsafePointer<Void>) -> String in
-                return try inet_ntop(addressFamily: self.addressFamily, address: inputPtr)
-            }
+    /// Create an address from a POSIX in_addr (IPV4) structure and optional port
+    /// Port is network endian
+    public init(addr: in_addr, port: UInt16? = nil) {
+        inetAddress = .INET(addr)
+        self.port = port
+    }
+
+    /// Create an address from a (host endian) UInt32 representation. Example ```Address(0x7f000001)```
+    /// Addr & Port are network endian
+    public init(addr: UInt32, port: UInt16? = nil) {
+        let addr = in_addr(s_addr: addr.networkEndian)
+        inetAddress = .INET(addr)
+        self.port = port
+    }
+
+    /// Create an address from a POSIX in6_addr (IPV6) structure and optional port
+    /// Port is network endian
+    public init(addr: in6_addr, port: UInt16? = nil) {
+        inetAddress = .INET6(addr)
+        self.port = port
+    }
+
+    public func to_in_addr() -> in_addr? {
+        switch inetAddress {
+            case .INET(let addr):
+                return addr
+            default:
+                return nil
+        }
+    }
+
+    public func to_in6_addr() -> in6_addr? {
+        switch inetAddress {
+            case .INET6(let addr):
+                return addr
+            default:
+                return nil
+        }
+    }
+
+    public var family: ProtocolFamily {
+        switch inetAddress {
+            case .INET:
+                return ProtocolFamily(rawValue: AF_INET)!
+            case .INET6:
+                return ProtocolFamily(rawValue: AF_INET6)!
         }
     }
 }
+
 
 // MARK: sockaddr support
 
 public extension Address {
 
-    init(addr: sockaddr, port: UInt16? = nil) throws {
+    init(addr: sockaddr) throws {
         switch Int32(addr.sa_family) {
             case AF_INET:
                 let sockaddr = addr.to_sockaddr_in()
-                internalAddress = .INET(sockaddr.sin_addr)
+                inetAddress = .INET(sockaddr.sin_addr)
+                port = sockaddr.sin_port
             case AF_INET6:
                 let sockaddr = addr.to_sockaddr_in6()
-                internalAddress = .INET6(sockaddr.sin6_addr)
+                inetAddress = .INET6(sockaddr.sin6_addr)
+                port = sockaddr.sin6_port
             default:
                 throw Error.Generic("Invalid sockaddr family")
         }
-        self.port = port
     }
 
     func to_sockaddr() -> sockaddr {
         guard let port = port else {
             fatalError("No port")
         }
-        switch internalAddress {
+        switch inetAddress {
             case .INET(let addr):
                 return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
             case .INET6(let addr):
@@ -236,6 +238,7 @@ public extension Address {
         }
     }
 }
+
 
 // MARK: Hostname support
 
@@ -250,8 +253,6 @@ public extension Address {
             address = address.addressWithPort(port)
         }
         self = address
-
-
     }
 
     static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [Address] {

@@ -77,7 +77,7 @@ extension TCPServerViewController {
 
     func createClient() throws {
 
-        let address = try Address(address: "mote.local.", port: port)
+        let address = try Address(address: "localhost", port: port)
 
         clientChannel = try TCPChannel(address: address)
         print(clientChannel)

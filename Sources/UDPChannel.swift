@@ -220,8 +220,7 @@ private extension UDPChannel {
             }
 
             let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress).memory
-            let port = UInt16(networkEndian: addr.port)
-            let address = try Address(addr: addr, port: port)
+            let address = try Address(addr: addr)
 
             return (result, address)
         }
