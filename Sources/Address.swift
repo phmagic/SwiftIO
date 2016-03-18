@@ -238,11 +238,11 @@ public extension Address {
             case AF_INET:
                 let sockaddr = addr.to_sockaddr_in()
                 inetAddress = .INET(sockaddr.sin_addr)
-                port = sockaddr.sin_port
+                port = sockaddr.sin_port != 0 ? sockaddr.sin_port : nil
             case AF_INET6:
                 let sockaddr = addr.to_sockaddr_in6()
                 inetAddress = .INET6(sockaddr.sin6_addr)
-                port = sockaddr.sin6_port
+                port = sockaddr.sin6_port != 0 ? sockaddr.sin6_port : nil
             default:
                 throw Error.Generic("Invalid sockaddr family")
         }
