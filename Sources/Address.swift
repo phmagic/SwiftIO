@@ -50,12 +50,22 @@ public struct Address {
     /// Optional native endian port of the address
     public let port: UInt16?
 
+    /**
+     Note: You generally shouldn't need to use this. There are other init methods that might be more suitable.
+
+     - parameter inetAddress: Enum representation of the address encapsulating either a in_addr (IPV4) or in6_addr (IPV6) structure.
+     - parameter port: _native endian_ port number
+     */
     public init(inetAddress: InetAddress, port: UInt16) {
         self.inetAddress = inetAddress
         self.port = port
     }
 
-    /// Create a new Address with a different port
+    /**
+     Create a new Address with a different port but same inet address.
+
+     - parameter port: _native endian_ port number
+     */
     public func addressWithPort(port: UInt16) -> Address {
         return Address(inetAddress: inetAddress, port: port)
     }
@@ -156,23 +166,35 @@ extension Address {
 
 extension Address {
 
-    /// Create an address from a POSIX in_addr (IPV4) structure and optional port
-    /// Port is network endian
+    /**
+     Create an address from a POSIX in_addr (IPV4) structure and optional port
+
+     - parameter addr: in_addr representation of address
+     - parameter port: _native endian_ port number
+     */
     public init(addr: in_addr, port: UInt16? = nil) {
         inetAddress = .INET(addr)
         self.port = port
     }
 
-    /// Create an address from a (host endian) UInt32 representation. Example ```Address(0x7f000001)```
-    /// Addr & Port are network endian
+    /**
+     Create an address from a (host endian) UInt32 representation. Example ```Address(0x7f000001)```
+
+     - parameter addr: 32-bit _native endian_ integer representation of the address.
+     - parameter port: _native endian_ port number
+     */
     public init(addr: UInt32, port: UInt16? = nil) {
         let addr = in_addr(s_addr: addr.networkEndian)
         inetAddress = .INET(addr)
         self.port = port
     }
 
-    /// Create an address from a POSIX in6_addr (IPV6) structure and optional port
-    /// Port is network endian
+    /**
+     Create an address from a POSIX in6_addr (IPV46) structure and optional port
+
+     - parameter addr: in6_addr representation of address
+     - parameter port: _native endian_ port number
+     */
     public init(addr: in6_addr, port: UInt16? = nil) {
         inetAddress = .INET6(addr)
         self.port = port
