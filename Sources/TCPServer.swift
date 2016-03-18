@@ -22,9 +22,10 @@ public class TCPServer {
         log?.debug("Server got: \(error)")
     }
 
-    private var listenersByAddress: [Address: TCPListener] = [:]
+    public var listenersByAddress: [Address: TCPListener] = [:]
+    public var connections = Atomic(Set <TCPChannel> ())
+
     private let queue = dispatch_queue_create("io.schwa.TCPServer", DISPATCH_QUEUE_SERIAL)
-    private var connections = Atomic(Set <TCPChannel> ())
 
     public init(address: Address) throws {
         self.addresses = [address]
@@ -36,7 +37,6 @@ public class TCPServer {
             try startListening(address)
         }
     }
-
 
     private func startListening(address: Address) throws {
 
