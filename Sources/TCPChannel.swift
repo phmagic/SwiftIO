@@ -329,3 +329,15 @@ extension TCPChannel: CustomStringConvertible {
         return "TCPChannel(label: \(label), address: \(address)), state: \(state.value))"
     }
 }
+
+// MARK: -
+
+extension TCPChannel: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+}
+
+public func == (lhs: TCPChannel, rhs: TCPChannel) -> Bool {
+    return lhs === rhs
+}

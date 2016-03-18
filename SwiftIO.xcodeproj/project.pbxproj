@@ -28,6 +28,10 @@
 		457E99691BB9C88D00466389 /* SwiftIOSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 457E99671BB9C88D00466389 /* SwiftIOSupport.m */; };
 		457E996B1BB9D10F00466389 /* SwiftIOSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 457E996A1BB9C89600466389 /* SwiftIOSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		457E996C1BB9D11300466389 /* SwiftIOSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 457E996A1BB9C89600466389 /* SwiftIOSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4586C5931C9C6C2C003C9515 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4586C5921C9C6C2C003C9515 /* TCPServer.swift */; };
+		4586C5941C9C6C2C003C9515 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4586C5921C9C6C2C003C9515 /* TCPServer.swift */; };
+		4586C5961C9C6C39003C9515 /* TCPListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4586C5951C9C6C39003C9515 /* TCPListener.swift */; };
+		4586C5971C9C6C39003C9515 /* TCPListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4586C5951C9C6C39003C9515 /* TCPListener.swift */; };
 		4589723E1B76555800251997 /* AddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589723D1B76555800251997 /* AddressTests.swift */; };
 		4593210A1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
 		4593210B1B83AEF400105005 /* Datagram+Streams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459321091B83AEF400105005 /* Datagram+Streams.swift */; };
@@ -81,7 +85,6 @@
 		45E289791B3C8EA400EDBBAE /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289751B3C8E6D00EDBBAE /* FileStream.swift */; };
 		45E2897A1B3C8EA400EDBBAE /* MemoryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E289771B3C8E7300EDBBAE /* MemoryStream.swift */; };
 		45E662651C331709004737E1 /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E662641C331709004737E1 /* StreamTests.swift */; };
-		45E80CF81C18BCD5009AAD98 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E80CF71C18BCD5009AAD98 /* TCPServer.swift */; };
 		45F356421C1A0D920031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F356431C1A0DAD0031A299 /* BinaryStreamable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F356411C1A0D920031A299 /* BinaryStreamable.swift */; };
 		45F98E371C88E28000A8A099 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F98E361C88E28000A8A099 /* Connectable.swift */; };
@@ -146,6 +149,8 @@
 		4578F9171BB2289F00C90DA6 /* NullStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullStream.swift; sourceTree = "<group>"; };
 		457E99671BB9C88D00466389 /* SwiftIOSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftIOSupport.m; sourceTree = "<group>"; };
 		457E996A1BB9C89600466389 /* SwiftIOSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftIOSupport.h; sourceTree = "<group>"; };
+		4586C5921C9C6C2C003C9515 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
+		4586C5951C9C6C39003C9515 /* TCPListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPListener.swift; sourceTree = "<group>"; };
 		4589723D1B76555800251997 /* AddressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressTests.swift; sourceTree = "<group>"; };
 		459321091B83AEF400105005 /* Datagram+Streams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Datagram+Streams.swift"; sourceTree = "<group>"; };
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
@@ -181,7 +186,6 @@
 		45E289751B3C8E6D00EDBBAE /* FileStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStream.swift; sourceTree = "<group>"; };
 		45E289771B3C8E7300EDBBAE /* MemoryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryStream.swift; sourceTree = "<group>"; };
 		45E662641C331709004737E1 /* StreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
-		45E80CF71C18BCD5009AAD98 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
 		45F356411C1A0D920031A299 /* BinaryStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryStreamable.swift; sourceTree = "<group>"; };
 		45F98E361C88E28000A8A099 /* Connectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connectable.swift; sourceTree = "<group>"; };
 		93B802D31C376C3900682E6D /* Inet+UtilitiesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Inet+UtilitiesTests.swift"; path = "UnitTests/Inet+UtilitiesTests.swift"; sourceTree = SOURCE_ROOT; };
@@ -281,7 +285,6 @@
 				93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */,
 				45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */,
 				453329721C41664700D9C80C /* LogViewController.swift */,
-				45E80CF71C18BCD5009AAD98 /* TCPServer.swift */,
 				45982C701C421AB400FB09D9 /* SwitchControl.swift */,
 				457847161C178E5500EF9B35 /* Scratch.swift */,
 				45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */,
@@ -346,6 +349,8 @@
 				45D663B01C571FF000967B24 /* SocketOptions.swift */,
 				45BCF0E31C42D80C0002C5CD /* Utilities.swift */,
 				45D663AB1C56DA3800967B24 /* Retrier.swift */,
+				4586C5921C9C6C2C003C9515 /* TCPServer.swift */,
+				4586C5951C9C6C39003C9515 /* TCPListener.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -567,7 +572,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */,
-				45E80CF81C18BCD5009AAD98 /* TCPServer.swift in Sources */,
 				45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
 				45DD2DAE1B76AD850002994A /* AppDelegate.swift in Sources */,
@@ -595,6 +599,7 @@
 				45DEC6CC1B0E94CE00B7C234 /* UDPChannel.swift in Sources */,
 				45B822181BBB39530060E57D /* Logging.swift in Sources */,
 				45DD2DA51B7670490002994A /* Inet.swift in Sources */,
+				4586C5971C9C6C39003C9515 /* TCPListener.swift in Sources */,
 				45BCF0E51C42D82C0002C5CD /* Utilities.swift in Sources */,
 				45D663AD1C56DA3800967B24 /* Retrier.swift in Sources */,
 				452E96EF1B3C9EC6002269CD /* BinaryDecodable.swift in Sources */,
@@ -608,6 +613,7 @@
 				45A0DB401C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift in Sources */,
 				4594104D1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */,
 				457E99691BB9C88D00466389 /* SwiftIOSupport.m in Sources */,
+				4586C5941C9C6C2C003C9515 /* TCPServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,6 +634,7 @@
 				452E96E61B3C8F1B002269CD /* BinaryInputStreams.swift in Sources */,
 				45B822171BBB39530060E57D /* Logging.swift in Sources */,
 				45E240231B0E8A7A0001F5B9 /* UDPChannel.swift in Sources */,
+				4586C5961C9C6C39003C9515 /* TCPListener.swift in Sources */,
 				45BCF0E41C42D80C0002C5CD /* Utilities.swift in Sources */,
 				45D663AC1C56DA3800967B24 /* Retrier.swift in Sources */,
 				452E96EE1B3C9EC6002269CD /* BinaryDecodable.swift in Sources */,
@@ -641,6 +648,7 @@
 				45A0DB3F1C134C3300B54DDF /* BasicTypes+BinaryInputStreamable.swift in Sources */,
 				4594104C1B794E0C007FFBA0 /* NetworkEndian.swift in Sources */,
 				457E99681BB9C88D00466389 /* SwiftIOSupport.m in Sources */,
+				4586C5931C9C6C2C003C9515 /* TCPServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
