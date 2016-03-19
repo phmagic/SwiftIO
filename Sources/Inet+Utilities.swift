@@ -80,39 +80,25 @@ extension in6_addr: CustomStringConvertible {
 
 extension sockaddr {
 
-    func to_sockaddr_in() -> sockaddr_in {
+    @available(*, deprecated, message="Unsafe for IPV6")
+    mutating func to_sockaddr_in() -> sockaddr_in {
         precondition(sa_family == sa_family_t(AF_INET))
         precondition(Int(sa_len) == sizeof(sockaddr_in))
-        var copy = self
-        return withUnsafePointer(&copy) {
+        return withUnsafePointer(&self) {
             (ptr: UnsafePointer <sockaddr>) -> sockaddr_in in
             let ptr = UnsafePointer <sockaddr_in> (ptr)
             return ptr.memory
         }
     }
 
-    func to_sockaddr_in6() -> sockaddr_in6 {
+    @available(*, deprecated, message="Unsafe for IPV6")
+    mutating func to_sockaddr_in6() -> sockaddr_in6 {
         precondition(sa_family == sa_family_t(AF_INET6))
         precondition(Int(sa_len) == sizeof(sockaddr_in6))
-        var copy = self
-        return withUnsafePointer(&copy) {
+        return withUnsafePointer(&self) {
             (ptr: UnsafePointer <sockaddr>) -> sockaddr_in6 in
             let ptr = UnsafePointer <sockaddr_in6> (ptr)
             return ptr.memory
-        }
-    }
-
-    /// Still in network endian.
-    var port: UInt16 {
-        switch self.sa_family {
-            case sa_family_t(AF_INET):
-                let addr = to_sockaddr_in()
-                return addr.sin_port
-            case sa_family_t(AF_INET6):
-                let addr = to_sockaddr_in6()
-                return addr.sin6_port
-            default:
-                preconditionFailure()
         }
     }
 }
@@ -129,9 +115,9 @@ extension sockaddr_in {
         self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
     }
 
-    func to_sockaddr() -> sockaddr {
-        var copy = self
-        return withUnsafePointer(&copy) {
+    @available(*, deprecated, message="Unsafe for IPV6")
+    mutating func to_sockaddr() -> sockaddr {
+        return withUnsafePointer(&self) {
             (ptr: UnsafePointer <sockaddr_in>) -> sockaddr in
             let ptr = UnsafePointer <sockaddr> (ptr)
             return ptr.memory
@@ -152,9 +138,9 @@ extension sockaddr_in6 {
         self.sin6_scope_id = 0
     }
 
-    func to_sockaddr() -> sockaddr {
-        var copy = self
-        return withUnsafePointer(&copy) {
+    @available(*, deprecated, message="Unsafe for IPV6")
+    mutating func to_sockaddr() -> sockaddr {
+        return withUnsafePointer(&self) {
             (ptr: UnsafePointer <sockaddr_in6>) -> sockaddr in
             let ptr = UnsafePointer <sockaddr> (ptr)
             return ptr.memory
@@ -224,21 +210,18 @@ public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout
 
 // MARK: -
 
-public func getaddrinfo(hostname: String, service: String, hints: addrinfo, info: UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>>) throws {
-    var hints = hints
-    let result = getaddrinfo(hostname, service, &hints, info)
-    guard result == 0 else {
-        throw Errno(rawValue: errno) ?? Error.Unknown
-    }
-}
-
 public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws {
     var hints = hints
     var info = UnsafeMutablePointer<addrinfo>()
     let result = getaddrinfo(hostname, service, &hints, &info)
-
     guard result == 0 else {
-        throw Errno(rawValue: errno) ?? Error.Unknown
+        let ptr = gai_strerror(result)
+        if let string = String(UTF8String: ptr) {
+            throw Error.Generic(string)
+        }
+        else {
+            throw Error.Unknown
+        }
     }
 
     var current = info

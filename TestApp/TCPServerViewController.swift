@@ -16,33 +16,21 @@ class TCPServerViewController: NSViewController {
     typealias Record = TLVRecord <UInt16, UInt16>
     let endianness = Endianness.Big
 
-    let port: UInt16 = 40001
-    var server: TCPServer!
-    var clientChannel: TCPChannel!
-    var count: Int = 0
+    let port: UInt16 = 40000
+    var server: TCPServer?
 
-    dynamic var reconnect: Bool = false
-    dynamic var state: String? = nil
-    dynamic var connected: Bool = false
+    dynamic var serving: Bool = false
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        do {
-            try createServer()
-            try createClient()
-        }
-        catch let error {
-            fatalError("Error: \(error)")
-        }
-    }
+    dynamic var addressString: String? = "0.0.0.0:40000"
+
 }
 
 extension TCPServerViewController {
 
-    func createServer() throws {
+    func createServer() throws -> TCPServer {
 
         let address = try Address(address: "0.0.0.0", port: self.port)
-        server = try TCPServer(address: address)
+        let server = try TCPServer(address: address)
 
         server.clientWillConnect = {
             (client) in
@@ -73,47 +61,7 @@ extension TCPServerViewController {
 
             log?.debug("clientDidDisconnect")
         }
-    }
-
-    func createClient() throws {
-
-        let address = try Address(address: "localhost", port: port)
-
-        clientChannel = try TCPChannel(address: address)
-        print(clientChannel)
-
-        clientChannel.configureSocket = {
-            socket in
-        }
-        clientChannel.state.addObserver(self, queue: dispatch_get_main_queue()) {
-            (old, new) in
-
-            log?.debug("State changed: \(old) -> \(new)")
-
-            self.state = String(new)
-
-            switch (old, new) {
-                case (_, .Unconnected):
-                    self.connected = false
-                case (_, .Connected):
-                    self.connected = true
-                default:
-                    break
-            }
-        }
-
-        clientChannel.readCallback = {
-            (result) in
-            if case .Failure(let error) = result {
-                log?.debug("Client read callback: \(error)")
-                return
-            }
-        }
-
-        clientChannel.reconnectionDelay = 1.0
-        clientChannel.shouldReconnect = {
-            return self.reconnect
-        }
+        return server
     }
 
 }
@@ -124,53 +72,22 @@ extension TCPServerViewController {
     @IBAction func startStopServer(sender: SwitchControl) {
         if sender.on {
             log?.debug("Server start listening")
+
+            let server = try! createServer()
             try! server.startListening()
+            self.server = server
+            serving = true
         }
         else {
             log?.debug("Server stop listening")
-            try! server.stopListening()
+            try! server?.stopListening()
+            server = nil
+            serving = false
         }
     }
 
     @IBAction func disconnectAll(sender: AnyObject?) {
-        try! server.disconnectAllClients()
-    }
-
-    @IBAction func connect(sender: AnyObject?) {
-        clientChannel.connect() {
-            (result) in
-
-            if case .Failure(let error) = result {
-                assert(self.clientChannel.state.value == .Unconnected)
-                SwiftIO.log?.debug("\(self.clientChannel): Client connect callback: \(error)")
-                return
-            }
-
-            for _ in 0..<2 {
-                let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world: \(self.count++)"))
-                let data = try! record.toDispatchData(self.endianness)
-                self.clientChannel!.write(data) {
-                    (result) in
-                    SwiftIO.log?.debug("Client data writer: \(result)")
-                }
-            }
-        }
-    }
-
-    @IBAction func disconnect(sender: AnyObject?) {
-        clientChannel.disconnect() {
-            (result) in
-            SwiftIO.log?.debug("Client disconnect callback: \(result)")
-        }
-    }
-
-    @IBAction func ping(sender: AnyObject?) {
-        let record = try! Record(type: 100, data: DispatchData <Void> ("Hello world: \(count++)"))
-        let data = try! record.toDispatchData(self.endianness)
-        self.clientChannel!.write(data) {
-            (result) in
-            SwiftIO.log?.debug("Client wrote data: \(result)")
-        }
+        try! server?.disconnectAllClients()
     }
 
 }
@@ -181,4 +98,30 @@ extension String {
         let nsdata = data.toNSData()
         self = NSString(data: nsdata, encoding: encoding) as! String
     }
+}
+
+
+class BoxedAddressValueTransformer: NSValueTransformer {
+
+    override func transformedValue(value: AnyObject?) -> AnyObject? {
+        guard let box = value as? Box <Address> else {
+            return nil
+        }
+        let address = box.value
+        return String(address)
+    }
+
+    override func reverseTransformedValue(value: AnyObject?) -> AnyObject? {
+        guard let string = value as? String else {
+            return nil
+        }
+        guard let address = try? Address(address: string) else {
+            return nil
+        }
+        let box = Box(address)
+        return box
+    }
+
+
+
 }

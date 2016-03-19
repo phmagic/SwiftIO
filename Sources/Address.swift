@@ -33,7 +33,7 @@ import Darwin
 import Foundation
 
 /**
- *  A wrapper for a POSIX sockaddr structure.
+ *  An internet address.
  *
  *  sockaddr generally stores IP address (either IPv4 or IPv6), port, protocol family and type.
  */
@@ -138,7 +138,12 @@ extension Address: CustomStringConvertible {
             }
         }
         else {
-            return address
+            switch family {
+                case .INET:
+                    return address
+                case .INET6:
+                    return "[\(address)]"
+            }
         }
     }
 }
@@ -233,7 +238,8 @@ extension Address {
 
 public extension Address {
 
-    init(addr: sockaddr) throws {
+    @available(*, deprecated, message="Unsafe for IPV6")
+    init(var addr: sockaddr) throws {
         switch Int32(addr.sa_family) {
             case AF_INET:
                 let sockaddr = addr.to_sockaddr_in()
@@ -248,16 +254,69 @@ public extension Address {
         }
     }
 
+    /**
+     Create an Address from a sockaddr pointer.
+     */
+    init(addr: UnsafePointer <sockaddr>) {
+        switch Int32(addr.memory.sa_family) {
+            case AF_INET:
+                let addr = UnsafePointer <sockaddr_in> (addr)
+                inetAddress = .INET(addr.memory.sin_addr)
+                port = addr.memory.sin_port != 0 ? addr.memory.sin_port : nil
+            case AF_INET6:
+                let addr = UnsafePointer <sockaddr_in6> (addr)
+                inetAddress = .INET6(addr.memory.sin6_addr)
+                port = addr.memory.sin6_port != 0 ? addr.memory.sin6_port : nil
+            default:
+                fatalError("Invalid sockaddr family")
+        }
+    }
+
+    @available(*, deprecated, message="Unsafe for IPV6")
     func to_sockaddr() -> sockaddr {
         guard let port = port else {
             fatalError("No port")
         }
         switch inetAddress {
             case .INET(let addr):
-                return sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr).to_sockaddr()
+                var sockaddr = sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr)
+                return sockaddr.to_sockaddr()
             case .INET6(let addr):
-                return sockaddr_in6(sin6_family: sa_family_t(AF_INET6), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr).to_sockaddr()
+                var sockaddr =  sockaddr_in6(sin6_family: sa_family_t(AF_INET6), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr)
+                return sockaddr.to_sockaddr()
         }
+    }
+
+    /**
+     Get a sockaddr pointer from an Address. The lifetime of the pointer is only guaranteed to exist for the lifetime of the passed closure.
+     
+     This is now the primary way to get a sockaddr from an Address.
+
+     - parameter closure: Provide this closure to receive an pointer to a sockaddr.
+
+     - throws: rethrows closure errors
+
+     - returns: returns closure return value
+     */
+    func with <R>(@noescape closure: (UnsafePointer <sockaddr>) throws -> R) rethrows -> R {
+        guard let port = port else {
+            fatalError("No port")
+        }
+        switch inetAddress {
+            case .INET(let addr):
+                var addr = sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr)
+                return try withUnsafePointer(&addr) {
+                    let pointer = UnsafePointer <sockaddr> ($0)
+                    return try closure(pointer)
+                }
+            case .INET6(let addr):
+                var addr =  sockaddr_in6(sin6_family: sa_family_t(AF_INET6), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr)
+                return try withUnsafePointer(&addr) {
+                    let pointer = UnsafePointer <sockaddr> ($0)
+                    return try closure(pointer)
+                }
+        }
+
     }
 }
 
@@ -278,11 +337,7 @@ public extension Address {
     }
 
     static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [Address] {
-        var addresses: [Address] = []
-
         var hints = addrinfo()
-        hints.ai_flags |= AI_V4MAPPED // If the AI_V4MAPPED flag is specified along with an ai_family of AF_INET6, then getaddrinfo() shall return IPv4-mapped IPv6 addresses on finding no matching IPv6 addresses ( ai_addrlen shall be 16).  The AI_V4MAPPED flag shall be ignored unlessai_family equals AF_INET6.
-
         if let `protocol` = `protocol` {
             hints.ai_protocol = `protocol`.rawValue
         }
@@ -290,10 +345,16 @@ public extension Address {
             hints.ai_family = family.rawValue
         }
 
-        try getaddrinfo(hostname, service: "", hints: hints) {
+        return try addresses(hostname, service: "", hints: hints)
+    }
+
+    static func addresses(hostname: String, service: String, hints: addrinfo) throws -> [Address] {
+        var addresses: [Address] = []
+
+        try getaddrinfo(hostname, service: service, hints: hints) {
             let addr = $0.memory.ai_addr.memory
             precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
-            let address = try Address(addr: addr)
+            let address = Address(addr: $0.memory.ai_addr)
             addresses.append(address)
             return true
         }
@@ -302,35 +363,52 @@ public extension Address {
 
         return Array <Address> (addressSet).sort(<)
     }
+
+
 }
 
 public extension Address {
-    static func addressesForInterfaces() throws -> [String: [Address]] {
-        let addressesForInterfaces = getAddressesForInterfaces() as! [String: [NSData]]
-        let pairs: [(String, [Address])] = try addressesForInterfaces.flatMap() {
-            (interface, addressData) -> (String, [Address])? in
 
-            if addressData.count == 0 {
-                return nil
-            }
 
-            let addresses = try addressData.map() {
-                (addressData: NSData) -> Address in
-                let sockAddr = UnsafePointer <sockaddr> (addressData.bytes)
-                let address = try Address(addr: sockAddr.memory)
-                return address
-            }
-            return (interface, addresses.sort(<))
+    /**
+     Create an address from string.
+
+     Examples:
+        ```
+        try Address("127.0.0.1")
+        try Address("127.0.0.1:80")
+        try Address("localhost")
+        try Address("localhost:80")
+        try Address("[::1]")
+        try Address("[::1]:80")
+        ```
+     */
+    init(_ string: String) throws {
+
+        // Regular expression is pretty crude but should break input into ip4v/hostname/ipv6 address and optional port
+        let expression = try RegularExpression("(?:([\\da-zA-Z0-9_.-]+)|\\[([\\da-fA-F0-9:]+)\\]?)(?::(\\d{1,5}))?")
+        guard let match = expression.match(string) else {
+            throw Error.Generic("Not an address")
         }
-        return Dictionary <String, [Address]> (pairs)
-    }
-}
 
-private extension Dictionary {
-    init(_ pairs: [Element]) {
-        self.init()
-        for (k, v) in pairs {
-            self[k] = v
+        var port: UInt16? = nil
+        if let portString = match.strings[3] {
+            port = UInt16(portString)
+            if port == nil {
+                throw Error.Generic("Not an address")
+            }
         }
+        if let ip4addressString = match.strings[1] {
+            self = try Address(address: ip4addressString, port: port)
+            assert(self.port == port)
+        }
+        else if let ip6addressString = match.strings[2] {
+            self = try Address(address: ip6addressString, port: port)
+            assert(self.port == port)
+        }
+        else {
+            throw Error.Generic("Not an address")
+        }
+
     }
 }

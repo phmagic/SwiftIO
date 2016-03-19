@@ -13,23 +13,13 @@ import SwiftUtilities
 
 class TCPClientViewController: NSViewController {
 
-    let port = UInt16(5507)
+    let port = UInt16(40000)
     var clientChannel: TCPChannel!
     var count: Int = 0
 
     dynamic var reconnect: Bool = false
     dynamic var state: String? = nil
     dynamic var connected: Bool = false
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        do {
-            try createClient()
-        }
-        catch let error {
-            fatalError("Error: \(error)")
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

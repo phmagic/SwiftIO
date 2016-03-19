@@ -173,12 +173,13 @@ public class UDPChannel {
             log?.debug("\(strong_self): Send")
 
             let address: Address = address ?? strong_self.address
-            var addr = address.to_sockaddr()
-            let result = data.createMap() {
-                (_, buffer) in
-                return Darwin.sendto(strong_self.socket.descriptor, buffer.baseAddress, buffer.count, 0, &addr, socklen_t(addr.sa_len))
+            let result = address.with() {
+                address in
+                return data.createMap() {
+                    (_, buffer) in
+                    return Darwin.sendto(strong_self.socket.descriptor, buffer.baseAddress, buffer.count, 0, address, socklen_t(address.memory.sa_len))
+                }
             }
-
 
             if result == data.length {
                 writeHandler?(true, nil)
@@ -211,17 +212,15 @@ private extension UDPChannel {
         let data: NSMutableData! = NSMutableData(length: 4096)
 
         var addressData = Array <Int8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
-        let (result, address) = try addressData.withUnsafeMutableBufferPointer() {
+        let (result, address) = addressData.withUnsafeMutableBufferPointer() {
             (inout ptr: UnsafeMutableBufferPointer <Int8>) -> (Int, Address?) in
             var addrlen: socklen_t = socklen_t(SOCK_MAXADDRLEN)
             let result = Darwin.recvfrom(socket.descriptor, data.mutableBytes, data.length, 0, UnsafeMutablePointer<sockaddr> (ptr.baseAddress), &addrlen)
             guard result >= 0 else {
                 return (result, nil)
             }
-
-            let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress).memory
-            let address = try Address(addr: addr)
-
+            let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress)
+            let address = Address(addr: addr)
             return (result, address)
         }
 

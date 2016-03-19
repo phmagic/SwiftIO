@@ -51,43 +51,53 @@ class AddressTests: XCTestCase {
         let addr = address.to_in_addr()!
         XCTAssertEqual(addr.s_addr, UInt32(0x7F000001).networkEndian)
 
-        let sockaddr = address.to_sockaddr()
-        XCTAssertEqual(sockaddr.sa_family, sa_family_t(PF_INET))
-        XCTAssertEqual(sockaddr.sa_len, 16)
 
-        let sockaddrIPV4 = sockaddr.to_sockaddr_in()
-        XCTAssertEqual(sockaddrIPV4.sin_port, UInt16(1234).networkEndian)
-        XCTAssertEqual(sockaddrIPV4.sin_addr.s_addr, UInt32(0x7F000001).networkEndian)
+        address.with {
+            sockaddr in
 
-        let octets = address.IPV4Octets
+            XCTAssertEqual(sockaddr.memory.sa_family, sa_family_t(PF_INET))
+            XCTAssertEqual(sockaddr.memory.sa_len, 16)
+
+
+            let sockaddrIPV4 = UnsafePointer <sockaddr_in> (sockaddr)
+
+            XCTAssertEqual(sockaddrIPV4.memory.sin_port, UInt16(1234).networkEndian)
+            XCTAssertEqual(sockaddrIPV4.memory.sin_addr.s_addr, UInt32(0x7F000001).networkEndian)
+        }
+
+
+        let octets = address.to_in_addr()!.octets
         XCTAssertEqual(octets.0, 0x7f)
         XCTAssertEqual(octets.1, 0x00)
         XCTAssertEqual(octets.2, 0x00)
         XCTAssertEqual(octets.3, 0x01)
 
-        let other = Address(addr: sockaddrIPV4.sin_addr, port: address.port)
-        XCTAssertEqual(address, other)
-        XCTAssertFalse(address < other)
+//        let other = Address(addr: sockaddrIPV4.sin_addr, port: address.port)
+//        XCTAssertEqual(address, other)
+//        XCTAssertFalse(address < other)
 
 
     }
 
+    func testStringBasedAddress() {
+        XCTAssertEqual(String(try! Address("127.0.0.1")), "127.0.0.1")
+        XCTAssertEqual(String(try! Address("127.0.0.1:80")), "127.0.0.1:80")
+        XCTAssertEqual(String(try! Address("[::]")), "[::]")
+        XCTAssertEqual(String(try! Address("[::]:80")), "[::]:80")
+        XCTAssertEqual(String(try! Address("[::1]")), "[::1]")
+        XCTAssertEqual(String(try! Address("[::1]:80")), "[::1]:80")
+        XCTAssertEqual(String(try! Address("[2607:f8b0:4007:803:700::]")), "[2607:f8b0:4007:803:700::]")
+        XCTAssertEqual(String(try! Address("[2607:f8b0:4007:803:700::]:80")), "[2607:f8b0:4007:803:700::]:80")
 
 
-}
-
-public extension Address {
-
-    var IPV4Octets: (UInt8, UInt8, UInt8, UInt8) {
-        let sockaddr = to_sockaddr()
-        let sockaddrIPV4 = sockaddr.to_sockaddr_in()
-        let address = UInt32(networkEndian: sockaddrIPV4.sin_addr.s_addr)
-        return (
-            UInt8((address >> 24) & 0xFF),
-            UInt8((address >> 16) & 0xFF),
-            UInt8((address >> 8) & 0xFF),
-            UInt8(address & 0xFF)
-        )
+        // TODO: Those do a name lookup
+        XCTAssertEqual(String(try! Address("localhost")), "127.0.0.1")
+        XCTAssertEqual(String(try! Address("localhost:80")), "127.0.0.1:80")
+        XCTAssertEqual(String(try! Address("apple.com")), "17.142.160.59")
+        XCTAssertEqual(String(try! Address("apple.com:80")), "17.142.160.59:80")
     }
 
+
 }
+
+

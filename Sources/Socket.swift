@@ -70,18 +70,22 @@ public extension Socket {
 public extension Socket {
 
     func connect(address: Address) throws {
-        var addr = address.to_sockaddr()
-        let status = Darwin.connect(descriptor, &addr, socklen_t(addr.sa_len))
-        guard status == 0 else {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        try address.with() {
+            addr in
+            let status = Darwin.connect(descriptor, addr, socklen_t(addr.memory.sa_len))
+            guard status == 0 else {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
         }
     }
 
     func bind(address: Address) throws {
-        var addr = address.to_sockaddr()
-        let status = Darwin.bind(descriptor, &addr, socklen_t(addr.sa_len))
-        if status != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        try address.with() {
+            addr in
+            let status = Darwin.bind(descriptor, addr, socklen_t(addr.memory.sa_len))
+            if status != 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
         }
     }
 
@@ -97,39 +101,66 @@ public extension Socket {
     func accept() throws -> (Socket, Address) {
         precondition(type == SOCK_STREAM, "\(__FUNCTION__) should only be used on `SOCK_STREAM` sockets")
 
-        var incoming = sockaddr()
-        var incomingSize = socklen_t(sizeof(sockaddr))
-        let socket = Darwin.accept(descriptor, &incoming, &incomingSize)
-        if socket < 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
-        }
+        return try sockaddr.with() {
+            sockaddr, length in
 
-        let address = try Address(addr: incoming)
-        return (Socket(socket), address)
+            var length = length
+            let socket = Darwin.accept(descriptor, sockaddr, &length)
+            if socket < 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            let address = Address(addr: sockaddr)
+            return (Socket(socket), address)
+        }
     }
 
     func getAddress() throws -> Address {
-        var addr = sockaddr()
-        var addrSize = socklen_t(sizeof(sockaddr))
-        let status = getsockname(descriptor, &addr, &addrSize)
-        if status != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        return try sockaddr.with() {
+            sockaddr, length in
+
+            var length = length
+            let status = getsockname(descriptor, sockaddr, &length)
+            if status != 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            return Address(addr: sockaddr)
         }
-        return try Address(addr: addr)
     }
 
     func getPeer() throws -> Address {
-        var addr = sockaddr()
-        var addrSize = socklen_t(sizeof(sockaddr))
-        let status = getpeername(descriptor, &addr, &addrSize)
-        if status != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        return try sockaddr.with() {
+            sockaddr, length in
+
+            var length = length
+            let status = getpeername(descriptor, sockaddr, &length)
+            if status != 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            return Address(addr: sockaddr)
         }
-        return try Address(addr: addr)
     }
 }
 
 // MARK: -
+
+extension sockaddr {
+
+    /**
+     Create a temporary buffer big enough to hold the largest `sockaddr` possible (SOCK_MAXADDRLEN).
+
+     Effectively a `sockaddr` flavoured convenience wrapper around Array.withUnsafeMutableBufferPointer
+     */
+    static func with <R> (@noescape closure: (UnsafeMutablePointer<sockaddr>, length: socklen_t) throws -> R) rethrows -> R {
+        var buffer = Array <UInt8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
+        return try buffer.withUnsafeMutableBufferPointer() {
+            (inout buffer: UnsafeMutableBufferPointer<UInt8>) -> R in
+            let pointer = UnsafeMutablePointer <sockaddr> (buffer.baseAddress)
+            return try closure(pointer, length: socklen_t(SOCK_MAXADDRLEN))
+        }
+    }
+
+}
+
 
 public extension Socket {
 
