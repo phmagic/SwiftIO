@@ -50,6 +50,7 @@
 		45B9DE911B753363009FD963 /* SwiftIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; };
 		45BC313E1C9CE94E00F054A6 /* Address+Interfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC313D1C9CE94E00F054A6 /* Address+Interfaces.swift */; };
 		45BC313F1C9CE95200F054A6 /* Address+Interfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC313D1C9CE94E00F054A6 /* Address+Interfaces.swift */; };
+		45BC31431C9CFB3800F054A6 /* Resolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC31401C9CEF2100F054A6 /* Resolver.swift */; };
 		45BCF0E41C42D80C0002C5CD /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BCF0E31C42D80C0002C5CD /* Utilities.swift */; };
 		45BCF0E51C42D82C0002C5CD /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BCF0E31C42D80C0002C5CD /* Utilities.swift */; };
 		45C377B81B78295900E2153E /* Datagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C377B71B78295900E2153E /* Datagram.swift */; };
@@ -167,6 +168,7 @@
 		45B9DE8C1B753363009FD963 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B9DE901B753363009FD963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45BC313D1C9CE94E00F054A6 /* Address+Interfaces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Address+Interfaces.swift"; sourceTree = "<group>"; };
+		45BC31401C9CEF2100F054A6 /* Resolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resolver.swift; sourceTree = "<group>"; };
 		45BCF0E31C42D80C0002C5CD /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		45C377B71B78295900E2153E /* Datagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datagram.swift; sourceTree = "<group>"; };
 		45CE2A0D1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicTypes+BinaryOutputStreamable.swift"; sourceTree = "<group>"; };
@@ -340,6 +342,7 @@
 				45DD2DA11B766FC70002994A /* Address.swift */,
 				45BC313D1C9CE94E00F054A6 /* Address+Interfaces.swift */,
 				456D11441C9D22EB0021CD31 /* Address+Misc.swift */,
+				45BC31401C9CEF2100F054A6 /* Resolver.swift */,
 				45F98E361C88E28000A8A099 /* Connectable.swift */,
 				45C377B71B78295900E2153E /* Datagram.swift */,
 				459321091B83AEF400105005 /* Datagram+Streams.swift */,
@@ -590,6 +593,7 @@
 				45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */,
 				45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
+				45BC31431C9CFB3800F054A6 /* Resolver.swift in Sources */,
 				45DD2DAE1B76AD850002994A /* AppDelegate.swift in Sources */,
 				453329731C41664700D9C80C /* LogViewController.swift in Sources */,
 				93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */,
