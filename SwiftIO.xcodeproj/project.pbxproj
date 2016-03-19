@@ -21,6 +21,8 @@
 		45302F571C16120A00990F60 /* TLV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45302F551C16120A00990F60 /* TLV.swift */; };
 		45302F591C1612CD00990F60 /* TLVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45302F581C1612CD00990F60 /* TLVTests.swift */; };
 		453329731C41664700D9C80C /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453329721C41664700D9C80C /* LogViewController.swift */; };
+		456D11451C9D22EB0021CD31 /* Address+Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456D11441C9D22EB0021CD31 /* Address+Misc.swift */; };
+		456D11461C9D22EB0021CD31 /* Address+Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456D11441C9D22EB0021CD31 /* Address+Misc.swift */; };
 		457847171C178E5500EF9B35 /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457847161C178E5500EF9B35 /* Scratch.swift */; };
 		4578F9181BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; };
 		4578F9191BB2289F00C90DA6 /* NullStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4578F9171BB2289F00C90DA6 /* NullStream.swift */; };
@@ -146,6 +148,7 @@
 		45302F551C16120A00990F60 /* TLV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLV.swift; sourceTree = "<group>"; };
 		45302F581C1612CD00990F60 /* TLVTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVTests.swift; sourceTree = "<group>"; };
 		453329721C41664700D9C80C /* LogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		456D11441C9D22EB0021CD31 /* Address+Misc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Address+Misc.swift"; sourceTree = "<group>"; };
 		457847161C178E5500EF9B35 /* Scratch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
 		4578F9171BB2289F00C90DA6 /* NullStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullStream.swift; sourceTree = "<group>"; };
 		457E99671BB9C88D00466389 /* SwiftIOSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftIOSupport.m; sourceTree = "<group>"; };
@@ -336,6 +339,7 @@
 				45E2400B1B0E8A700001F5B9 /* SwiftIO.h */,
 				45DD2DA11B766FC70002994A /* Address.swift */,
 				45BC313D1C9CE94E00F054A6 /* Address+Interfaces.swift */,
+				456D11441C9D22EB0021CD31 /* Address+Misc.swift */,
 				45F98E361C88E28000A8A099 /* Connectable.swift */,
 				45C377B71B78295900E2153E /* Datagram.swift */,
 				459321091B83AEF400105005 /* Datagram+Streams.swift */,
@@ -602,6 +606,7 @@
 				45CE2A0F1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift in Sources */,
 				452E96F21B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */,
 				45DEC6CD1B0E94CE00B7C234 /* Inet+Utilities.swift in Sources */,
+				456D11461C9D22EB0021CD31 /* Address+Misc.swift in Sources */,
 				45BC313F1C9CE95200F054A6 /* Address+Interfaces.swift in Sources */,
 				45C377B91B78295900E2153E /* Datagram.swift in Sources */,
 				45302F571C16120A00990F60 /* TLV.swift in Sources */,
@@ -638,6 +643,7 @@
 				45CE2A0E1C13C337002475A5 /* BasicTypes+BinaryOutputStreamable.swift in Sources */,
 				452E96F11B3CA0E2002269CD /* BinaryOutputStreams.swift in Sources */,
 				45DD2DA21B766FC70002994A /* Address.swift in Sources */,
+				456D11451C9D22EB0021CD31 /* Address+Misc.swift in Sources */,
 				45BC313E1C9CE94E00F054A6 /* Address+Interfaces.swift in Sources */,
 				45C377B81B78295900E2153E /* Datagram.swift in Sources */,
 				45302F561C16120A00990F60 /* TLV.swift in Sources */,
