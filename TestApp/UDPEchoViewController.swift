@@ -63,7 +63,9 @@ class UDPEchoViewController: NSViewController {
     @IBAction func pingServer(sender: AnyObject) {
         let data = "0xDEADBEEF".dataUsingEncoding(NSUTF8StringEncoding)!
         let remoteServer = try! Address(address: "127.0.0.1", family: family, port: port)
-        try! udpClient.send(data, address: remoteServer)
+        try! udpClient.send(data, address: remoteServer) {
+            result in
+        }
     }
 
 

@@ -289,7 +289,7 @@ public extension Address {
 
     /**
      Get a sockaddr pointer from an Address. The lifetime of the pointer is only guaranteed to exist for the lifetime of the passed closure.
-     
+
      This is now the primary way to get a sockaddr from an Address.
 
      - parameter closure: Provide this closure to receive an pointer to a sockaddr.

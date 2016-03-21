@@ -42,14 +42,13 @@ public class UDPChannel {
     public let label: String?
 
     public let address: Address
-    public var qos = QOS_CLASS_DEFAULT
 
     public var readHandler: (Datagram -> Void)? = loggingReadHandler
     public var errorHandler: (ErrorType -> Void)? = loggingErrorHandler
 
     private var resumed: Bool = false
-    private var receiveQueue: dispatch_queue_t!
-    private var sendQueue: dispatch_queue_t!
+    private let receiveQueue: dispatch_queue_t!
+    private let sendQueue: dispatch_queue_t!
     private var source: dispatch_source_t!
 
     public private(set) var socket: Socket!
@@ -57,12 +56,25 @@ public class UDPChannel {
 
     // MARK: - Initialization
 
-    public init(label: String? = nil, address: Address, readHandler: (Datagram -> Void)? = nil) throws {
+    public init(label: String? = nil, address: Address, qos: dispatch_qos_class_t = QOS_CLASS_DEFAULT, readHandler: (Datagram -> Void)? = nil) throws {
         self.label = label
         self.address = address
-        assert(self.address.port != nil)
+
+        assert(address.port != nil)
         if let readHandler = readHandler {
             self.readHandler = readHandler
+        }
+
+        let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
+
+        receiveQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", queueAttribute)
+        guard receiveQueue != nil else {
+            fatalError("dispatch_queue_create() failed")
+        }
+
+        sendQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.sendQueue", queueAttribute)
+        guard sendQueue != nil else {
+            fatalError("dispatch_queue_create() failed")
         }
     }
 
@@ -81,11 +93,6 @@ public class UDPChannel {
         }
 
         configureSocket?(socket)
-
-        let queueAttribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, 0)
-
-        try createReceiveQueue(withQueueAttribute: queueAttribute)
-        try createSendQueue(withQueueAttribute: queueAttribute)
 
         source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(socket.descriptor), 0, receiveQueue)
         guard source != nil else {
@@ -153,43 +160,54 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: NSData, address: Address? = nil, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
-        let data = DispatchData <Void> (start: data.bytes, count: data.length)
-
-        try send(data, address: address ?? self.address, writeHandler: writeHandler)
-    }
-
-    public func send(data: DispatchData <Void>, address: Address! = nil, writeHandler: ((Bool, ErrorType?) -> Void)? = loggingWriteHandler) throws {
-        precondition(receiveQueue != nil, "Cannot send data without a queue")
+    public func send(data: DispatchData <Void>, address: Address! = nil, writeHandler: Result <Void> -> Void) throws {
+        precondition(sendQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 
         dispatch_async(sendQueue) {
-
             [weak self] in
+
             guard let strong_self = self else {
                 return
             }
 
-            log?.debug("\(strong_self): Send")
+            do {
+                try strong_self.socket.sendto(data, address: address)
+            }
+            catch let error {
+                writeHandler(.Failure(error))
+            }
+            writeHandler(.Success())
+        }
+    }
 
-            let address: Address = address ?? strong_self.address
-            let result = address.with() {
-                address in
-                return data.createMap() {
-                    (_, buffer) in
-                    return Darwin.sendto(strong_self.socket.descriptor, buffer.baseAddress, buffer.count, 0, address, socklen_t(address.memory.sa_len))
-                }
+    public static func send(data: DispatchData <Void>, address: Address, queue: dispatch_queue_t, writeHandler: Result <Void> -> Void) throws {
+        let socket = try! Socket(domain: address.family.rawValue, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
+        dispatch_async(queue) {
+            do {
+                try socket.sendto(data, address: address)
             }
+            catch let error {
+                writeHandler(.Failure(error))
+            }
+            writeHandler(.Success())
+        }
+    }
+}
 
-            if result == data.length {
-                writeHandler?(true, nil)
+// Private for now - make public soon?
+private extension Socket {
+    func sendto(data: DispatchData <Void>, address: Address) throws {
+        let result = address.with() {
+            address in
+            return data.createMap() {
+                (_, buffer) in
+                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, address, socklen_t(address.memory.sa_len))
             }
-            else if result < 0 {
-                writeHandler?(false, Error.Generic("sendto() failed"))
-            }
-            if result < data.length {
-                writeHandler?(false, Error.Generic("sendto() failed"))
-            }
+        }
+        // TODO: what about "partial" sends.
+        if result < data.length {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 }
@@ -201,7 +219,6 @@ extension UDPChannel: CustomStringConvertible {
         return "\(self.dynamicType)(\"\(label ?? "")\")"
     }
 }
-
 
 // MARK: -
 
@@ -237,29 +254,11 @@ private extension UDPChannel {
 
     // MARK: - GCD
 
-    func createReceiveQueue(withQueueAttribute attribute: dispatch_queue_attr_t!) throws {
-        receiveQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.receiveQueue", attribute)
-        guard receiveQueue != nil else {
-            cleanup()
-            throw Error.Generic("dispatch_queue_create() failed")
-        }
-    }
-
-    func createSendQueue(withQueueAttribute attribute: dispatch_queue_attr_t!) throws {
-        sendQueue = dispatch_queue_create("io.schwa.SwiftIO.UDP.sendQueue", attribute)
-        guard sendQueue != nil else {
-            cleanup()
-            throw Error.Generic("dispatch_queue_create() failed")
-        }
-    }
-
     // MARK: - Cleanup
 
     func cleanup() {
         defer {
             socket = nil
-            receiveQueue = nil
-            sendQueue = nil
             source = nil
         }
 
@@ -269,5 +268,13 @@ private extension UDPChannel {
         catch let error {
             errorHandler?(error)
         }
+    }
+}
+
+
+public extension UDPChannel {
+    public func send(data: NSData, address: Address? = nil, writeHandler: Result <Void> -> Void) throws {
+        let data = DispatchData <Void> (start: data.bytes, count: data.length)
+        try send(data, address: address ?? self.address, writeHandler: writeHandler)
     }
 }
