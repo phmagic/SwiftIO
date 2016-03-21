@@ -160,7 +160,7 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: DispatchData <Void>, address: Address! = nil, writeHandler: Result <Void> -> Void) throws {
+    public func send(data: DispatchData <Void>, address: Address! = nil, writeHandler: Result <Void> -> Void) {
         precondition(sendQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
 
@@ -181,7 +181,7 @@ public class UDPChannel {
         }
     }
 
-    public static func send(data: DispatchData <Void>, address: Address, queue: dispatch_queue_t, writeHandler: Result <Void> -> Void) throws {
+    public static func send(data: DispatchData <Void>, address: Address, queue: dispatch_queue_t, writeHandler: Result <Void> -> Void) {
         let socket = try! Socket(domain: address.family.rawValue, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
         dispatch_async(queue) {
             do {
@@ -191,23 +191,6 @@ public class UDPChannel {
                 writeHandler(.Failure(error))
             }
             writeHandler(.Success())
-        }
-    }
-}
-
-// Private for now - make public soon?
-private extension Socket {
-    func sendto(data: DispatchData <Void>, address: Address) throws {
-        let result = address.with() {
-            address in
-            return data.createMap() {
-                (_, buffer) in
-                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, address, socklen_t(address.memory.sa_len))
-            }
-        }
-        // TODO: what about "partial" sends.
-        if result < data.length {
-            throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 }
@@ -252,10 +235,6 @@ private extension UDPChannel {
         readHandler?(datagram)
     }
 
-    // MARK: - GCD
-
-    // MARK: - Cleanup
-
     func cleanup() {
         defer {
             socket = nil
@@ -271,10 +250,28 @@ private extension UDPChannel {
     }
 }
 
+// MARK: -
 
 public extension UDPChannel {
-    public func send(data: NSData, address: Address? = nil, writeHandler: Result <Void> -> Void) throws {
+    public func send(data: NSData, address: Address? = nil, writeHandler: Result <Void> -> Void) {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
-        try send(data, address: address ?? self.address, writeHandler: writeHandler)
+        send(data, address: address ?? self.address, writeHandler: writeHandler)
+    }
+}
+
+// Private for now - make public soon?
+private extension Socket {
+    func sendto(data: DispatchData <Void>, address: Address) throws {
+        let result = address.with() {
+            address in
+            return data.createMap() {
+                (_, buffer) in
+                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, address, socklen_t(address.memory.sa_len))
+            }
+        }
+        // TODO: what about "partial" sends.
+        if result < data.length {
+            throw Errno(rawValue: errno) ?? Error.Unknown
+        }
     }
 }
