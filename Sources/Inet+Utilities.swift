@@ -76,33 +76,6 @@ extension in6_addr: CustomStringConvertible {
     }
 }
 
-// MARK: -
-
-extension sockaddr {
-
-    @available(*, deprecated, message="Unsafe for IPV6")
-    mutating func to_sockaddr_in() -> sockaddr_in {
-        precondition(sa_family == sa_family_t(AF_INET))
-        precondition(Int(sa_len) == sizeof(sockaddr_in))
-        return withUnsafePointer(&self) {
-            (ptr: UnsafePointer <sockaddr>) -> sockaddr_in in
-            let ptr = UnsafePointer <sockaddr_in> (ptr)
-            return ptr.memory
-        }
-    }
-
-    @available(*, deprecated, message="Unsafe for IPV6")
-    mutating func to_sockaddr_in6() -> sockaddr_in6 {
-        precondition(sa_family == sa_family_t(AF_INET6))
-        precondition(Int(sa_len) == sizeof(sockaddr_in6))
-        return withUnsafePointer(&self) {
-            (ptr: UnsafePointer <sockaddr>) -> sockaddr_in6 in
-            let ptr = UnsafePointer <sockaddr_in6> (ptr)
-            return ptr.memory
-        }
-    }
-}
-
 // MARK: sockaddr_in extensions
 
 extension sockaddr_in {
@@ -113,15 +86,6 @@ extension sockaddr_in {
         self.sin_port = sin_port
         self.sin_addr = sin_addr
         self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
-    }
-
-    @available(*, deprecated, message="Unsafe for IPV6")
-    mutating func to_sockaddr() -> sockaddr {
-        return withUnsafePointer(&self) {
-            (ptr: UnsafePointer <sockaddr_in>) -> sockaddr in
-            let ptr = UnsafePointer <sockaddr> (ptr)
-            return ptr.memory
-        }
     }
 }
 
@@ -136,15 +100,6 @@ extension sockaddr_in6 {
         self.sin6_flowinfo = 0
         self.sin6_addr = sin6_addr
         self.sin6_scope_id = 0
-    }
-
-    @available(*, deprecated, message="Unsafe for IPV6")
-    mutating func to_sockaddr() -> sockaddr {
-        return withUnsafePointer(&self) {
-            (ptr: UnsafePointer <sockaddr_in6>) -> sockaddr in
-            let ptr = UnsafePointer <sockaddr> (ptr)
-            return ptr.memory
-        }
     }
 }
 

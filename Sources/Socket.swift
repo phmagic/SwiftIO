@@ -160,18 +160,3 @@ extension sockaddr {
     }
 
 }
-
-
-public extension Socket {
-
-    @available(*, deprecated, message="Hardcoded for IPV4")
-    static func TCP() throws -> Socket {
-        return try Socket(domain: PF_INET, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
-    }
-
-    @available(*, deprecated, message="Hardcoded for IPV4")
-    static func UDP() throws -> Socket {
-        return try Socket(domain: PF_INET, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
-    }
-
-}

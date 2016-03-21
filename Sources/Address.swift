@@ -238,22 +238,6 @@ extension Address {
 
 public extension Address {
 
-    @available(*, deprecated, message="Unsafe for IPV6")
-    init(var addr: sockaddr) throws {
-        switch Int32(addr.sa_family) {
-            case AF_INET:
-                let sockaddr = addr.to_sockaddr_in()
-                inetAddress = .INET(sockaddr.sin_addr)
-                port = sockaddr.sin_port != 0 ? sockaddr.sin_port : nil
-            case AF_INET6:
-                let sockaddr = addr.to_sockaddr_in6()
-                inetAddress = .INET6(sockaddr.sin6_addr)
-                port = sockaddr.sin6_port != 0 ? sockaddr.sin6_port : nil
-            default:
-                throw Error.Generic("Invalid sockaddr family")
-        }
-    }
-
     /**
      Create an Address from a sockaddr pointer.
      */
@@ -272,32 +256,6 @@ public extension Address {
         }
     }
 
-    @available(*, deprecated, message="Unsafe for IPV6")
-    func to_sockaddr() -> sockaddr {
-        guard let port = port else {
-            fatalError("No port")
-        }
-        switch inetAddress {
-            case .INET(let addr):
-                var sockaddr = sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr)
-                return sockaddr.to_sockaddr()
-            case .INET6(let addr):
-                var sockaddr =  sockaddr_in6(sin6_family: sa_family_t(AF_INET6), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr)
-                return sockaddr.to_sockaddr()
-        }
-    }
-
-    /**
-     Get a sockaddr pointer from an Address. The lifetime of the pointer is only guaranteed to exist for the lifetime of the passed closure.
-
-     This is now the primary way to get a sockaddr from an Address.
-
-     - parameter closure: Provide this closure to receive an pointer to a sockaddr.
-
-     - throws: rethrows closure errors
-
-     - returns: returns closure return value
-     */
     func with <R>(@noescape closure: (UnsafePointer <sockaddr>) throws -> R) rethrows -> R {
         guard let port = port else {
             fatalError("No port")
