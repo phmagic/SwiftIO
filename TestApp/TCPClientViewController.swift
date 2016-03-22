@@ -14,7 +14,7 @@ import SwiftUtilities
 class TCPClientViewController: NSViewController {
 
     let port = UInt16(40000)
-    var clientChannel: TCPChannel!
+    var clientChannel: TCPChannel?
     var count: Int = 0
 
     dynamic var reconnect: Bool = false
@@ -25,9 +25,9 @@ class TCPClientViewController: NSViewController {
         super.viewDidLoad()
     }
 
-    func createClient() throws {
+    func createClient() throws -> TCPChannel {
         let address = try Address(address: "localhost", port: port)
-        clientChannel = TCPChannel(address: address)
+        let clientChannel = TCPChannel(address: address)
         clientChannel.configureSocket = {
             socket in
 
@@ -70,15 +70,25 @@ class TCPClientViewController: NSViewController {
         clientChannel.shouldReconnect = {
             return self.reconnect
         }
+
+        return clientChannel
     }
 
     @IBAction func connect(sender: AnyObject?) {
+
+        if clientChannel == nil {
+            try! clientChannel = createClient()
+        }
+
+        guard let clientChannel = clientChannel else {
+            fatalError()
+        }
 
         clientChannel.connect(retryDelay: 1 / 8) {
             (result) in
 
             if case .Failure(let error) = result {
-                assert(self.clientChannel.state.value == .Unconnected)
+                assert(clientChannel.state.value == .Unconnected)
                 SwiftIO.log?.debug("Client connect callback: \(error)")
                 return
             }
@@ -86,6 +96,10 @@ class TCPClientViewController: NSViewController {
     }
 
     @IBAction func disconnect(sender: AnyObject?) {
+        guard let clientChannel = clientChannel else {
+            fatalError()
+        }
+
         clientChannel.disconnect() {
             (result) in
             SwiftIO.log?.debug("Client disconnect callback: \(result)")
@@ -93,6 +107,10 @@ class TCPClientViewController: NSViewController {
     }
 
     @IBAction func ping(sender: AnyObject?) {
+        guard let clientChannel = clientChannel else {
+            fatalError()
+        }
+
         clientChannel.write(DispatchData <Void> ()) {
             result in
         }
