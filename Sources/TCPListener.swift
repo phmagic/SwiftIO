@@ -74,7 +74,7 @@ public class TCPListener {
                 return
             }
 
-            let channel = try TCPChannel(address: address, socket: socket) {
+            let channel = TCPChannel(address: address, socket: socket) {
                 (channel) in
 
                 clientWillConnect?(channel)

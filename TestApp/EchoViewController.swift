@@ -50,68 +50,63 @@ class EchoViewController: NSViewController {
 
     @IBAction func start(sender: AnyObject?) {
 
-        do {
-            // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
-            task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
-            sleep(1)
+        // socat TCP4-LISTEN:12345,reuseaddr exec:'tr A-Z a-z',pty,raw,echo=0
+        task = NSTask.launchedTaskWithLaunchPath("/usr/local/bin/socat", arguments: ["TCP4-LISTEN:12345,reuseaddr", "exec:'tr a-z A-Z',pty,raw,echo=0"])
+        sleep(1)
 
-            let address = try! Address(address: "127.0.0.1", port: 12345)
+        let address = try! Address(address: "127.0.0.1", port: 12345)
 
-            channel = try TCPChannel(address: address)
-            channel.state.addObserver(self, queue: dispatch_get_main_queue()) {
-                (old, new) in
-                log?.debug("STATE CHANGE: \(old) -> \(new)")
+        channel = TCPChannel(address: address)
+        channel.state.addObserver(self, queue: dispatch_get_main_queue()) {
+            (old, new) in
+            log?.debug("STATE CHANGE: \(old) -> \(new)")
+        }
+
+        channel.shouldReconnect = {
+            assert(self.channel.state.value == .Unconnected)
+            log?.debug("Disconnected!")
+
+            dispatch_async(dispatch_get_main_queue()) {
+                self.updateConnected()
             }
+            return true
+        }
 
-            channel.shouldReconnect = {
-                assert(self.channel.state.value == .Unconnected)
-                log?.debug("Disconnected!")
+        channel.readCallback = {
+            (result) in
+            if case .Failure(let error) = result {
+                log?.debug(error)
+                return
+            }
+            if case .Success(let data) = result {
+                let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
 
                 dispatch_async(dispatch_get_main_queue()) {
+                    log?.debug("Received: \(string)")
                     self.updateConnected()
-                }
-                return true
-            }
-
-            channel.readCallback = {
-                (result) in
-                if case .Failure(let error) = result {
-                    log?.debug(error)
-                    return
-                }
-                if case .Success(let data) = result {
-                    let string = String(data: data.toNSData(), encoding:NSUTF8StringEncoding)!
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        log?.debug("Received: \(string)")
-                        self.updateConnected()
-                    }
-                }
-            }
-
-            channel.connect() {
-                (result) in
-
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.updateConnected()
-                }
-
-                if case .Failure(let error) = result {
-                    assert(self.channel.state.value == .Unconnected)
-                    log?.debug("Connection failure: \(error)")
-                    return
-                }
-
-                let data = "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!
-                let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
-                self.channel!.write(dispatchData) {
-                    (result) in
-                    log?.debug("Write: \(result)")
                 }
             }
         }
-        catch let error {
-            log?.debug("Error caught: \(error)")
+
+        channel.connect() {
+            (result) in
+
+            dispatch_async(dispatch_get_main_queue()) {
+                self.updateConnected()
+            }
+
+            if case .Failure(let error) = result {
+                assert(self.channel.state.value == .Unconnected)
+                log?.debug("Connection failure: \(error)")
+                return
+            }
+
+            let data = "Hello world".dataUsingEncoding(NSUTF8StringEncoding)!
+            let dispatchData = DispatchData <Void> (start: data.bytes, count: data.length)
+            self.channel!.write(dispatchData) {
+                (result) in
+                log?.debug("Write: \(result)")
+            }
         }
     }
 

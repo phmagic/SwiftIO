@@ -56,7 +56,7 @@ public class UDPChannel {
 
     // MARK: - Initialization
 
-    public init(label: String? = nil, address: Address, qos: dispatch_qos_class_t = QOS_CLASS_DEFAULT, readHandler: (Datagram -> Void)? = nil) throws {
+    public init(label: String? = nil, address: Address, qos: dispatch_qos_class_t = QOS_CLASS_DEFAULT, readHandler: (Datagram -> Void)? = nil) {
         self.label = label
         self.address = address
 

@@ -77,7 +77,7 @@ public class TCPChannel: Connectable {
 
     // MARK: Initialization
 
-    public init(label: String? = nil, address: Address, qos: qos_class_t = QOS_CLASS_DEFAULT) throws {
+    public init(label: String? = nil, address: Address, qos: qos_class_t = QOS_CLASS_DEFAULT) {
         assert(address.port != nil)
 
         self.label = label
@@ -113,7 +113,7 @@ public class TCPChannel: Connectable {
                 try socket.connect(address)
                 strong_self.socket = socket
                 strong_self.state.value = .Connected
-                try strong_self.createStream()
+                strong_self.createStream()
                 log?.debug("\(strong_self): Connection success.")
                 callback(.Success())
             }
@@ -212,7 +212,7 @@ public class TCPChannel: Connectable {
         }
     }
 
-    private func createStream() throws {
+    private func createStream() {
 
         channel = dispatch_io_create(DISPATCH_IO_STREAM, socket.descriptor, queue) {
             [weak self] (error) in
@@ -312,12 +312,12 @@ public class TCPChannel: Connectable {
 extension TCPChannel {
 
     /// Create a TCPChannel from a pre-existing socket. The setup closure is called after the channel is created but before the state has changed to `Connecting`. This gives consumers a chance to configure the channel before it is fully connected.
-    public convenience init(label: String? = nil, address: Address, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, @noescape setup: (TCPChannel -> Void)) throws {
-        try self.init(label: label, address: address)
+    public convenience init(label: String? = nil, address: Address, socket: Socket, qos: qos_class_t = QOS_CLASS_DEFAULT, @noescape setup: (TCPChannel -> Void)) {
+        self.init(label: label, address: address)
         self.socket = socket
         setup(self)
         state.value = .Connected
-        try createStream()
+        createStream()
     }
 
 }
