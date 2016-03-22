@@ -123,7 +123,8 @@ private extension String {
 }
 
 
-func tryGivingResult <R>(@noescape closure: () throws -> R) -> Result <R> {
+// TODO: Move to swiftutilities
+private func tryGivingResult <R>(@noescape closure: () throws -> R) -> Result <R> {
     do {
         let value = try closure()
         return .Success(value)
