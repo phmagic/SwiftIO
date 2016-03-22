@@ -40,7 +40,7 @@ class SwitchControl: NSControl {
         ])
 
 
-        addGestureRecognizer(NSClickGestureRecognizer(target: self, action: Selector("click:")))
+        addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(SwitchControl.click(_:))))
 
         setup()
     }

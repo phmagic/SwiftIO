@@ -167,7 +167,7 @@ public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout
 
 public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws {
     var hints = hints
-    var info = UnsafeMutablePointer<addrinfo>()
+    var info: UnsafeMutablePointer <addrinfo> = nil
     let result = getaddrinfo(hostname, service, &hints, &info)
     guard result == 0 else {
         let ptr = gai_strerror(result)

@@ -34,7 +34,7 @@ public class TCPListener {
 
     public func startListening() throws {
 
-        listeningSocket = try Socket(domain: address.family.rawValue, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
+        listeningSocket = try Socket(domain: address.family.rawValue, type: SOCK_STREAM, protocol: IPPROTO_TCP)
 
         guard let listeningSocket = listeningSocket else {
             throw Error.Generic("Socket() failed")

@@ -90,7 +90,7 @@ public extension Socket {
     }
 
     func listen(backlog: Int = 1) throws {
-        precondition(type == SOCK_STREAM, "\(__FUNCTION__) should only be used on `SOCK_STREAM` sockets")
+        precondition(type == SOCK_STREAM, "\(#function) should only be used on `SOCK_STREAM` sockets")
 
         let status = Darwin.listen(descriptor, Int32(backlog))
         if status != 0 {
@@ -99,7 +99,7 @@ public extension Socket {
     }
 
     func accept() throws -> (Socket, Address) {
-        precondition(type == SOCK_STREAM, "\(__FUNCTION__) should only be used on `SOCK_STREAM` sockets")
+        precondition(type == SOCK_STREAM, "\(#function) should only be used on `SOCK_STREAM` sockets")
 
         return try sockaddr.with() {
             sockaddr, length in

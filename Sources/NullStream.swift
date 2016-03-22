@@ -42,6 +42,6 @@ public class NullStream: BinaryOutputStream {
 
     public func write(buffer: UnsafeBufferPointer <Void>) throws {
         length += buffer.count
-        writeCount++
+        writeCount += 1
     }
 }
