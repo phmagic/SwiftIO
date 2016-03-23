@@ -81,8 +81,6 @@ public class UDPChannel {
     // MARK: - Actions
 
     public func resume() throws {
-        log?.debug("\(self): resume.")
-
         do {
             socket = try Socket(domain: address.family.rawValue, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
 
@@ -106,8 +104,6 @@ public class UDPChannel {
                 return
             }
 
-            log?.debug("\(strong_self): Cancel handler.")
-
             strong_self.cleanup()
             strong_self.resumed = false
         }
@@ -117,7 +113,6 @@ public class UDPChannel {
             guard let strong_self = self else {
                 return
             }
-
             do {
                 try strong_self.read()
             }
@@ -131,25 +126,18 @@ public class UDPChannel {
             guard let strong_self = self else {
                 return
             }
-
             do {
                 try strong_self.socket.bind(strong_self.address)
-
                 strong_self.resumed = true
-
-                log?.debug("\(strong_self): Listening on \(strong_self.address)")
             }
             catch let error {
                 strong_self.errorHandler?(error)
-
                 tryElseFatalError() {
                     try strong_self.cancel()
                 }
-
                 return
             }
         }
-
         dispatch_resume(source)
     }
 
@@ -160,24 +148,24 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: DispatchData <Void>, address: Address! = nil, writeHandler: Result <Void> -> Void) {
+    public func send(data: DispatchData <Void>, address: Address! = nil, callback: Result <Void> -> Void) {
         precondition(sendQueue != nil, "Cannot send data without a queue")
         precondition(resumed == true, "Cannot send data on unresumed queue")
-
         dispatch_async(sendQueue) {
             [weak self] in
 
             guard let strong_self = self else {
                 return
             }
-
             do {
                 try strong_self.socket.sendto(data, address: address)
             }
             catch let error {
-                writeHandler(.Failure(error))
+                strong_self.errorHandler?(error)
+                callback(.Failure(error))
+                return
             }
-            writeHandler(.Success())
+            callback(.Success())
         }
     }
 
@@ -253,9 +241,9 @@ private extension UDPChannel {
 // MARK: -
 
 public extension UDPChannel {
-    public func send(data: NSData, address: Address? = nil, writeHandler: Result <Void> -> Void) {
+    public func send(data: NSData, address: Address? = nil, callback: Result <Void> -> Void) {
         let data = DispatchData <Void> (start: data.bytes, count: data.length)
-        send(data, address: address ?? self.address, writeHandler: writeHandler)
+        send(data, address: address ?? self.address, callback: callback)
     }
 }
 
