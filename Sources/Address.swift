@@ -246,11 +246,11 @@ public extension Address {
             case AF_INET:
                 let addr = UnsafePointer <sockaddr_in> (addr)
                 inetAddress = .INET(addr.memory.sin_addr)
-                port = addr.memory.sin_port != 0 ? addr.memory.sin_port : nil
+                port = addr.memory.sin_port != 0 ? UInt16(networkEndian: addr.memory.sin_port) : nil
             case AF_INET6:
                 let addr = UnsafePointer <sockaddr_in6> (addr)
                 inetAddress = .INET6(addr.memory.sin6_addr)
-                port = addr.memory.sin6_port != 0 ? addr.memory.sin6_port : nil
+                port = addr.memory.sin6_port != 0 ? UInt16(networkEndian: addr.memory.sin6_port) : nil
             default:
                 fatalError("Invalid sockaddr family")
         }
