@@ -59,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        }
 
 //        print(try! Address("127.0.0.1:1234"))
-        let addrs = try! Address.addresses("::1", `protocol`: .TCP, family: .INET6)
+        let addrs = try! Address.addresses("::1", protocol: .TCP, family: .INET6)
         print(addrs)
 //        print(try! Address("[::]:80"))
 //        print(try! Address("localhost:80"))

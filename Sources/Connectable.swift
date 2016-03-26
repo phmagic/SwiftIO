@@ -17,7 +17,7 @@ public enum ConnectionState {
 }
 
 public protocol Connectable {
-    typealias ConnectionStateType
+    associatedtype ConnectionStateType
 
     var state: ConnectionStateType { get }
     func connect(callback: SwiftUtilities.Result <Void> -> Void)

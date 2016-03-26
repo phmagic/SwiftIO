@@ -284,7 +284,7 @@ public extension Address {
 public extension Address {
 
     init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws {
-        let addresses: [Address] = try Address.addresses(address, `protocol`: `protocol`, family: family)
+        let addresses: [Address] = try Address.addresses(address, protocol: `protocol`, family: family)
         guard var address = addresses.first else {
             throw Error.Generic("Could not create address")
         }

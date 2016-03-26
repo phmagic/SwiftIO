@@ -107,7 +107,7 @@ public class TCPChannel: Connectable {
                 strong_self.state.value = .Connecting
                 let socket: Socket
 
-                socket = try Socket(domain: address.family.rawValue, type: SOCK_STREAM, `protocol`: IPPROTO_TCP)
+                socket = try Socket(domain: address.family.rawValue, type: SOCK_STREAM, protocol: IPPROTO_TCP)
 
                 strong_self.configureSocket?(socket)
                 try socket.connect(address)

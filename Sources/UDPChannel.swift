@@ -82,7 +82,7 @@ public class UDPChannel {
 
     public func resume() throws {
         do {
-            socket = try Socket(domain: address.family.rawValue, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
+            socket = try Socket(domain: address.family.rawValue, type: SOCK_DGRAM, protocol: IPPROTO_UDP)
 
         }
         catch let error {
@@ -170,7 +170,7 @@ public class UDPChannel {
     }
 
     public static func send(data: DispatchData <Void>, address: Address, queue: dispatch_queue_t, writeHandler: Result <Void> -> Void) {
-        let socket = try! Socket(domain: address.family.rawValue, type: SOCK_DGRAM, `protocol`: IPPROTO_UDP)
+        let socket = try! Socket(domain: address.family.rawValue, type: SOCK_DGRAM, protocol: IPPROTO_UDP)
         dispatch_async(queue) {
             do {
                 try socket.sendto(data, address: address)
