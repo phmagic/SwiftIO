@@ -9,11 +9,10 @@
 import SwiftUtilities
 
 public enum ConnectionState {
-    case Unconnected
+    case Disconnected
     case Connecting
     case Connected
     case Disconnecting
-    case Disconnected
 }
 
 public protocol Connectable {

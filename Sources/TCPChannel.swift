@@ -36,16 +36,9 @@ import SwiftUtilities
 
 public class TCPChannel: Connectable {
 
-    public enum State {
-        case Unconnected
-        case Connecting
-        case Connected
-        case Disconnecting
-    }
-
     public let label: String?
     public let address: Address
-    public let state = ObservableProperty(State.Unconnected)
+    public let state = ObservableProperty(ConnectionState.Disconnected)
 
     // MARK: Callbacks
 
@@ -96,7 +89,7 @@ public class TCPChannel: Connectable {
                 return
             }
 
-            if strong_self.state.value != .Unconnected {
+            if strong_self.state.value != .Disconnected {
                 callback(.Failure(Error.Generic("Cannot connect channel in state \(strong_self.state.value)")))
                 return
             }
@@ -118,7 +111,7 @@ public class TCPChannel: Connectable {
                 callback(.Success())
             }
             catch let error {
-                strong_self.state.value = .Unconnected
+                strong_self.state.value = .Disconnected
                 log?.debug("\(strong_self): Connection failure: \(error).")
                 callback(.Failure(error))
             }
@@ -133,7 +126,7 @@ public class TCPChannel: Connectable {
                 return
             }
 
-            if strong_self.state.value == .Unconnected {
+            if strong_self.state.value == .Disconnected {
                 callback(.Failure(Error.Generic("Cannot disconnect channel in state \(strong_self.state.value)")))
                 return
             }
@@ -260,7 +253,7 @@ public class TCPChannel: Connectable {
 
         try socket.close()
 
-        state.value = .Unconnected
+        state.value = .Disconnected
 
         if let shouldReconnect = shouldReconnect where remoteDisconnect == true {
             let reconnectFlag = shouldReconnect()
@@ -299,7 +292,7 @@ public class TCPChannel: Connectable {
     }
 
     private func preconditionConnected() {
-        precondition(state.value == .Unconnected, "Cannot change parameter while socket connected")
+        precondition(state.value == .Disconnected, "Cannot change parameter while socket connected")
     }
 
     // MARK: -

@@ -49,7 +49,7 @@ class TCPClientViewController: NSViewController {
             self.state = String(new)
 
             switch (old, new) {
-                case (_, .Unconnected):
+                case (_, .Disconnected):
                     self.connected = false
                 case (_, .Connected):
                     self.connected = true
@@ -88,7 +88,7 @@ class TCPClientViewController: NSViewController {
             (result) in
 
             if case .Failure(let error) = result {
-                assert(clientChannel.state.value == .Unconnected)
+                assert(clientChannel.state.value == .Disconnected)
                 SwiftIO.log?.debug("Client connect callback: \(error)")
                 return
             }

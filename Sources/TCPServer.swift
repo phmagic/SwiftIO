@@ -55,7 +55,7 @@ public class TCPServer {
                 guard let strong_self = self else {
                     return
                 }
-                if new == .Unconnected {
+                if new == .Disconnected {
                     strong_self.connections.value.remove(channel)
                     strong_self.clientDidDisconnect?(channel)
                 }

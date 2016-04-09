@@ -63,7 +63,7 @@ class EchoViewController: NSViewController {
         }
 
         channel.shouldReconnect = {
-            assert(self.channel.state.value == .Unconnected)
+            assert(self.channel.state.value == .Disconnected)
             log?.debug("Disconnected!")
 
             dispatch_async(dispatch_get_main_queue()) {
@@ -96,7 +96,7 @@ class EchoViewController: NSViewController {
             }
 
             if case .Failure(let error) = result {
-                assert(self.channel.state.value == .Unconnected)
+                assert(self.channel.state.value == .Disconnected)
                 log?.debug("Connection failure: \(error)")
                 return
             }
