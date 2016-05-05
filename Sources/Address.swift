@@ -340,6 +340,11 @@ public extension sockaddr_storage {
         self = sockaddr_storage(sockaddr: sockaddr)
     }
 
+    init(addr: UnsafePointer <sockaddr>, length: Int) {
+        precondition((addr.memory.sa_family == sa_family_t(AF_INET) && length == sizeof(sockaddr_in)) || (addr.memory.sa_family == sa_family_t(AF_INET6) && length == sizeof(sockaddr_in6)))
+        self = sockaddr_storage()
+        memcpy(&self, addr, length)
+    }
 
 }
 
@@ -375,9 +380,9 @@ public extension Address {
         var addresses: [Address] = []
 
         try getaddrinfo(hostname, service: service, hints: hints) {
-            let addr = $0.memory.ai_addr.memory
-            precondition(socklen_t(addr.sa_len) == $0.memory.ai_addrlen)
-            let address = Address(addr: $0.memory.ai_addr)
+            let addr = sockaddr_storage(addr: $0.memory.ai_addr, length: Int($0.memory.ai_addrlen))
+
+            let address = Address(sockaddr: addr)
             addresses.append(address)
             return true
         }

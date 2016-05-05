@@ -69,27 +69,25 @@ public extension Socket {
 
 public extension Socket {
 
-    private func convert(ptr: UnsafePointer <sockaddr_storage>) -> UnsafePointer <sockaddr> {
-        return UnsafePointer<sockaddr> (ptr)
-    }
-
-    private func convert(ptr: UnsafeMutablePointer <sockaddr_storage>) -> UnsafeMutablePointer <sockaddr> {
-        return UnsafeMutablePointer<sockaddr> (ptr)
-    }
-
     func connect(address: Address) throws {
         var addr = sockaddr_storage(address: address)
-        let status = Darwin.connect(descriptor, convert(&addr), socklen_t(addr.ss_len))
-        guard status == 0 else {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        try withUnsafePointer(&addr) {
+            ptr in
+            let status = Darwin.connect(descriptor, UnsafePointer <sockaddr> (ptr), socklen_t(addr.ss_len))
+            guard status == 0 else {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
         }
     }
 
     func bind(address: Address) throws {
         var addr = sockaddr_storage(address: address)
-        let status = Darwin.bind(descriptor, convert(&addr), socklen_t(addr.ss_len))
-        if status != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        try withUnsafePointer(&addr) {
+            ptr in
+            let status = Darwin.bind(descriptor, UnsafePointer <sockaddr> (ptr), socklen_t(addr.ss_len))
+            if status != 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
         }
     }
 
@@ -104,37 +102,48 @@ public extension Socket {
 
     func accept() throws -> (Socket, Address) {
         precondition(type == SOCK_STREAM, "\(#function) should only be used on `SOCK_STREAM` sockets")
+        var addr = sockaddr_storage()
+        return try withUnsafeMutablePointer(&addr) {
+            ptr in
 
-        var sockaddr = sockaddr_storage()
-        var length = socklen_t(sizeof(sockaddr_storage))
-
-        let socket = Darwin.accept(descriptor, convert(&sockaddr), &length)
-        if socket < 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+            var length = socklen_t(sizeof(sockaddr_storage))
+            let socket = Darwin.accept(descriptor, UnsafeMutablePointer <sockaddr> (ptr), &length)
+            if socket < 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            // TODO: Validate length
+            let address = Address(sockaddr: addr)
+            return (Socket(socket), address)
         }
-        let address = Address(sockaddr: sockaddr)
-        return (Socket(socket), address)
+
     }
 
     func getAddress() throws -> Address {
-        var sockaddr = sockaddr_storage()
-        var length = socklen_t(sizeof(sockaddr_storage))
+        var addr = sockaddr_storage()
+        return try withUnsafeMutablePointer(&addr) {
+            ptr in
 
-        let status = getsockname(descriptor, convert(&sockaddr), &length)
-        if status != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+            var length = socklen_t(sizeof(sockaddr_storage))
+            let status = getsockname(descriptor, UnsafeMutablePointer <sockaddr> (ptr), &length)
+            if status != 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            return Address(sockaddr: addr)
         }
-        return Address(sockaddr: sockaddr)
     }
 
     func getPeer() throws -> Address {
-        var sockaddr = sockaddr_storage()
-        var length = socklen_t(sizeof(sockaddr_storage))
-        let status = getpeername(descriptor, convert(&sockaddr), &length)
-        if status != 0 {
-            throw Errno(rawValue: errno) ?? Error.Unknown
+        var addr = sockaddr_storage()
+        return try withUnsafeMutablePointer(&addr) {
+            ptr in
+
+            var length = socklen_t(sizeof(sockaddr_storage))
+            let status = getpeername(descriptor, UnsafeMutablePointer <sockaddr> (ptr), &length)
+            if status != 0 {
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            return Address(sockaddr: addr)
         }
-        return Address(sockaddr: sockaddr)
     }
 }
 

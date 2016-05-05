@@ -207,8 +207,9 @@ private extension UDPChannel {
             guard result >= 0 else {
                 return (result, nil)
             }
-            let addr = UnsafeMutablePointer<sockaddr> (ptr.baseAddress)
-            let address = Address(addr: addr)
+            let addr = UnsafeMutablePointer <sockaddr_storage> (ptr.baseAddress)
+
+            let address = Address(sockaddr: addr.memory)
             return (result, address)
         }
 
@@ -250,11 +251,12 @@ public extension UDPChannel {
 // Private for now - make public soon?
 private extension Socket {
     func sendto(data: DispatchData <Void>, address: Address) throws {
-        let result = address.with() {
-            address in
+        var addr = sockaddr_storage(address: address)
+        let result = withUnsafePointer(&addr) {
+            ptr in
             return data.createMap() {
                 (_, buffer) in
-                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, address, socklen_t(address.memory.sa_len))
+                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, UnsafePointer <sockaddr> (ptr), socklen_t(sizeof(sockaddr_storage)))
             }
         }
         // TODO: what about "partial" sends.
