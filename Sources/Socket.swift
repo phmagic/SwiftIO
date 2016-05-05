@@ -69,23 +69,27 @@ public extension Socket {
 
 public extension Socket {
 
+    private func convert(ptr: UnsafePointer <sockaddr_storage>) -> UnsafePointer <sockaddr> {
+        return UnsafePointer<sockaddr> (ptr)
+    }
+
+    private func convert(ptr: UnsafeMutablePointer <sockaddr_storage>) -> UnsafeMutablePointer <sockaddr> {
+        return UnsafeMutablePointer<sockaddr> (ptr)
+    }
+
     func connect(address: Address) throws {
-        try address.with() {
-            addr in
-            let status = Darwin.connect(descriptor, addr, socklen_t(addr.memory.sa_len))
-            guard status == 0 else {
-                throw Errno(rawValue: errno) ?? Error.Unknown
-            }
+        var addr = sockaddr_storage(address: address)
+        let status = Darwin.connect(descriptor, convert(&addr), socklen_t(addr.ss_len))
+        guard status == 0 else {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 
     func bind(address: Address) throws {
-        try address.with() {
-            addr in
-            let status = Darwin.bind(descriptor, addr, socklen_t(addr.memory.sa_len))
-            if status != 0 {
-                throw Errno(rawValue: errno) ?? Error.Unknown
-            }
+        var addr = sockaddr_storage(address: address)
+        let status = Darwin.bind(descriptor, convert(&addr), socklen_t(addr.ss_len))
+        if status != 0 {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
     }
 
@@ -101,43 +105,36 @@ public extension Socket {
     func accept() throws -> (Socket, Address) {
         precondition(type == SOCK_STREAM, "\(#function) should only be used on `SOCK_STREAM` sockets")
 
-        return try sockaddr.with() {
-            sockaddr, length in
+        var sockaddr = sockaddr_storage()
+        var length = socklen_t(sizeof(sockaddr_storage))
 
-            var length = length
-            let socket = Darwin.accept(descriptor, sockaddr, &length)
-            if socket < 0 {
-                throw Errno(rawValue: errno) ?? Error.Unknown
-            }
-            let address = Address(addr: sockaddr)
-            return (Socket(socket), address)
+        let socket = Darwin.accept(descriptor, convert(&sockaddr), &length)
+        if socket < 0 {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
+        let address = Address(sockaddr: sockaddr)
+        return (Socket(socket), address)
     }
 
     func getAddress() throws -> Address {
-        return try sockaddr.with() {
-            sockaddr, length in
+        var sockaddr = sockaddr_storage()
+        var length = socklen_t(sizeof(sockaddr_storage))
 
-            var length = length
-            let status = getsockname(descriptor, sockaddr, &length)
-            if status != 0 {
-                throw Errno(rawValue: errno) ?? Error.Unknown
-            }
-            return Address(addr: sockaddr)
+        let status = getsockname(descriptor, convert(&sockaddr), &length)
+        if status != 0 {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
+        return Address(sockaddr: sockaddr)
     }
 
     func getPeer() throws -> Address {
-        return try sockaddr.with() {
-            sockaddr, length in
-
-            var length = length
-            let status = getpeername(descriptor, sockaddr, &length)
-            if status != 0 {
-                throw Errno(rawValue: errno) ?? Error.Unknown
-            }
-            return Address(addr: sockaddr)
+        var sockaddr = sockaddr_storage()
+        var length = socklen_t(sizeof(sockaddr_storage))
+        let status = getpeername(descriptor, convert(&sockaddr), &length)
+        if status != 0 {
+            throw Errno(rawValue: errno) ?? Error.Unknown
         }
+        return Address(sockaddr: sockaddr)
     }
 }
 
@@ -150,6 +147,7 @@ extension sockaddr {
 
      Effectively a `sockaddr` flavoured convenience wrapper around Array.withUnsafeMutableBufferPointer
      */
+    @available(*, deprecated, message="Use sockaddr_storage related APIs instead")
     static func with <R> (@noescape closure: (UnsafeMutablePointer<sockaddr>, length: socklen_t) throws -> R) rethrows -> R {
         var buffer = Array <UInt8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
         return try buffer.withUnsafeMutableBufferPointer() {

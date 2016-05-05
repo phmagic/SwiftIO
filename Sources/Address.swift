@@ -241,6 +241,7 @@ public extension Address {
     /**
      Create an Address from a sockaddr pointer.
      */
+    @available(*, deprecated, message="Use sockaddr_storage related APIs instead")
     init(addr: UnsafePointer <sockaddr>) {
         switch Int32(addr.memory.sa_family) {
             case AF_INET:
@@ -256,6 +257,7 @@ public extension Address {
         }
     }
 
+    @available(*, deprecated, message="Use sockaddr_storage related APIs instead")
     func with <R>(@noescape closure: (UnsafePointer <sockaddr>) throws -> R) rethrows -> R {
         guard let port = port else {
             fatalError("No port")
@@ -274,8 +276,71 @@ public extension Address {
                     return try closure(pointer)
                 }
         }
-
     }
+}
+
+public extension Address {
+    init(sockaddr: sockaddr_storage) {
+        switch Int32(sockaddr.ss_family) {
+            case AF_INET:
+                var src = sockaddr
+                var dst = sockaddr_in()
+                memcpy(&dst, &src, sizeof(sockaddr_in))
+                inetAddress = .INET(dst.sin_addr)
+                port = dst.sin_port != 0 ? UInt16(networkEndian: dst.sin_port) : nil
+            case AF_INET6:
+                var src = sockaddr
+                var dst = sockaddr_in6()
+                memcpy(&dst, &src, sizeof(sockaddr_in6))
+                inetAddress = .INET6(dst.sin6_addr)
+                port = dst.sin6_port != 0 ? UInt16(networkEndian: dst.sin6_port) : nil
+            default:
+                fatalError("Invalid sockaddr family")
+        }
+    }
+}
+
+public extension sockaddr_storage {
+
+    init(address: Address) {
+        guard let port = address.port else {
+            fatalError("No port")
+        }
+        switch address.inetAddress {
+            case .INET(let addr):
+                self = sockaddr_storage(addr: addr, port: in_port_t(port.networkEndian))
+            case .INET6(let addr):
+                self = sockaddr_storage(addr: addr, port: in_port_t(port.networkEndian))
+        }
+    }
+
+}
+
+public extension sockaddr_storage {
+
+    init(sockaddr: sockaddr_in) {
+        var copy = sockaddr
+        self = sockaddr_storage()
+        memcpy(&self, &copy, sizeof(in_addr))
+    }
+
+    init(addr: in_addr, port: UInt16) {
+        let sockaddr = sockaddr_in(sin_family: sa_family_t(AF_INET), sin_port: in_port_t(port.networkEndian), sin_addr: addr)
+        self = sockaddr_storage(sockaddr: sockaddr)
+    }
+
+    init(sockaddr: sockaddr_in6) {
+        var copy = sockaddr
+        self = sockaddr_storage()
+        memcpy(&self, &copy, sizeof(in_addr))
+    }
+
+    init(addr: in6_addr, port: UInt16) {
+        let sockaddr = sockaddr_in6(sin6_family: sa_family_t(AF_INET6), sin6_port: in_port_t(port.networkEndian), sin6_addr: addr)
+        self = sockaddr_storage(sockaddr: sockaddr)
+    }
+
+
 }
 
 
