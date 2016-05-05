@@ -76,33 +76,6 @@ extension in6_addr: CustomStringConvertible {
     }
 }
 
-// MARK: sockaddr_in extensions
-
-extension sockaddr_in {
-
-    init(sin_family: sa_family_t, sin_port: in_port_t, sin_addr: in_addr) {
-        self.sin_len = __uint8_t(sizeof(sockaddr_in))
-        self.sin_family = sin_family
-        self.sin_port = sin_port
-        self.sin_addr = sin_addr
-        self.sin_zero = (Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0), Int8(0))
-    }
-}
-
-// MARK: sockaddr_in6 extensions
-
-extension sockaddr_in6 {
-
-    init(sin6_family: sa_family_t, sin6_port: in_port_t, sin6_addr: in6_addr) {
-        self.sin6_len = __uint8_t(sizeof(sockaddr_in6))
-        self.sin6_family = sin6_family
-        self.sin6_port = sin6_port
-        self.sin6_flowinfo = 0
-        self.sin6_addr = sin6_addr
-        self.sin6_scope_id = 0
-    }
-}
-
 // MARK: Swift wrapper functions for useful (but fiddly) POSIX network functions
 
 /**
