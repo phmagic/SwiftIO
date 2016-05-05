@@ -146,24 +146,3 @@ public extension Socket {
         }
     }
 }
-
-// MARK: -
-
-extension sockaddr {
-
-    /**
-     Create a temporary buffer big enough to hold the largest `sockaddr` possible (SOCK_MAXADDRLEN).
-
-     Effectively a `sockaddr` flavoured convenience wrapper around Array.withUnsafeMutableBufferPointer
-     */
-    @available(*, deprecated, message="Use sockaddr_storage related APIs instead")
-    static func with <R> (@noescape closure: (UnsafeMutablePointer<sockaddr>, length: socklen_t) throws -> R) rethrows -> R {
-        var buffer = Array <UInt8> (count: Int(SOCK_MAXADDRLEN), repeatedValue: 0)
-        return try buffer.withUnsafeMutableBufferPointer() {
-            (inout buffer: UnsafeMutableBufferPointer<UInt8>) -> R in
-            let pointer = UnsafeMutablePointer <sockaddr> (buffer.baseAddress)
-            return try closure(pointer, length: socklen_t(SOCK_MAXADDRLEN))
-        }
-    }
-
-}
