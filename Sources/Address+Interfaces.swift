@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Darwin
+
 public extension Address {
     static func addressesForInterfaces() throws -> [String: [Address]] {
         let addressesForInterfaces = getAddressesForInterfaces() as! [String: [NSData]]
@@ -17,11 +19,10 @@ public extension Address {
             if addressData.count == 0 {
                 return nil
             }
-
             let addresses = addressData.map() {
                 (addressData: NSData) -> Address in
-                let sockAddr = UnsafePointer <sockaddr> (addressData.bytes)
-                let address = Address(addr: sockAddr)
+                let addr = sockaddr_storage(addr: UnsafePointer <sockaddr> (addressData.bytes), length: addressData.length)
+                let address = Address(sockaddr: addr)
                 return address
             }
             return (interface, addresses.sort(<))
