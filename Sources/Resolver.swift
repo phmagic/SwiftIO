@@ -49,7 +49,9 @@ class Resolver {
             }
             let result = tryGivingResult() {
                 () -> [Address] in
-                let addresses = try strong_self._resolve(name)
+                var hints = addrinfo()
+                hints.ai_flags = AI_ALL | AI_V4MAPPED
+                let addresses = try getaddrinfo(name, service: "", hints: hints)
                 strong_self.lock.with() {
                     strong_self.cache[name] = addresses
                 }
@@ -59,18 +61,6 @@ class Resolver {
         }
     }
 
-    private func _resolve(hostname: String) throws -> [Address] {
-        var addresses: [Address] = []
-        var hints = addrinfo()
-        hints.ai_flags = AI_ALL | AI_V4MAPPED
-        try getaddrinfo(hostname, service: "", hints: hints) {
-            let addr = sockaddr_storage(addr: $0.memory.ai_addr, length: Int($0.memory.ai_addrlen))
-            let address = Address(sockaddr: addr)
-            addresses.append(address)
-            return true
-        }
-        return Array(Set(addresses)).sort(<)
-    }
 }
 
 // MARK: -

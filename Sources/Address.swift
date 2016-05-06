@@ -298,22 +298,8 @@ public extension Address {
     }
 
     static func addresses(hostname: String, service: String, hints: addrinfo) throws -> [Address] {
-        var addresses: [Address] = []
-
-        try getaddrinfo(hostname, service: service, hints: hints) {
-            let addr = sockaddr_storage(addr: $0.memory.ai_addr, length: Int($0.memory.ai_addrlen))
-
-            let address = Address(sockaddr: addr)
-            addresses.append(address)
-            return true
-        }
-
-        let addressSet = Set <Address> (addresses)
-
-        return Array <Address> (addressSet).sort(<)
+        return try getaddrinfo(hostname, service: service, hints: hints)
     }
-
-
 }
 
 public extension Address {

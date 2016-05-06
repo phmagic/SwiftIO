@@ -161,6 +161,17 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, bloc
     freeaddrinfo(info)
 }
 
+public func getaddrinfo(hostname: String, service: String, hints: addrinfo) throws -> [Address] {
+    var addresses: [Address] = []
+    try getaddrinfo(hostname, service: service, hints: hints) {
+        let addr = sockaddr_storage(addr: $0.memory.ai_addr, length: Int($0.memory.ai_addrlen))
+        let address = Address(sockaddr: addr)
+        addresses.append(address)
+        return true
+    }
+    return Array(Set(addresses)).sort(<)
+}
+
 // MARK: -
 
 public extension in_addr {
