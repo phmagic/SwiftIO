@@ -6,7 +6,6 @@
 //  Copyright © 2016 schwa.io. All rights reserved.
 //
 
-import SwiftIO
 import SwiftUtilities
 
 class Resolver {
