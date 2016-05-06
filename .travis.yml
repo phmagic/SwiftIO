@@ -4,7 +4,7 @@ before_install:
 - brew update
 - brew install carthage || brew upgrade carthage
 before_script:
-- carthage bootstrap --no-use-binaries --platform Mac
+- carthage bootstrap --no-use-binaries
 script:
 - xctool -project SwiftIO.xcodeproj -scheme SwiftIO_iOS -sdk iphonesimulator build test
 - xctool -project SwiftIO.xcodeproj -scheme SwiftIO_OSX build test
