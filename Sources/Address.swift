@@ -262,9 +262,9 @@ public extension sockaddr_storage {
         }
         switch address.inetAddress {
             case .INET(let addr):
-                self = sockaddr_storage(addr: addr, port: in_port_t(port.networkEndian))
+                self = sockaddr_storage(addr: addr, port: port)
             case .INET6(let addr):
-                self = sockaddr_storage(addr: addr, port: in_port_t(port.networkEndian))
+                self = sockaddr_storage(addr: addr, port: port)
         }
     }
 
