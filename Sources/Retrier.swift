@@ -6,8 +6,6 @@
 //  Copyright © 2016 schwa.io. All rights reserved.
 //
 
-import Foundation
-
 import SwiftUtilities
 
 /// Helper to retry closures ('retryClosure') with truncated exponential backoff. See: https://en.wikipedia.org/wiki/Exponential_backoff

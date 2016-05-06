@@ -6,8 +6,6 @@
 //  Copyright © 2015 schwa.io. All rights reserved.
 //
 
-import Foundation
-
 public var logHandler: (Any? -> Void)? = nil
 
 public class Logger {
