@@ -75,6 +75,12 @@ public enum ProtocolFamily {
 }
 
 public extension ProtocolFamily {
+    static var preferred: ProtocolFamily? {
+        return nil
+    }
+}
+
+public extension ProtocolFamily {
 
     init?(rawValue: Int32) {
         switch rawValue {

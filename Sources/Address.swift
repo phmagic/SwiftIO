@@ -283,7 +283,7 @@ public extension Address {
 
 public extension Address {
 
-    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws {
+    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws {
         let addresses: [Address] = try Address.addresses(address, protocol: `protocol`, family: family)
         guard var address = addresses.first else {
             throw Error.Generic("Could not create address")
@@ -294,7 +294,7 @@ public extension Address {
         self = address
     }
 
-    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = nil) throws -> [Address] {
+    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws -> [Address] {
         var hints = addrinfo()
         if let `protocol` = `protocol` {
             hints.ai_protocol = `protocol`.rawValue
@@ -341,7 +341,7 @@ public extension Address {
         try Address("[::1]:80")
         ```
      */
-    init(_ string: String) throws {
+    init(_ string: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws {
 
         // Regular expression is pretty crude but should break input into ip4v/hostname/ipv6 address and optional port
         let expression = try RegularExpression("(?:([\\da-zA-Z0-9_.-]+)|\\[([\\da-fA-F0-9:]+)\\]?)(?::(\\d{1,5}))?")
@@ -356,12 +356,12 @@ public extension Address {
                 throw Error.Generic("Not an address")
             }
         }
-        if let ip4addressString = match.strings[1] {
-            self = try Address(address: ip4addressString, port: port)
+        if let addressString = match.strings[2] {
+            self = try Address(address: addressString, port: port, protocol:`protocol`, family: family)
             assert(self.port == port)
         }
-        else if let ip6addressString = match.strings[2] {
-            self = try Address(address: ip6addressString, port: port)
+        else if let addressString = match.strings[1] {
+            self = try Address(address: addressString, port: port, protocol:`protocol`, family: family)
             assert(self.port == port)
         }
         else {
