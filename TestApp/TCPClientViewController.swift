@@ -71,6 +71,7 @@ class TCPClientViewController: NSViewController {
                 log?.debug("Client read callback: \(error)")
                 return
             }
+            log?.debug("Result: \(result)")
         }
 
         clientChannel.reconnectionDelay = 1 / 8
@@ -118,9 +119,11 @@ class TCPClientViewController: NSViewController {
             fatalError()
         }
 
-        clientChannel.write(DispatchData <Void> ()) {
+        clientChannel.write(try! DispatchData <Void> ("Hello \(count)\r\n")) {
             result in
         }
+
+        count += 1
     }
 
 }
