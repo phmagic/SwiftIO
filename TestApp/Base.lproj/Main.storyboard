@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
@@ -925,8 +925,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="360" height="335"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJr-fv-bSH">
-                                <rect key="frame" x="62" y="102" width="281" height="102"/>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJr-fv-bSH">
+                                <rect key="frame" x="39.5" y="116.5" width="281" height="102"/>
                                 <subviews>
                                     <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZRJ-WP-3Ej">
                                         <rect key="frame" x="0.0" y="51" width="281" height="51"/>
@@ -934,8 +934,8 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nTo-eA-33o">
                                                 <rect key="frame" x="0.0" y="29" width="281" height="22"/>
                                                 <subviews>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="x5z-0Q-1ZQ">
-                                                        <rect key="frame" x="-2" y="3" width="48" height="17"/>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x5z-0Q-1ZQ">
+                                                        <rect key="frame" x="-2" y="2.5" width="48" height="17"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server:" id="7Dz-VG-Lzi">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -953,15 +953,15 @@
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <connections>
+                                                            <binding destination="Sce-QO-a5y" name="value" keyPath="addressString" id="fRx-z3-UqN"/>
                                                             <binding destination="Sce-QO-a5y" name="editable" keyPath="serving" id="mE6-mH-pkP">
                                                                 <dictionary key="options">
                                                                     <string key="NSValueTransformerName">NSIsNotNil</string>
                                                                 </dictionary>
                                                             </binding>
-                                                            <binding destination="Sce-QO-a5y" name="value" keyPath="addressString" id="fRx-z3-UqN"/>
                                                         </connections>
                                                     </textField>
-                                                    <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0cG-vd-BaB" customClass="SwitchControl" customModule="TestApp" customModuleProvider="target">
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="0cG-vd-BaB" customClass="SwitchControl" customModule="TestApp" customModuleProvider="target">
                                                         <rect key="frame" x="221" y="1" width="60" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="20" id="0DB-8M-n7T"/>
@@ -1014,8 +1014,8 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <containerView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dtn-Ve-FBM">
-                                        <rect key="frame" x="0.0" y="0.0" width="236" height="43"/>
+                                    <containerView translatesAutoresizingMaskIntoConstraints="NO" id="Dtn-Ve-FBM">
+                                        <rect key="frame" x="0.0" y="0.0" width="281" height="43"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="43" id="8Cy-7V-6rZ"/>
                                         </constraints>
@@ -1158,15 +1158,33 @@
         <scene sceneID="Yxx-XU-bem">
             <objects>
                 <viewController title="TCP Client" id="6as-30-l2P" customClass="TCPClientViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <stackView key="view" distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" id="HxC-h4-wy7">
-                        <rect key="frame" x="0.0" y="0.0" width="431" height="43"/>
+                    <stackView key="view" distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" id="HxC-h4-wy7">
+                        <rect key="frame" x="0.0" y="0.0" width="597" height="44"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ks1-qD-DSB">
-                                <rect key="frame" x="0.0" y="22" width="431" height="21"/>
+                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ks1-qD-DSB">
+                                <rect key="frame" x="0.0" y="22" width="597" height="22"/>
                                 <subviews>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hGx-oQ-dkT">
+                                        <rect key="frame" x="0.0" y="0.0" width="158" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="158" id="aKB-NK-UIr"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="255.255.255.255:88888" drawsBackground="YES" id="Vde-cL-PgX">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <connections>
+                                            <binding destination="6as-30-l2P" name="value" keyPath="address" id="eoX-ao-Bnh">
+                                                <dictionary key="options">
+                                                    <bool key="NSValidatesImmediately" value="YES"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CC7-v9-vSu">
-                                        <rect key="frame" x="-6" y="-7" width="92" height="32"/>
+                                        <rect key="frame" x="160" y="-6" width="92" height="32"/>
                                         <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BRE-bb-jkd">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -1181,7 +1199,7 @@
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BwH-Ih-ULn">
-                                        <rect key="frame" x="82" y="-7" width="109" height="32"/>
+                                        <rect key="frame" x="248" y="-6" width="109" height="32"/>
                                         <buttonCell key="cell" type="push" title="Disconnect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hj0-CX-L1g">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -1192,7 +1210,10 @@
                                         </connections>
                                     </button>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NFV-tU-30N">
-                                        <rect key="frame" x="191" y="4" width="179" height="17"/>
+                                        <rect key="frame" x="357" y="5" width="179" height="17"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="175" id="0w4-4q-g7M"/>
+                                        </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="XXXXXXXXXXXXXXXXXXXX" id="a8H-gq-rd4">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1202,8 +1223,8 @@
                                             <binding destination="6as-30-l2P" name="value" keyPath="state" id="UIw-Os-737"/>
                                         </connections>
                                     </textField>
-                                    <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5Bm-oO-Slb">
-                                        <rect key="frame" x="370" y="-7" width="67" height="32"/>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5Bm-oO-Slb">
+                                        <rect key="frame" x="536" y="-6" width="67" height="32"/>
                                         <buttonCell key="cell" type="push" title="Ping" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wsy-9Z-wtN">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -1218,8 +1239,10 @@
                                     <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
+                                    <integer value="1000"/>
                                 </visibilityPriorities>
                                 <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>

@@ -13,10 +13,10 @@ import SwiftUtilities
 
 class TCPClientViewController: NSViewController {
 
-    let port = UInt16(40000)
     var clientChannel: TCPChannel?
     var count: Int = 0
 
+    dynamic var address: String? = "localhost:8888"
     dynamic var reconnect: Bool = false
     dynamic var state: String? = nil
     dynamic var connected: Bool = false
@@ -26,7 +26,14 @@ class TCPClientViewController: NSViewController {
     }
 
     func createClient() throws -> TCPChannel {
-        let address = try Address(address: "localhost", port: port)
+
+        guard let addressString = self.address else {
+            throw Error.Generic("Could not create address")
+        }
+
+        let address = try Address(addressString)
+        print(address)
+
         let clientChannel = TCPChannel(address: address)
         clientChannel.configureSocket = {
             socket in
