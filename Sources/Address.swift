@@ -239,13 +239,13 @@ public extension Address {
             case AF_INET:
                 var src = sockaddr
                 var dst = sockaddr_in()
-                memcpy(&dst, &src, sizeof(sockaddr_in))
+                unsafeCopy(destination: &dst, source: &src)
                 inetAddress = .INET(dst.sin_addr)
                 port = dst.sin_port != 0 ? UInt16(networkEndian: dst.sin_port) : nil
             case AF_INET6:
                 var src = sockaddr
                 var dst = sockaddr_in6()
-                memcpy(&dst, &src, sizeof(sockaddr_in6))
+                unsafeCopy(destination: &dst, source: &src)
                 inetAddress = .INET6(dst.sin6_addr)
                 port = dst.sin6_port != 0 ? UInt16(networkEndian: dst.sin6_port) : nil
             default:

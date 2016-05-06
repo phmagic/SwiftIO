@@ -30,3 +30,13 @@ internal extension timeval64 {
     }
 
 }
+
+internal func unsafeCopy <DST, SRC> (destination destination: UnsafeMutablePointer <DST>, source: UnsafePointer <SRC>) {
+    let length = min(sizeof(DST), sizeof(SRC))
+    unsafeCopy(destination: destination, source: source, length: length)
+}
+
+internal func unsafeCopy <DST> (destination destination: UnsafeMutablePointer <DST>, source: UnsafePointer <Void>, length: Int) {
+    precondition(sizeof(DST) >= length)
+    memcpy(destination, source, length)
+}
