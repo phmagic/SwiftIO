@@ -55,13 +55,13 @@ public extension sockaddr_storage {
     init(sockaddr: sockaddr_in) {
         var copy = sockaddr
         self = sockaddr_storage()
-        memcpy(&self, &copy, sizeof(in_addr))
+        memcpy(&self, &copy, sizeof(sockaddr_in))
     }
 
     init(sockaddr: sockaddr_in6) {
         var copy = sockaddr
         self = sockaddr_storage()
-        memcpy(&self, &copy, sizeof(in_addr))
+        memcpy(&self, &copy, sizeof(sockaddr_in6))
     }
 
     init(addr: UnsafePointer <sockaddr>, length: Int) {
