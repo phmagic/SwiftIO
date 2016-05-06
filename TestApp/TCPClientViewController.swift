@@ -92,12 +92,15 @@ class TCPClientViewController: NSViewController {
             fatalError()
         }
 
-        clientChannel.connect(retryDelay: 1 / 8) {
+        clientChannel.connect() {
             (result) in
 
             if case .Failure(let error) = result {
                 assert(clientChannel.state.value == .Disconnected)
                 SwiftIO.log?.debug("Client connect callback: \(error)")
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.presentError(error as NSError)
+                }
                 return
             }
         }

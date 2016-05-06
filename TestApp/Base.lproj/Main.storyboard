@@ -922,20 +922,20 @@
             <objects>
                 <viewController title="TCP Server" id="Sce-QO-a5y" customClass="TCPServerViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="usJ-IC-fEI">
-                        <rect key="frame" x="0.0" y="0.0" width="360" height="335"/>
+                        <rect key="frame" x="0.0" y="0.0" width="360" height="352"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJr-fv-bSH">
-                                <rect key="frame" x="39" y="116" width="281" height="102"/>
+                                <rect key="frame" x="39" y="113" width="281" height="125"/>
                                 <subviews>
                                     <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZRJ-WP-3Ej">
-                                        <rect key="frame" x="0.0" y="51" width="281" height="51"/>
+                                        <rect key="frame" x="0.0" y="74" width="281" height="51"/>
                                         <subviews>
                                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nTo-eA-33o">
                                                 <rect key="frame" x="0.0" y="29" width="281" height="22"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x5z-0Q-1ZQ">
-                                                        <rect key="frame" x="-2" y="2" width="48" height="17"/>
+                                                        <rect key="frame" x="-2" y="2.5" width="48" height="17"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server:" id="7Dz-VG-Lzi">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1015,9 +1015,9 @@
                                         </customSpacing>
                                     </stackView>
                                     <containerView translatesAutoresizingMaskIntoConstraints="NO" id="Dtn-Ve-FBM">
-                                        <rect key="frame" x="0.0" y="0.0" width="281" height="43"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="281" height="66"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="43" id="8Cy-7V-6rZ"/>
+                                            <constraint firstAttribute="height" constant="66" id="8Cy-7V-6rZ"/>
                                         </constraints>
                                         <connections>
                                             <segue destination="6as-30-l2P" kind="embed" id="o2f-nR-wsc"/>
@@ -1159,11 +1159,11 @@
             <objects>
                 <viewController title="TCP Client" id="6as-30-l2P" customClass="TCPClientViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
                     <stackView key="view" distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" id="HxC-h4-wy7">
-                        <rect key="frame" x="0.0" y="0.0" width="597" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="597" height="66"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ks1-qD-DSB">
-                                <rect key="frame" x="0.0" y="22" width="597" height="22"/>
+                                <rect key="frame" x="0.0" y="44" width="597" height="22"/>
                                 <subviews>
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hGx-oQ-dkT">
                                         <rect key="frame" x="0.0" y="0.0" width="158" height="22"/>
@@ -1251,21 +1251,30 @@
                                 </customSpacing>
                             </stackView>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="ugL-hM-9BS">
-                                <rect key="frame" x="-2" y="-2" width="87" height="18"/>
-                                <buttonCell key="cell" type="check" title="Reconnect" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="g7E-Zd-aDr">
+                                <rect key="frame" x="-2" y="20" width="160" height="18"/>
+                                <buttonCell key="cell" type="check" title="Keep trying to connect" bezelStyle="regularSquare" imagePosition="left" enabled="NO" inset="2" id="g7E-Zd-aDr">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="ZA7-bD-wtf">
+                                <rect key="frame" x="-2" y="-2" width="205" height="18"/>
+                                <buttonCell key="cell" type="check" title="Reconnect after disconnected" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="vnl-ja-3yg">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <binding destination="6as-30-l2P" name="value" keyPath="reconnect" id="eNh-qI-ofm"/>
+                                    <binding destination="6as-30-l2P" name="value" keyPath="reconnect" id="PGq-hh-fXF"/>
                                 </connections>
                             </button>
                         </subviews>
                         <visibilityPriorities>
                             <integer value="1000"/>
                             <integer value="1000"/>
+                            <integer value="1000"/>
                         </visibilityPriorities>
                         <customSpacing>
+                            <real value="3.4028234663852886e+38"/>
                             <real value="3.4028234663852886e+38"/>
                             <real value="3.4028234663852886e+38"/>
                         </customSpacing>
