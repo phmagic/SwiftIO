@@ -35,8 +35,8 @@
 		4589E1281CDD20E200CC1ED8 /* Datagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FA1CDD20E200CC1ED8 /* Datagram.swift */; };
 		4589E1291CDD20E200CC1ED8 /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FB1CDD20E200CC1ED8 /* FileStream.swift */; };
 		4589E12A1CDD20E200CC1ED8 /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FB1CDD20E200CC1ED8 /* FileStream.swift */; };
-		4589E12B1CDD20E200CC1ED8 /* Inet+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FC1CDD20E200CC1ED8 /* Inet+Utilities.swift */; };
-		4589E12C1CDD20E200CC1ED8 /* Inet+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FC1CDD20E200CC1ED8 /* Inet+Utilities.swift */; };
+		4589E12B1CDD20E200CC1ED8 /* inet+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FC1CDD20E200CC1ED8 /* inet+Extensions.swift */; };
+		4589E12C1CDD20E200CC1ED8 /* inet+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FC1CDD20E200CC1ED8 /* inet+Extensions.swift */; };
 		4589E12D1CDD20E200CC1ED8 /* Inet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FD1CDD20E200CC1ED8 /* Inet.swift */; };
 		4589E12E1CDD20E200CC1ED8 /* Inet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FD1CDD20E200CC1ED8 /* Inet.swift */; };
 		4589E12F1CDD20E200CC1ED8 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E0FE1CDD20E200CC1ED8 /* Logging.swift */; };
@@ -158,7 +158,7 @@
 		4589E0F91CDD20E200CC1ED8 /* Datagram+Streams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Datagram+Streams.swift"; sourceTree = "<group>"; };
 		4589E0FA1CDD20E200CC1ED8 /* Datagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datagram.swift; sourceTree = "<group>"; };
 		4589E0FB1CDD20E200CC1ED8 /* FileStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStream.swift; sourceTree = "<group>"; };
-		4589E0FC1CDD20E200CC1ED8 /* Inet+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Inet+Utilities.swift"; sourceTree = "<group>"; };
+		4589E0FC1CDD20E200CC1ED8 /* inet+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "inet+Extensions.swift"; sourceTree = "<group>"; };
 		4589E0FD1CDD20E200CC1ED8 /* Inet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inet.swift; sourceTree = "<group>"; };
 		4589E0FE1CDD20E200CC1ED8 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		4589E0FF1CDD20E200CC1ED8 /* MemoryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryStream.swift; sourceTree = "<group>"; };
@@ -288,7 +288,7 @@
 				4589E0F91CDD20E200CC1ED8 /* Datagram+Streams.swift */,
 				4589E0FA1CDD20E200CC1ED8 /* Datagram.swift */,
 				4589E0FB1CDD20E200CC1ED8 /* FileStream.swift */,
-				4589E0FC1CDD20E200CC1ED8 /* Inet+Utilities.swift */,
+				4589E0FC1CDD20E200CC1ED8 /* inet+Extensions.swift */,
 				4589E0FD1CDD20E200CC1ED8 /* Inet.swift */,
 				4589E0FE1CDD20E200CC1ED8 /* Logging.swift */,
 				4589E0FF1CDD20E200CC1ED8 /* MemoryStream.swift */,
@@ -607,7 +607,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4589E1361CDD20E200CC1ED8 /* NullStream.swift in Sources */,
-				4589E12C1CDD20E200CC1ED8 /* Inet+Utilities.swift in Sources */,
+				4589E12C1CDD20E200CC1ED8 /* inet+Extensions.swift in Sources */,
 				4589E1261CDD20E200CC1ED8 /* Datagram+Streams.swift in Sources */,
 				4589E12A1CDD20E200CC1ED8 /* FileStream.swift in Sources */,
 				4589E13E1CDD20E200CC1ED8 /* sockaddr_storage+Extensions.swift in Sources */,
@@ -645,7 +645,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4589E1351CDD20E200CC1ED8 /* NullStream.swift in Sources */,
-				4589E12B1CDD20E200CC1ED8 /* Inet+Utilities.swift in Sources */,
+				4589E12B1CDD20E200CC1ED8 /* inet+Extensions.swift in Sources */,
 				4589E1251CDD20E200CC1ED8 /* Datagram+Streams.swift in Sources */,
 				4589E1291CDD20E200CC1ED8 /* FileStream.swift in Sources */,
 				4589E13D1CDD20E200CC1ED8 /* sockaddr_storage+Extensions.swift in Sources */,
