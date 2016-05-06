@@ -926,7 +926,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJr-fv-bSH">
-                                <rect key="frame" x="39.5" y="116.5" width="281" height="102"/>
+                                <rect key="frame" x="39" y="116" width="281" height="102"/>
                                 <subviews>
                                     <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZRJ-WP-3Ej">
                                         <rect key="frame" x="0.0" y="51" width="281" height="51"/>
@@ -935,7 +935,7 @@
                                                 <rect key="frame" x="0.0" y="29" width="281" height="22"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x5z-0Q-1ZQ">
-                                                        <rect key="frame" x="-2" y="2.5" width="48" height="17"/>
+                                                        <rect key="frame" x="-2" y="2" width="48" height="17"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server:" id="7Dz-VG-Lzi">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1170,14 +1170,15 @@
                                         <constraints>
                                             <constraint firstAttribute="width" constant="158" id="aKB-NK-UIr"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="255.255.255.255:88888" drawsBackground="YES" id="Vde-cL-PgX">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="255.255.255.255:88888" drawsBackground="YES" id="Vde-cL-PgX">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                         <connections>
-                                            <binding destination="6as-30-l2P" name="value" keyPath="address" id="eoX-ao-Bnh">
+                                            <binding destination="6as-30-l2P" name="value" keyPath="address" id="t9M-JZ-OAN">
                                                 <dictionary key="options">
+                                                    <bool key="NSContinuouslyUpdatesValue" value="YES"/>
                                                     <bool key="NSValidatesImmediately" value="YES"/>
                                                 </dictionary>
                                             </binding>
