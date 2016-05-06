@@ -51,21 +51,6 @@ class AddressTests: XCTestCase {
         let addr = address.to_in_addr()!
         XCTAssertEqual(addr.s_addr, UInt32(0x7F000001).networkEndian)
 
-
-        address.with {
-            sockaddr in
-
-            XCTAssertEqual(sockaddr.memory.sa_family, sa_family_t(PF_INET))
-            XCTAssertEqual(sockaddr.memory.sa_len, 16)
-
-
-            let sockaddrIPV4 = UnsafePointer <sockaddr_in> (sockaddr)
-
-            XCTAssertEqual(sockaddrIPV4.memory.sin_port, UInt16(1234).networkEndian)
-            XCTAssertEqual(sockaddrIPV4.memory.sin_addr.s_addr, UInt32(0x7F000001).networkEndian)
-        }
-
-
         let octets = address.to_in_addr()!.octets
         XCTAssertEqual(octets.0, 0x7f)
         XCTAssertEqual(octets.1, 0x00)
@@ -75,8 +60,6 @@ class AddressTests: XCTestCase {
 //        let other = Address(addr: sockaddrIPV4.sin_addr, port: address.port)
 //        XCTAssertEqual(address, other)
 //        XCTAssertFalse(address < other)
-
-
     }
 
     func testStringBasedAddress() {
