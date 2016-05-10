@@ -137,7 +137,10 @@ public func getnameinfo(addr: UnsafePointer<sockaddr>, addrlen: socklen_t, inout
 
 // MARK: -
 
-public func getaddrinfo(hostname: String, service: String, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws {
+public func getaddrinfo(hostname: String?, service: String? = nil, hints: addrinfo, block: UnsafePointer<addrinfo> throws -> Bool) throws {
+    let hostname = hostname ?? ""
+    let service = service ?? ""
+
     var hints = hints
     var info: UnsafeMutablePointer <addrinfo> = nil
     let result = getaddrinfo(hostname, service, &hints, &info)
@@ -161,8 +164,9 @@ public func getaddrinfo(hostname: String, service: String, hints: addrinfo, bloc
     freeaddrinfo(info)
 }
 
-public func getaddrinfo(hostname: String, service: String, hints: addrinfo) throws -> [Address] {
+public func getaddrinfo(hostname: String?, service: String? = nil, hints: addrinfo) throws -> [Address] {
     var addresses: [Address] = []
+    
     try getaddrinfo(hostname, service: service, hints: hints) {
         let addr = sockaddr_storage(addr: $0.memory.ai_addr, length: Int($0.memory.ai_addrlen))
         let address = Address(sockaddr: addr)
