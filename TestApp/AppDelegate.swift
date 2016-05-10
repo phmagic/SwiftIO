@@ -37,16 +37,5 @@ import SwiftIO
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-
-//        var hints = addrinfo()
-//        hints.ai_family = PF_INET6
-//        hints.ai_protocol = IPPROTO_TCP
-//        try! getaddrinfo("2607:f8b0:4007:803:700::", service: "", hints: hints) {
-//            print($0.memory.ai_addr.memory)
-//            return true
-//        }
-//
-//        let addrs = try! Address.addresses("::1", protocol: .TCP, family: .INET6)
-//        print(addrs)
     }
 }

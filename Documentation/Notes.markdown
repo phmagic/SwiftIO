@@ -11,6 +11,18 @@ https://developer.apple.com/videos/play/wwdc2015/719/
 
 https://developer.apple.com/library/mac/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/UnderstandingandPreparingfortheIPv6Transition/UnderstandingandPreparingfortheIPv6Transition.html#//apple_ref/doc/uid/TP40010220-CH213-SW1
 
+## Addresses:
+
+### ::1
+
+http://v6decode.com/#address=::1
+
+### fe80::1
+
+http://v6decode.com/#address=fe80::1
+
+### [::ffff:10.1.1.1]
+
 ## AF_INET vs PF_INET
 
   print(PF_INET, AF_INET, PF_INET6, AF_INET6)
