@@ -38,8 +38,8 @@ public extension sockaddr_storage {
     */
     init(addr: in6_addr, port: UInt16) {
         var sockaddr = sockaddr_in6()
-        sockaddr.sin6_len = __uint8_t(sizeof(sockaddr_in))
-        sockaddr.sin6_family = sa_family_t(AF_INET)
+        sockaddr.sin6_len = __uint8_t(sizeof(sockaddr_in6))
+        sockaddr.sin6_family = sa_family_t(AF_INET6)
         sockaddr.sin6_port = in_port_t(port.networkEndian)
         sockaddr.sin6_addr = addr
         self = sockaddr_storage(sockaddr: sockaddr)
