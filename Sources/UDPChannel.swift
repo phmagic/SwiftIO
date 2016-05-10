@@ -82,7 +82,6 @@ public class UDPChannel {
     public func resume() throws {
         do {
             socket = try Socket(domain: address.family.rawValue, type: SOCK_DGRAM, protocol: IPPROTO_UDP)
-
         }
         catch let error {
             cleanup()

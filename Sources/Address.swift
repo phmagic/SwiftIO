@@ -274,17 +274,6 @@ public extension sockaddr_storage {
 
 public extension Address {
 
-    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws {
-        let addresses: [Address] = try Address.addresses(address, protocol: `protocol`, family: family)
-        guard var address = addresses.first else {
-            throw Error.Generic("Could not create address")
-        }
-        if let port = port {
-            address = address.addressWithPort(port)
-        }
-        self = address
-    }
-
     static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws -> [Address] {
         var hints = addrinfo()
         if let `protocol` = `protocol` {
@@ -293,7 +282,6 @@ public extension Address {
         if let family = family {
             hints.ai_family = family.rawValue
         }
-
         return try addresses(hostname, service: "", hints: hints)
     }
 
@@ -303,7 +291,6 @@ public extension Address {
 }
 
 public extension Address {
-
 
     /**
      Create an address from string.
@@ -318,11 +305,10 @@ public extension Address {
         try Address("[::1]:80")
         ```
      */
-    init(_ string: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws {
+    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws {
 
         // Regular expression is pretty crude but should break input into ip4v/hostname/ipv6 address and optional port
-        let expression = try RegularExpression("(?:([\\da-zA-Z0-9_.-]+)|\\[([\\da-fA-F0-9:]+)\\]?)(?::(\\d{1,5}))?")
-        guard let match = expression.match(string) else {
+        guard let match = Address.expression.match(address) else {
             throw Error.Generic("Not an address")
         }
 
@@ -333,17 +319,21 @@ public extension Address {
                 throw Error.Generic("Not an address")
             }
         }
-        if let addressString = match.strings[2] {
-            self = try Address(address: addressString, port: port, protocol:`protocol`, family: family)
-            assert(self.port == port)
-        }
-        else if let addressString = match.strings[1] {
-            self = try Address(address: addressString, port: port, protocol:`protocol`, family: family)
-            assert(self.port == port)
-        }
-        else {
+        
+        guard let addressString = match.strings[1] ?? match.strings[2] else {
             throw Error.Generic("Not an address")
         }
 
+        let addresses: [Address] = try Address.addresses(addressString, protocol: `protocol`, family: family)
+        guard var address = addresses.first else {
+            throw Error.Generic("Could not create address")
+        }
+        if let port = port {
+            address = address.addressWithPort(port)
+        }
+        self = address
     }
+
+    private static let expression = try! RegularExpression("(?:([\\da-zA-Z0-9_.-]+)|\\[([\\da-fA-F0-9:]+)\\]?)(?::(\\d{1,5}))?")
+
 }

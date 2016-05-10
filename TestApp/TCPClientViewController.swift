@@ -31,7 +31,7 @@ class TCPClientViewController: NSViewController {
             throw Error.Generic("Could not create address")
         }
 
-        let address = try Address(addressString)
+        let address = try Address(address: addressString)
         print(address)
 
         let clientChannel = TCPChannel(address: address)
