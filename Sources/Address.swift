@@ -339,11 +339,9 @@ public extension Address {
         let service = port.flatMap() { String($0) }
 
         let addresses: [Address] = try Address.addresses(hostname, service: service, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
-        guard var address = addresses.first else {
+        print(addresses)
+        guard let address = addresses.first else {
             throw Error.Generic("Could not create address")
-        }
-        if let port = port {
-            address = address.addressWithPort(port)
         }
         self = address
     }
