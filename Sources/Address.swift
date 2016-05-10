@@ -274,7 +274,7 @@ public extension sockaddr_storage {
 
 public extension Address {
 
-    static func addresses(hostname: String, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws -> [Address] {
+    static func addresses(hostname: String, service: String? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws -> [Address] {
         var hints = addrinfo()
         if let `protocol` = `protocol` {
             hints.ai_protocol = `protocol`.rawValue
@@ -282,10 +282,17 @@ public extension Address {
         if let family = family {
             hints.ai_family = family.rawValue
         }
-        return try addresses(hostname, service: "", hints: hints)
-    }
+        if passive == true {
+            hints.ai_flags |= AI_PASSIVE
+        }
+        if mappedIPV4 == true {
+            hints.ai_flags |= AI_V4MAPPED
+            guard family == nil || family == ProtocolFamily.INET6 else {
+                fatalError("Cannot specify an IPV4 mapped IPV6 address if you insist on an IPV4 address.")
+            }
+            hints.ai_family = ProtocolFamily.INET6.rawValue
 
-    static func addresses(hostname: String, service: String, hints: addrinfo) throws -> [Address] {
+        }
         return try getaddrinfo(hostname, service: service, hints: hints)
     }
 }
@@ -305,26 +312,33 @@ public extension Address {
         try Address("[::1]:80")
         ```
      */
-    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred) throws {
+    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws {
 
         // Regular expression is pretty crude but should break input into ip4v/hostname/ipv6 address and optional port
         guard let match = Address.expression.match(address) else {
             throw Error.Generic("Not an address")
         }
 
-        var port: UInt16? = nil
+        var port: UInt16? = port
+
         if let portString = match.strings[3] {
+            guard port == nil else {
+                fatalError("Specified a port in the address string and via a parameter. Just specify the port once.")
+            }
+
             port = UInt16(portString)
             if port == nil {
                 throw Error.Generic("Not an address")
             }
         }
         
-        guard let addressString = match.strings[1] ?? match.strings[2] else {
+        guard let hostname = match.strings[1] ?? match.strings[2] else {
             throw Error.Generic("Not an address")
         }
 
-        let addresses: [Address] = try Address.addresses(addressString, protocol: `protocol`, family: family)
+        let service = port.flatMap() { String($0) }
+
+        let addresses: [Address] = try Address.addresses(hostname, service: service, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
         guard var address = addresses.first else {
             throw Error.Generic("Could not create address")
         }
