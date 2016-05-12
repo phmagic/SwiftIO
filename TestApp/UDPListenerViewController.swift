@@ -15,15 +15,14 @@ import SwiftUtilities
 
 class UDPListenerViewController: NSViewController {
 
-    var addressString: String? = "localhost:1234"
-    
+    dynamic var listenerAddressString: String? = "localhost:1234"
     var listener: UDPChannel? = nil
     
     func startListening() throws {
-        guard let addressString = addressString else {
+        guard let addressString = listenerAddressString else {
             return
         }
-        let address = try Address(address: addressString, passive: true, mappedIPV4: true)
+        let address = try Address(address: addressString, passive: true)
         log?.debug("Listening on: \(address)")
         listener = UDPChannel(label: "udp-listener", address: address) {
             datagram in
@@ -48,6 +47,19 @@ class UDPListenerViewController: NSViewController {
         listener = nil
     }
 
+    @IBAction func mapListenerAddressToIPV4(sender: NSButton) {
+        do {
+            guard let addressString = listenerAddressString else {
+                return
+            }
+            let address = try Address(address: addressString, mappedIPV4: true)
+            listenerAddressString = String(address)
+        }
+        catch let error {
+            presentError(error as NSError)
+        }
+    }
+
     
     @IBAction func startStopListener(sender: SwitchControl) {
         if sender.on {
@@ -62,6 +74,63 @@ class UDPListenerViewController: NSViewController {
         else {
             log?.debug("Server stop listening")
         }
+    }
+
+    dynamic var pingAddress: String? = "localhost:9999"
+    dynamic var pingBody: String? = "Hello world"
+
+    @IBAction func mapPingAddressToIPV4(sender: NSButton) {
+        do {
+            guard let addressString = pingAddress else {
+                return
+            }
+            let address = try Address(address: addressString, mappedIPV4: true)
+            pingAddress = String(address)
+        }
+        catch let error {
+            presentError(error as NSError)
+        }
+    }
+
+
+    @IBAction func send(sender: NSButton) {
+        do {
+            guard let addressString = pingAddress else {
+                return
+            }
+            let address = try Address(address: addressString)
+
+            guard let body = pingBody else {
+                return
+            }
+
+            let data: DispatchData <Void> = try DispatchData(body)
+
+            let callback = {
+                (result: Result <Void>) in
+
+                log?.debug(result)
+                if case .Failure(let error) = result {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.presentError(error as NSError)
+                    }
+                }
+            }
+
+
+            if let listener = listener {
+                listener.send(data, address: address, callback: callback)
+            }
+            else {
+                UDPChannel.send(data, address: address, queue: dispatch_get_main_queue(), writeHandler: callback)
+            }
+        }
+        catch let error {
+            log?.debug(error)
+            presentError(error as NSError)
+        }
+
+
     }
     
     
