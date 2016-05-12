@@ -314,6 +314,8 @@ public extension Address {
      */
     init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws {
 
+        print(address)
+
         // Regular expression is pretty crude but should break input into ip4v/hostname/ipv6 address and optional port
         guard let match = Address.expression.match(address) else {
             throw Error.Generic("Not an address")
@@ -345,6 +347,6 @@ public extension Address {
         self = address
     }
 
-    private static let expression = try! RegularExpression("(?:([\\da-zA-Z0-9_.-]+)|\\[([\\da-fA-F0-9:]+)\\]?)(?::(\\d{1,5}))?")
+    private static let expression = try! RegularExpression("(?:([\\da-z0-9_.-]+)|\\[([\\da-f0-9:]+)\\]?)(?::(\\d{1,5}))?", options: .CaseInsensitive)
 
 }

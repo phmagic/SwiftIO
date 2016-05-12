@@ -37,5 +37,8 @@ import SwiftIO
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
+
+        try! Resolver.sharedInstance.readHosts()
+
     }
 }

@@ -8,16 +8,16 @@
 
 import SwiftUtilities
 
-class Resolver {
+public class Resolver {
 
-    static let sharedInstance = Resolver()
+    public static let sharedInstance = Resolver()
 
     var lock = NSLock()
     var staticNames: [String: [Address]] = [:]
     var cache: [String: [Address]] = [:]
     let queue = dispatch_queue_create("io.schwa.SwiftIO.Resolver", DISPATCH_QUEUE_SERIAL)
 
-    func addressesForName(name: String) throws -> [Address]? {
+    public func addressesForName(name: String) throws -> [Address]? {
         return lock.with() {
             if let addresses = staticNames[name] {
                 return addresses
@@ -26,7 +26,7 @@ class Resolver {
         }
     }
 
-    func addressesForName(name: String, callback: Result <[Address]> -> Void) {
+    public func addressesForName(name: String, callback: Result <[Address]> -> Void) {
         let found: Bool = lock.with() {
             if let addresses = staticNames[name] {
                 callback(.Success(addresses))
@@ -65,10 +65,9 @@ class Resolver {
 
 // MARK: -
 
-extension Resolver {
+public extension Resolver {
 
     func readHosts() throws {
-//        let path = NSBundle.mainBundle().pathForResource("hosts", ofType: nil)!
         let path = "/etc/hosts"
         let hostsFile = try String(contentsOfFile: path)
         let items = hostsFile.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
@@ -90,6 +89,8 @@ extension Resolver {
                 staticNames[name] = (staticNames[name] ?? []) + [try Address(address: address)]
             }
         }
+
+        print(staticNames)
 
         lock.with() {
             self.staticNames = staticNames
