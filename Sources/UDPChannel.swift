@@ -175,6 +175,7 @@ public class UDPChannel {
             }
             catch let error {
                 writeHandler(.Failure(error))
+                return
             }
             writeHandler(.Success())
         }
