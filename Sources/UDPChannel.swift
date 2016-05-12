@@ -156,6 +156,11 @@ public class UDPChannel {
                 return
             }
             do {
+
+                if let address = address where address.family != strong_self.address.family {
+                    throw Error.Generic("Cannot send UDP data down a IPV6 socket with a IPV4 address or vice versa.")
+                }
+
                 try strong_self.socket.sendto(data, address: address)
             }
             catch let error {
