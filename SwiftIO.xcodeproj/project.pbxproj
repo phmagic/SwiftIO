@@ -82,7 +82,7 @@
 		45B9DE911B753363009FD963 /* SwiftIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; };
 		45C704721B75321800D6A60B /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
 		45C704731B75322100D6A60B /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE631B7531E700BAA209 /* SwiftUtilities.framework */; };
-		45D133001CE1225A006E3AD8 /* UDPListenerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D132FF1CE1225A006E3AD8 /* UDPListenerViewController.swift */; };
+		45D133001CE1225A006E3AD8 /* UDPViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D132FF1CE1225A006E3AD8 /* UDPViewController.swift */; };
 		45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */; };
 		45DAC1431C17BF2E0013C4D6 /* TCPServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */; };
 		45DD2D9E1B7656E90002994A /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
@@ -96,7 +96,6 @@
 		45DD2DBD1B76ADA40002994A /* SwiftUtilities.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		45DD2DBF1B76ADBA0002994A /* SwiftIO.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		45E662651C331709004737E1 /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E662641C331709004737E1 /* StreamTests.swift */; };
-		93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -185,7 +184,7 @@
 		45982C721C421EB600FB09D9 /* TestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TestApp.entitlements; sourceTree = "<group>"; };
 		45B9DE8C1B753363009FD963 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B9DE901B753363009FD963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		45D132FF1CE1225A006E3AD8 /* UDPListenerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPListenerViewController.swift; sourceTree = "<group>"; };
+		45D132FF1CE1225A006E3AD8 /* UDPViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPViewController.swift; sourceTree = "<group>"; };
 		45D3F3041BBC8FEA00AF1690 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientViewController.swift; sourceTree = "<group>"; };
 		45D675611C9DC89800A2FEAA /* Notes.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Notes.markdown; sourceTree = "<group>"; };
@@ -200,7 +199,6 @@
 		45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E240061B0E8A700001F5B9 /* SwiftIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E662641C331709004737E1 /* StreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
-		93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPEchoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,13 +339,12 @@
 				45982C721C421EB600FB09D9 /* TestApp.entitlements */,
 				45DD2DAD1B76AD850002994A /* AppDelegate.swift */,
 				45DD2DAF1B76AD850002994A /* EchoViewController.swift */,
-				93D4FCA11C2B8E66002466B9 /* UDPEchoViewController.swift */,
 				45DAC1421C17BF2E0013C4D6 /* TCPServerViewController.swift */,
 				453329721C41664700D9C80C /* LogViewController.swift */,
 				45982C701C421AB400FB09D9 /* SwitchControl.swift */,
 				457847161C178E5500EF9B35 /* Scratch.swift */,
 				45D663AE1C56DE5F00967B24 /* TCPClientViewController.swift */,
-				45D132FF1CE1225A006E3AD8 /* UDPListenerViewController.swift */,
+				45D132FF1CE1225A006E3AD8 /* UDPViewController.swift */,
 				45DD2DB11B76AD850002994A /* Assets.xcassets */,
 				45DD2DB31B76AD850002994A /* Main.storyboard */,
 				45DD2DB61B76AD850002994A /* Info.plist */,
@@ -594,13 +591,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45D133001CE1225A006E3AD8 /* UDPListenerViewController.swift in Sources */,
+				45D133001CE1225A006E3AD8 /* UDPViewController.swift in Sources */,
 				45D663AF1C56DE5F00967B24 /* TCPClientViewController.swift in Sources */,
 				45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */,
 				45DD2DB01B76AD850002994A /* EchoViewController.swift in Sources */,
 				45DD2DAE1B76AD850002994A /* AppDelegate.swift in Sources */,
 				453329731C41664700D9C80C /* LogViewController.swift in Sources */,
-				93D4FCA21C2B8E66002466B9 /* UDPEchoViewController.swift in Sources */,
 				457847171C178E5500EF9B35 /* Scratch.swift in Sources */,
 				45DAC1431C17BF2E0013C4D6 /* TCPServerViewController.swift in Sources */,
 			);

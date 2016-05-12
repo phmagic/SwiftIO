@@ -1,5 +1,5 @@
 //
-//  UDPListenerViewController.swift
+//  UDPViewController.swift
 //  SwiftIO
 //
 //  Created by Jonathan Wight on 5/9/16.
@@ -13,11 +13,14 @@ import SwiftUtilities
 
 // Testing: `echo "Hello World" | socat - UDP-DATAGRAM:0.0.0.0:1234,broadcast`
 
-class UDPListenerViewController: NSViewController {
+class UDPViewController: NSViewController {
 
     dynamic var listenerAddressString: String? = "localhost:9999"
+    dynamic var echoAddress: String? = "localhost:9999"
+    dynamic var echoBody: String? = "Hello world"
+
     var listener: UDPChannel? = nil
-    
+
     func startListening() throws {
         guard let addressString = listenerAddressString else {
             return
@@ -60,7 +63,6 @@ class UDPListenerViewController: NSViewController {
         }
     }
 
-    
     @IBAction func startStopListener(sender: SwitchControl) {
         if sender.on {
             log?.debug("Server start listening")
@@ -76,16 +78,13 @@ class UDPListenerViewController: NSViewController {
         }
     }
 
-    dynamic var pingAddress: String? = "localhost:9999"
-    dynamic var pingBody: String? = "Hello world"
-
-    @IBAction func mapPingAddressToIPV4(sender: NSButton) {
+    @IBAction func mapEchoAddressToIPV4(sender: NSButton) {
         do {
-            guard let addressString = pingAddress else {
+            guard let addressString = echoAddress else {
                 return
             }
             let address = try Address(address: addressString, mappedIPV4: true)
-            pingAddress = String(address)
+            echoAddress = String(address)
         }
         catch let error {
             presentError(error as NSError)
@@ -95,12 +94,12 @@ class UDPListenerViewController: NSViewController {
 
     @IBAction func send(sender: NSButton) {
         do {
-            guard let addressString = pingAddress else {
+            guard let addressString = echoAddress else {
                 return
             }
             let address = try Address(address: addressString)
 
-            guard let body = pingBody else {
+            guard let body = echoBody else {
                 return
             }
 

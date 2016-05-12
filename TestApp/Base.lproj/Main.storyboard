@@ -813,7 +813,7 @@
         <!--UDP Listener-->
         <scene sceneID="gR1-Tk-eN2">
             <objects>
-                <viewController title="UDP Listener" id="5WP-vz-Yvr" customClass="UDPListenerViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="UDP Listener" id="5WP-vz-Yvr" customClass="UDPViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="mEX-8R-hz4">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -825,7 +825,7 @@
                                         <rect key="frame" x="0.0" y="89" width="400" height="22"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NSM-Ma-gao">
-                                                <rect key="frame" x="-2" y="2.5" width="57" height="17"/>
+                                                <rect key="frame" x="-2" y="2" width="57" height="17"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Server:" id="D5H-uw-ZFr">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -843,20 +843,20 @@
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                                 <connections>
-                                                    <binding destination="Sce-QO-a5y" name="editable" keyPath="serving" id="XGp-7y-YNs">
-                                                        <dictionary key="options">
-                                                            <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                        </dictionary>
-                                                    </binding>
                                                     <binding destination="5WP-vz-Yvr" name="value" keyPath="listenerAddressString" id="2fX-8K-s5f">
                                                         <dictionary key="options">
                                                             <bool key="NSContinuouslyUpdatesValue" value="YES"/>
                                                         </dictionary>
                                                     </binding>
+                                                    <binding destination="Sce-QO-a5y" name="editable" keyPath="serving" id="XGp-7y-YNs">
+                                                        <dictionary key="options">
+                                                            <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                        </dictionary>
+                                                    </binding>
                                                 </connections>
                                             </textField>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aPd-2t-pim">
-                                                <rect key="frame" x="224" y="-6.5" width="114" height="32"/>
+                                                <rect key="frame" x="224" y="-7" width="114" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Map to IPV6" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Ge6-n8-u4i">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -896,7 +896,7 @@
                                                 <rect key="frame" x="0.0" y="59" width="332" height="22"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PVf-FB-B69">
-                                                        <rect key="frame" x="-2" y="2.5" width="57" height="17"/>
+                                                        <rect key="frame" x="-2" y="2" width="57" height="17"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Host:" id="LL8-Ti-7QI">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -919,7 +919,7 @@
                                                                     <string key="NSValueTransformerName">NSIsNotNil</string>
                                                                 </dictionary>
                                                             </binding>
-                                                            <binding destination="5WP-vz-Yvr" name="value" keyPath="pingAddress" id="qvK-yr-Qpv">
+                                                            <binding destination="5WP-vz-Yvr" name="value" keyPath="echoAddress" id="Wug-C8-8SK">
                                                                 <dictionary key="options">
                                                                     <bool key="NSContinuouslyUpdatesValue" value="YES"/>
                                                                 </dictionary>
@@ -927,13 +927,13 @@
                                                         </connections>
                                                     </textField>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JA8-ih-FEj">
-                                                        <rect key="frame" x="224" y="-6.5" width="114" height="32"/>
+                                                        <rect key="frame" x="224" y="-7" width="114" height="32"/>
                                                         <buttonCell key="cell" type="push" title="Map to IPV6" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3Bt-7I-c4J">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="mapPingAddressToIPV4:" target="5WP-vz-Yvr" id="G8u-as-ueh"/>
+                                                            <action selector="mapEchoAddressToIPV4:" target="5WP-vz-Yvr" id="97I-oN-B2e"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -967,7 +967,7 @@
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <connections>
-                                                            <binding destination="5WP-vz-Yvr" name="value" keyPath="pingBody" id="oiU-yz-Tft">
+                                                            <binding destination="5WP-vz-Yvr" name="value" keyPath="echoBody" id="jDm-xm-IEe">
                                                                 <dictionary key="options">
                                                                     <bool key="NSContinuouslyUpdatesValue" value="YES"/>
                                                                 </dictionary>
