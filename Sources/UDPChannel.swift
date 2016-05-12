@@ -254,7 +254,7 @@ private extension Socket {
             ptr in
             return data.createMap() {
                 (_, buffer) in
-                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, UnsafePointer <sockaddr> (ptr), socklen_t(sizeof(sockaddr_storage)))
+                return Darwin.sendto(descriptor, buffer.baseAddress, buffer.count, 0, UnsafePointer <sockaddr> (ptr), socklen_t(addr.ss_len))
             }
         }
         // TODO: what about "partial" sends.
