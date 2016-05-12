@@ -15,7 +15,7 @@ import SwiftUtilities
 
 class UDPListenerViewController: NSViewController {
 
-    dynamic var listenerAddressString: String? = "localhost:1234"
+    dynamic var listenerAddressString: String? = "localhost:9999"
     var listener: UDPChannel? = nil
     
     func startListening() throws {
