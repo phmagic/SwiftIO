@@ -63,21 +63,21 @@ class AddressTests: XCTestCase {
     }
 
     func testStringBasedAddress() {
-        XCTAssertEqual(String(try! Address("127.0.0.1")), "127.0.0.1")
-        XCTAssertEqual(String(try! Address("127.0.0.1:80")), "127.0.0.1:80")
-        XCTAssertEqual(String(try! Address("[::]")), "[::]")
-        XCTAssertEqual(String(try! Address("[::]:80")), "[::]:80")
-        XCTAssertEqual(String(try! Address("[::1]")), "[::1]")
-        XCTAssertEqual(String(try! Address("[::1]:80")), "[::1]:80")
-        XCTAssertEqual(String(try! Address("[2607:f8b0:4007:803:700::]")), "[2607:f8b0:4007:803:700::]")
-        XCTAssertEqual(String(try! Address("[2607:f8b0:4007:803:700::]:80")), "[2607:f8b0:4007:803:700::]:80")
+        XCTAssertEqual(String(try! Address(address: "127.0.0.1")), "127.0.0.1")
+        XCTAssertEqual(String(try! Address(address: "127.0.0.1:80")), "127.0.0.1:80")
+        XCTAssertEqual(String(try! Address(address: "[::]")), "[::]")
+        XCTAssertEqual(String(try! Address(address: "[::]:80")), "[::]:80")
+        XCTAssertEqual(String(try! Address(address: "[::1]")), "[::1]")
+        XCTAssertEqual(String(try! Address(address: "[::1]:80")), "[::1]:80")
+        XCTAssertEqual(String(try! Address(address: "[2607:f8b0:4007:803:700::]")), "[2607:f8b0:4007:803:700::]")
+        XCTAssertEqual(String(try! Address(address: "[2607:f8b0:4007:803:700::]:80")), "[2607:f8b0:4007:803:700::]:80")
 
 
         // TODO: Those do a name lookup
-        XCTAssertEqual(String(try! Address("localhost")), "127.0.0.1")
-        XCTAssertEqual(String(try! Address("localhost:80")), "127.0.0.1:80")
-        XCTAssertEqual(String(try! Address("apple.com")), "17.142.160.59")
-        XCTAssertEqual(String(try! Address("apple.com:80")), "17.142.160.59:80")
+        XCTAssertEqual(String(try! Address(address: "localhost")), "127.0.0.1")
+        XCTAssertEqual(String(try! Address(address: "localhost:80")), "127.0.0.1:80")
+        XCTAssertEqual(String(try! Address(address: "apple.com")), "17.142.160.59")
+        XCTAssertEqual(String(try! Address(address: "apple.com:80")), "17.142.160.59:80")
     }
 
 
