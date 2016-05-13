@@ -11,7 +11,7 @@ import Cocoa
 import SwiftIO
 import SwiftUtilities
 
-// Testing: `echo "Hello World" | socat - UDP-DATAGRAM:0.0.0.0:1234,broadcast`
+// Testing: `echo "Hello World" | socat - UDP-DATAGRAM:0.0.0.0:9999,broadcast`
 
 class UDPViewController: NSViewController {
 

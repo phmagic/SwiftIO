@@ -652,10 +652,10 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="SwiftIO Test App" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="contentRect" x="196" y="240" width="657" height="508"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                     </window>
                     <connections>
@@ -664,7 +664,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-202" y="-409"/>
+            <point key="canvasLocation" x="-113.5" y="-290"/>
         </scene>
         <!--TCP Echo-->
         <scene sceneID="hIz-AP-VOD">
@@ -810,22 +810,38 @@
             </objects>
             <point key="canvasLocation" x="1143.5" y="691"/>
         </scene>
-        <!--UDP Listener-->
+        <!--UDP-->
         <scene sceneID="gR1-Tk-eN2">
             <objects>
-                <viewController title="UDP Listener" id="5WP-vz-Yvr" customClass="UDPViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="UDP" id="5WP-vz-Yvr" customClass="UDPViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="mEX-8R-hz4">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="440" height="293"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IZZ-UX-XnL">
-                                <rect key="frame" x="25" y="95" width="400" height="111"/>
+                                <rect key="frame" x="20" y="20" width="400" height="253"/>
                                 <subviews>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="EaW-GN-lZy">
+                                        <rect key="frame" x="-2" y="169" width="404" height="84"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="400" id="SBW-t1-etg"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="mini" selectable="YES" sendsActionOnEndEditing="YES" allowsEditingTextAttributes="YES" id="0Ga-7z-MrM">
+                                            <font key="font" metaFont="toolTip"/>
+                                            <string key="title">Host an UDP echo server. All UDP datagrams are logged and sent back to originating address.
+
+Start the listener and test it from the terminal:
+
+echo "Hello World" | socat - UDP-DATAGRAM:0.0.0.0:9999,broadcast</string>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4FV-EV-BM7">
-                                        <rect key="frame" x="0.0" y="89" width="400" height="22"/>
+                                        <rect key="frame" x="0.0" y="139" width="400" height="22"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NSM-Ma-gao">
-                                                <rect key="frame" x="-2" y="2" width="57" height="17"/>
+                                                <rect key="frame" x="-2" y="2.5" width="57" height="17"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Server:" id="D5H-uw-ZFr">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -856,7 +872,7 @@
                                                 </connections>
                                             </textField>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aPd-2t-pim">
-                                                <rect key="frame" x="224" y="-7" width="114" height="32"/>
+                                                <rect key="frame" x="224" y="-6.5" width="114" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Map to IPV6" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Ge6-n8-u4i">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -889,6 +905,18 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Jlf-44-RJl">
+                                        <rect key="frame" x="-2" y="89" width="404" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="400" id="yOG-lg-rWI"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" controlSize="mini" selectable="YES" sendsActionOnEndEditing="YES" allowsEditingTextAttributes="YES" id="dR6-xW-t7C">
+                                            <font key="font" metaFont="toolTip"/>
+                                            <string key="title">Send a datagram to a UDP address. If server is listening it will use the server's socket. Otherwise it will create a new temporary socket per outgoing datagram.</string>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
                                     <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ogj-Gf-q8J">
                                         <rect key="frame" x="0.0" y="0.0" width="332" height="81"/>
                                         <subviews>
@@ -896,7 +924,7 @@
                                                 <rect key="frame" x="0.0" y="59" width="332" height="22"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PVf-FB-B69">
-                                                        <rect key="frame" x="-2" y="2" width="57" height="17"/>
+                                                        <rect key="frame" x="-2" y="2.5" width="57" height="17"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Host:" id="LL8-Ti-7QI">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -927,7 +955,7 @@
                                                         </connections>
                                                     </textField>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JA8-ih-FEj">
-                                                        <rect key="frame" x="224" y="-7" width="114" height="32"/>
+                                                        <rect key="frame" x="224" y="-6.5" width="114" height="32"/>
                                                         <buttonCell key="cell" type="push" title="Map to IPV6" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3Bt-7I-c4J">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -1017,16 +1045,24 @@
                                 <visibilityPriorities>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
                                 </visibilityPriorities>
                                 <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="IZZ-UX-XnL" firstAttribute="top" relation="greaterThanOrEqual" secondItem="mEX-8R-hz4" secondAttribute="top" constant="20" id="5ps-XR-coc"/>
                             <constraint firstItem="IZZ-UX-XnL" firstAttribute="centerY" secondItem="mEX-8R-hz4" secondAttribute="centerY" id="SVo-hc-HUf"/>
                             <constraint firstItem="IZZ-UX-XnL" firstAttribute="centerX" secondItem="mEX-8R-hz4" secondAttribute="centerX" id="Ygk-06-S0f"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="IZZ-UX-XnL" secondAttribute="trailing" constant="20" id="aUD-4g-Uj9"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="IZZ-UX-XnL" secondAttribute="bottom" constant="20" id="agW-K1-ttd"/>
+                            <constraint firstItem="IZZ-UX-XnL" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mEX-8R-hz4" secondAttribute="leading" constant="20" id="qe3-LF-dZG"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -1119,11 +1155,10 @@
             <objects>
                 <tabViewController selectedTabViewItemIndex="0" id="iFd-ar-1Bf" sceneMemberID="viewController">
                     <tabViewItems>
+                        <tabViewItem id="jyx-8U-o0U"/>
                         <tabViewItem id="ZHN-g8-qZF"/>
                         <tabViewItem id="7Pl-8v-Vnx"/>
-                        <tabViewItem id="FK3-iB-q6k"/>
                         <tabViewItem id="bkc-Mp-CLu"/>
-                        <tabViewItem id="jyx-8U-o0U"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="MVi-Nx-DPs">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -1132,11 +1167,10 @@
                         <tabViewItems/>
                     </tabView>
                     <connections>
+                        <segue destination="5WP-vz-Yvr" kind="relationship" relationship="tabItems" id="1Vy-wt-B3W"/>
                         <segue destination="Sce-QO-a5y" kind="relationship" relationship="tabItems" id="3Oo-yn-IOK"/>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="tabItems" id="CwI-6t-232"/>
-                        <segue destination="PvV-ih-ihm" kind="relationship" relationship="tabItems" id="dVL-zH-jgB"/>
                         <segue destination="7en-5i-l7e" kind="relationship" relationship="tabItems" id="51F-If-71U"/>
-                        <segue destination="5WP-vz-Yvr" kind="relationship" relationship="tabItems" id="1Vy-wt-B3W"/>
                     </connections>
                 </tabViewController>
                 <customObject id="6l4-bt-AeN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1302,83 +1336,6 @@
                 <customObject id="gbN-1O-OTt" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="533" y="691"/>
-        </scene>
-        <!--UDP Echo-->
-        <scene sceneID="WnM-SD-0kH">
-            <objects>
-                <viewController title="UDP Echo" id="PvV-ih-ihm" customClass="UDPEchoViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="xfi-3R-orJ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="240"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6UK-fo-pix">
-                                <rect key="frame" x="104" y="95" width="112" height="49"/>
-                                <subviews>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SbP-no-rMn">
-                                        <rect key="frame" x="0.0" y="29" width="112" height="20"/>
-                                        <subviews>
-                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D5O-Fx-030">
-                                                <rect key="frame" x="-2" y="3" width="48" height="17"/>
-                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server:" id="SZn-Xz-Fvo">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                            </textField>
-                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="7Si-W4-MkN" customClass="SwitchControl" customModule="TestApp" customModuleProvider="target">
-                                                <rect key="frame" x="52" y="0.0" width="60" height="20"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="60" id="PeV-oF-M2Y"/>
-                                                    <constraint firstAttribute="height" constant="20" id="bGb-ZE-24a"/>
-                                                </constraints>
-                                                <connections>
-                                                    <action selector="startStopServer:" target="PvV-ih-ihm" id="22F-Aq-1gz"/>
-                                                </connections>
-                                            </customView>
-                                        </subviews>
-                                        <visibilityPriorities>
-                                            <integer value="1000"/>
-                                            <integer value="1000"/>
-                                        </visibilityPriorities>
-                                        <customSpacing>
-                                            <real value="3.4028234663852886e+38"/>
-                                            <real value="3.4028234663852886e+38"/>
-                                        </customSpacing>
-                                    </stackView>
-                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yMa-US-C1I">
-                                        <rect key="frame" x="-6" y="-7" width="110" height="32"/>
-                                        <buttonCell key="cell" type="push" title="Ping Server" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zde-Lm-reh">
-                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="pingServer:" target="PvV-ih-ihm" id="Adw-CA-dUQ"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <visibilityPriorities>
-                                    <integer value="1000"/>
-                                    <integer value="1000"/>
-                                </visibilityPriorities>
-                                <customSpacing>
-                                    <real value="3.4028234663852886e+38"/>
-                                    <real value="3.4028234663852886e+38"/>
-                                </customSpacing>
-                            </stackView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="6UK-fo-pix" firstAttribute="top" relation="greaterThanOrEqual" secondItem="xfi-3R-orJ" secondAttribute="top" constant="20" id="2g8-ST-Hf5"/>
-                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="6UK-fo-pix" secondAttribute="bottom" constant="20" id="EJ3-86-U1v"/>
-                            <constraint firstItem="6UK-fo-pix" firstAttribute="centerY" secondItem="xfi-3R-orJ" secondAttribute="centerY" id="ILM-cT-IIH"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6UK-fo-pix" secondAttribute="trailing" constant="20" id="ga4-eb-05J"/>
-                            <constraint firstItem="6UK-fo-pix" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xfi-3R-orJ" secondAttribute="leading" constant="20" id="hn7-YV-SUz"/>
-                            <constraint firstItem="6UK-fo-pix" firstAttribute="centerX" secondItem="xfi-3R-orJ" secondAttribute="centerX" id="ssa-5F-xuN"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <customObject id="dp4-DT-SR5" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1620" y="590"/>
         </scene>
         <!--TCP Client-->
         <scene sceneID="Yxx-XU-bem">
