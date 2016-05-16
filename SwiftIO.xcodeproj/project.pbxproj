@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45211C3A1CE78C7A00A8E77E /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45211C391CE78C7A00A8E77E /* Interface.swift */; };
+		45211C3B1CE78C7A00A8E77E /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45211C391CE78C7A00A8E77E /* Interface.swift */; };
 		45302F591C1612CD00990F60 /* TLVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45302F581C1612CD00990F60 /* TLVTests.swift */; };
 		453329731C41664700D9C80C /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453329721C41664700D9C80C /* LogViewController.swift */; };
 		457847171C178E5500EF9B35 /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457847161C178E5500EF9B35 /* Scratch.swift */; };
@@ -142,6 +144,8 @@
 /* Begin PBXFileReference section */
 		4513AE631B7531E700BAA209 /* SwiftUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftUtilities.framework; sourceTree = "<group>"; };
 		4513AE651B7531E700BAA209 /* SwiftUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftUtilities.framework; sourceTree = "<group>"; };
+		45211C391CE78C7A00A8E77E /* Interface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interface.swift; sourceTree = "<group>"; };
+		45211C411CE78F0000A8E77E /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.map; sourceTree = "<group>"; };
 		45302F581C1612CD00990F60 /* TLVTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVTests.swift; sourceTree = "<group>"; };
 		453329721C41664700D9C80C /* LogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		457847161C178E5500EF9B35 /* Scratch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
@@ -272,6 +276,23 @@
 			path = Mac;
 			sourceTree = "<group>";
 		};
+		45211C3C1CE78CDB00A8E77E /* Objective-C Support */ = {
+			isa = PBXGroup;
+			children = (
+				4589E1091CDD20E200CC1ED8 /* SwiftIOSupport.h */,
+				4589E10A1CDD20E200CC1ED8 /* SwiftIOSupport.m */,
+			);
+			name = "Objective-C Support";
+			sourceTree = "<group>";
+		};
+		45211C401CE78EEC00A8E77E /* ExternalModules */ = {
+			isa = PBXGroup;
+			children = (
+				45211C411CE78F0000A8E77E /* module.map */,
+			);
+			path = ExternalModules;
+			sourceTree = "<group>";
+		};
 		4589E0EE1CDD20E200CC1ED8 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,6 +311,7 @@
 				4589E0FB1CDD20E200CC1ED8 /* FileStream.swift */,
 				4589E0FC1CDD20E200CC1ED8 /* inet+Extensions.swift */,
 				4589E0FD1CDD20E200CC1ED8 /* Inet.swift */,
+				45211C391CE78C7A00A8E77E /* Interface.swift */,
 				4589E0FE1CDD20E200CC1ED8 /* Logging.swift */,
 				4589E0FF1CDD20E200CC1ED8 /* MemoryStream.swift */,
 				4589E1001CDD20E200CC1ED8 /* NetworkEndian.swift */,
@@ -300,8 +322,7 @@
 				4589E1051CDD20E200CC1ED8 /* sockaddr_storage+Extensions.swift */,
 				4589E1061CDD20E200CC1ED8 /* Socket.swift */,
 				4589E1071CDD20E200CC1ED8 /* SocketOptions.swift */,
-				4589E1091CDD20E200CC1ED8 /* SwiftIOSupport.h */,
-				4589E10A1CDD20E200CC1ED8 /* SwiftIOSupport.m */,
+				45211C3C1CE78CDB00A8E77E /* Objective-C Support */,
 				4589E10B1CDD20E200CC1ED8 /* TCPChannel.swift */,
 				4589E10C1CDD20E200CC1ED8 /* TCPListener.swift */,
 				4589E10D1CDD20E200CC1ED8 /* TCPServer.swift */,
@@ -357,6 +378,7 @@
 			children = (
 				45D3F3041BBC8FEA00AF1690 /* Cartfile */,
 				4513AE601B7531E700BAA209 /* Carthage */,
+				45211C401CE78EEC00A8E77E /* ExternalModules */,
 				45D675601C9DC88300A2FEAA /* Documentation */,
 				4589E0EE1CDD20E200CC1ED8 /* Sources */,
 				45B9DE8D1B753363009FD963 /* UnitTests */,
@@ -611,6 +633,7 @@
 				4589E1261CDD20E200CC1ED8 /* Datagram+Streams.swift in Sources */,
 				4589E12A1CDD20E200CC1ED8 /* FileStream.swift in Sources */,
 				4589E13E1CDD20E200CC1ED8 /* sockaddr_storage+Extensions.swift in Sources */,
+				45211C3B1CE78C7A00A8E77E /* Interface.swift in Sources */,
 				4589E12E1CDD20E200CC1ED8 /* Inet.swift in Sources */,
 				4589E1541CDD20E200CC1ED8 /* Utilities.swift in Sources */,
 				4589E1181CDD20E200CC1ED8 /* BasicTypes+BinaryInputStreamable.swift in Sources */,
@@ -649,6 +672,7 @@
 				4589E1251CDD20E200CC1ED8 /* Datagram+Streams.swift in Sources */,
 				4589E1291CDD20E200CC1ED8 /* FileStream.swift in Sources */,
 				4589E13D1CDD20E200CC1ED8 /* sockaddr_storage+Extensions.swift in Sources */,
+				45211C3A1CE78C7A00A8E77E /* Interface.swift in Sources */,
 				4589E12D1CDD20E200CC1ED8 /* Inet.swift in Sources */,
 				4589E1531CDD20E200CC1ED8 /* Utilities.swift in Sources */,
 				4589E1171CDD20E200CC1ED8 /* BasicTypes+BinaryInputStreamable.swift in Sources */,
@@ -807,6 +831,7 @@
 				PRODUCT_NAME = SwiftIO;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = ExternalModules;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -832,6 +857,7 @@
 				PRODUCT_NAME = SwiftIO;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = ExternalModules;
 			};
 			name = Release;
 		};

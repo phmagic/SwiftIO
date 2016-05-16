@@ -249,7 +249,7 @@ public extension Address {
                 inetAddress = .INET6(dst.sin6_addr)
                 port = dst.sin6_port != 0 ? UInt16(networkEndian: dst.sin6_port) : nil
             default:
-                fatalError("Invalid sockaddr family")
+                fatalError("Invalid sockaddr family \(sockaddr.ss_family)")
         }
     }
 }

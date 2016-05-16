@@ -70,6 +70,12 @@ public extension sockaddr_storage {
         unsafeCopy(destination: &self, source: addr, length: length)
     }
 
+    init(pointer: UnsafePointer <sockaddr>) {
+        //precondition((addr.memory.sa_family == sa_family_t(AF_INET) && length == sizeof(sockaddr_in)) || (addr.memory.sa_family == sa_family_t(AF_INET6) && length == sizeof(sockaddr_in6)))
+        self = sockaddr_storage()
+        unsafeCopy(destination: &self, source: pointer, length: Int(pointer.memory.sa_len))
+    }
+
 }
 
 public extension sockaddr_in {

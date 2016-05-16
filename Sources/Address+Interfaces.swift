@@ -8,7 +8,10 @@
 
 import Darwin
 
+import ifaddrs
+
 public extension Address {
+
     static func addressesForInterfaces() throws -> [String: [Address]] {
         let addressesForInterfaces = getAddressesForInterfaces() as! [String: [NSData]]
         let pairs: [(String, [Address])] = addressesForInterfaces.flatMap() {
@@ -31,12 +34,3 @@ public extension Address {
 
 // MARK: -
 
-
-private extension Dictionary {
-    init(_ pairs: [Element]) {
-        self.init()
-        for (k, v) in pairs {
-            self[k] = v
-        }
-    }
-}

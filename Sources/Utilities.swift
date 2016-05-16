@@ -40,3 +40,12 @@ internal func unsafeCopy <DST> (destination destination: UnsafeMutablePointer <D
     precondition(sizeof(DST) >= length)
     memcpy(destination, source, length)
 }
+
+internal extension Dictionary {
+    init(_ pairs: [Element]) {
+        self.init()
+        for (k, v) in pairs {
+            self[k] = v
+        }
+    }
+}
