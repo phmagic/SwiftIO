@@ -64,19 +64,20 @@ class UDPViewController: NSViewController {
     }
 
     @IBAction func startStopListener(sender: SwitchControl) {
-        if sender.on {
-            log?.debug("Server start listening")
-            do {
+        do {
+            if sender.on {
+                log?.debug("Server start listening")
                 try self.startListening()
             }
-            catch let error {
-                presentError(error as NSError)
+            else {
+                log?.debug("Server stop listening")
+                try self.stopListening()
             }
         }
-        else {
-            log?.debug("Server stop listening")
+        catch let error {
+            presentError(error as NSError)
         }
-    }
+}
 
     @IBAction func mapEchoAddressToIPV4(sender: NSButton) {
         do {

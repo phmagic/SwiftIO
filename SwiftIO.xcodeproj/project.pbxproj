@@ -79,6 +79,9 @@
 		4589E1541CDD20E200CC1ED8 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E1101CDD20E200CC1ED8 /* Utilities.swift */; };
 		459410471B79240A007FFBA0 /* DatagramTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459410461B79240A007FFBA0 /* DatagramTests.swift */; };
 		45982C711C421AB400FB09D9 /* SwitchControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45982C701C421AB400FB09D9 /* SwitchControl.swift */; };
+		45A99DC41CEA75DA003B06E6 /* AddressScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A99DC31CEA75DA003B06E6 /* AddressScanner.swift */; };
+		45A99DC51CEA75DA003B06E6 /* AddressScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A99DC31CEA75DA003B06E6 /* AddressScanner.swift */; };
+		45A99DC71CEA7938003B06E6 /* ServiceScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A99DC61CEA7938003B06E6 /* ServiceScannerTests.swift */; };
 		45B9DE911B753363009FD963 /* SwiftIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45DEC6AB1B0E8FEE00B7C234 /* SwiftIO.framework */; };
 		45C704721B75321800D6A60B /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE651B7531E700BAA209 /* SwiftUtilities.framework */; };
 		45C704731B75322100D6A60B /* SwiftUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4513AE631B7531E700BAA209 /* SwiftUtilities.framework */; };
@@ -182,6 +185,8 @@
 		459410461B79240A007FFBA0 /* DatagramTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatagramTests.swift; sourceTree = "<group>"; };
 		45982C701C421AB400FB09D9 /* SwitchControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchControl.swift; sourceTree = "<group>"; };
 		45982C721C421EB600FB09D9 /* TestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TestApp.entitlements; sourceTree = "<group>"; };
+		45A99DC31CEA75DA003B06E6 /* AddressScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressScanner.swift; sourceTree = "<group>"; };
+		45A99DC61CEA7938003B06E6 /* ServiceScannerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceScannerTests.swift; sourceTree = "<group>"; };
 		45B9DE8C1B753363009FD963 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B9DE901B753363009FD963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45D132FF1CE1225A006E3AD8 /* UDPViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPViewController.swift; sourceTree = "<group>"; };
@@ -278,6 +283,7 @@
 				4589E1081CDD20E200CC1ED8 /* SwiftIO.h */,
 				4589E0EF1CDD20E200CC1ED8 /* Address+Interfaces.swift */,
 				4589E0F11CDD20E200CC1ED8 /* Address.swift */,
+				45A99DC31CEA75DA003B06E6 /* AddressScanner.swift */,
 				4589E0F21CDD20E200CC1ED8 /* BasicTypes+BinaryInputStreamable.swift */,
 				4589E0F31CDD20E200CC1ED8 /* BasicTypes+BinaryOutputStreamable.swift */,
 				4589E0F41CDD20E200CC1ED8 /* BinaryDecodable.swift */,
@@ -319,6 +325,7 @@
 				459410461B79240A007FFBA0 /* DatagramTests.swift */,
 				45302F581C1612CD00990F60 /* TLVTests.swift */,
 				45E662641C331709004737E1 /* StreamTests.swift */,
+				45A99DC61CEA7938003B06E6 /* ServiceScannerTests.swift */,
 				45B9DE901B753363009FD963 /* Info.plist */,
 			);
 			path = UnitTests;
@@ -583,6 +590,7 @@
 				45302F591C1612CD00990F60 /* TLVTests.swift in Sources */,
 				459410471B79240A007FFBA0 /* DatagramTests.swift in Sources */,
 				4589723E1B76555800251997 /* AddressTests.swift in Sources */,
+				45A99DC71CEA7938003B06E6 /* ServiceScannerTests.swift in Sources */,
 				45E662651C331709004737E1 /* StreamTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -637,6 +645,7 @@
 				4589E14A1CDD20E200CC1ED8 /* TCPChannel.swift in Sources */,
 				4589E1501CDD20E200CC1ED8 /* TLV.swift in Sources */,
 				4589E1481CDD20E200CC1ED8 /* SwiftIOSupport.m in Sources */,
+				45A99DC51CEA75DA003B06E6 /* AddressScanner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,6 +684,7 @@
 				4589E1491CDD20E200CC1ED8 /* TCPChannel.swift in Sources */,
 				4589E14F1CDD20E200CC1ED8 /* TLV.swift in Sources */,
 				4589E1471CDD20E200CC1ED8 /* SwiftIOSupport.m in Sources */,
+				45A99DC41CEA75DA003B06E6 /* AddressScanner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

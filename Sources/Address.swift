@@ -314,31 +314,26 @@ public extension Address {
      */
     init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws {
 
-        // Regular expression is pretty crude but should break input into ip4v/hostname/ipv6 address and optional port
-        guard let match = Address.expression.match(address) else {
-            throw Error.Generic("Not an address")
-        }
+        var hostname: String?
+        var portString: String?
 
-        var port: UInt16? = port
-
-        if let portString = match.strings[3] {
-            guard port == nil else {
-                fatalError("Specified a port in the address string and via a parameter. Just specify the port once.")
+        let result = scanAddress(address, address: &hostname, port: &portString)
+        if port != nil {
+            if portString != nil {
+                fatalError("Specified port in both address string and parameter")
             }
-
-            port = UInt16(portString)
-            if port == nil {
-                throw Error.Generic("Not an address")
+            else {
+            portString = String(port!)
             }
         }
+
+
         
-        guard let hostname = match.strings[1] ?? match.strings[2] else {
+        if result == false {
             throw Error.Generic("Not an address")
         }
 
-        let service = port.flatMap() { String($0) }
-
-        let addresses: [Address] = try Address.addresses(hostname, service: service, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
+        let addresses: [Address] = try Address.addresses(hostname!, service: portString, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
         guard let address = addresses.first else {
             throw Error.Generic("Could not create address")
         }
