@@ -340,6 +340,4 @@ public extension Address {
         self = address
     }
 
-    private static let expression = try! RegularExpression("(?:([\\da-zA-Z0-9_.-]+)|\\[([\\da-fA-F0-9:]+)\\]?)(?::(\\d{1,5}))?")
-
 }

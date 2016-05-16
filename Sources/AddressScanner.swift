@@ -83,7 +83,11 @@ internal extension NSScanner {
         }
     }
 
-    func scan(inout intoString: String?, closure: () -> Bool) -> Bool {
+    func scan(inout intoString: String?, @noescape closure: () -> Bool) -> Bool {
+        let savedCharactersToBeSkipped = charactersToBeSkipped
+        defer {
+            charactersToBeSkipped = savedCharactersToBeSkipped
+        }
         let savedLocation = scanLocation
         if closure() == false {
             scanLocation = savedLocation
@@ -125,7 +129,28 @@ internal extension NSScanner {
         }
     }
     
+    /// Scan a "domain". Domain is considered a sequence of hostnames seperated by dots.
     func scanDomain(inout intoString: String?) -> Bool {
+        let savedLocation = scanLocation
+        while true {
+            var hostname: String?
+            if scanHostname(&hostname) == false {
+                break
+            }
+            if scanString(".") == false {
+                break
+            }
+        }
+        let range = NSRange(location: savedLocation, length: scanLocation - savedLocation)
+        if range.length == 0 {
+            return false
+        }
+        intoString = (string as NSString).substringWithRange(range)
+        return true
+    }
+    
+    /// Scan a "hostname".
+    func scanHostname(inout intoString: String?) -> Bool {
         return with() {
             var output = ""
             var temp: NSString?
@@ -133,7 +158,7 @@ internal extension NSScanner {
                 return false
             }
             output += temp! as String
-            if scanCharactersFromSet(NSCharacterSet.asciiAlphanumericCharacterSet() + NSCharacterSet(charactersInString: "-."), intoString: &temp) == true {
+            if scanCharactersFromSet(NSCharacterSet.asciiAlphanumericCharacterSet() + NSCharacterSet(charactersInString: "-"), intoString: &temp) == true {
                 output += temp! as String
             }
             intoString = output
@@ -141,6 +166,7 @@ internal extension NSScanner {
         }
     }
 
+    /// Scan a port/service name. For purposes of this we consider this any alphanumeric sequence and rely on getaddrinfo
     func scanPort(inout intoString: String?) -> Bool {
         let characterSet = NSCharacterSet.asciiAlphanumericCharacterSet() + NSCharacterSet(charactersInString: "-")
         var temp: NSString?
@@ -151,6 +177,7 @@ internal extension NSScanner {
         return true
     }
 
+    /// Scan an address into a hostname and a port. Very crude. Rely on getaddrinfo.
     func scanAddress(inout address: String?, inout port: String?) -> Bool {
         var string: String?
 
