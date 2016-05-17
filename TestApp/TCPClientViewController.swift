@@ -32,7 +32,6 @@ class TCPClientViewController: NSViewController {
         }
 
         let address = try Address(address: addressString)
-        print(address)
 
         let clientChannel = TCPChannel(address: address)
         clientChannel.configureSocket = {
