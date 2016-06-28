@@ -70,13 +70,41 @@ public extension Socket {
 public extension Socket {
 
     func connect(address: Address) throws {
+        try connect(address, timeout: 30)
+    }
+    
+    func connect(address: Address, timeout: Int) throws {
+        // Set the socket to be non-blocking
+        try setNonBlocking(true)
+        
         var addr = sockaddr_storage(address: address)
         try withUnsafePointer(&addr) {
-            ptr in
-            let status = Darwin.connect(descriptor, UnsafePointer <sockaddr> (ptr), socklen_t(addr.ss_len))
-            guard status == 0 else {
+            addrPtr in
+            
+            // put descriptor in write set for monitoring set
+            var writeFileDescriptors = fd_set()
+            fdSet(descriptor, &writeFileDescriptors)
+            
+            // This connect call should error out with code EINPROGRESS, if any other error occurs, throw it
+            var ret = Darwin.connect(descriptor, UnsafePointer<sockaddr>(addrPtr), socklen_t(addr.ss_len))
+            if ret == -1 && errno != EINPROGRESS {
+                Darwin.close(descriptor)
                 throw Errno(rawValue: errno) ?? Error.Unknown
             }
+            
+            // Check for writeability and block until either descriptor is writable or timed out
+            var timeval = Darwin.timeval(tv_sec: timeout, tv_usec: 0)
+            ret = select(descriptor + 1, nil, &writeFileDescriptors, nil, &timeval)
+            if ret == -1 {
+                Darwin.close(descriptor)
+                throw Errno(rawValue: errno) ?? Error.Unknown
+            }
+            // If the descriptor is not in the write set anymore, that means the select call has timed out, tear things down and throw timed out error
+            if __darwin_fd_isset(descriptor, &writeFileDescriptors) == 0 {
+                Darwin.close(descriptor)
+                throw Errno(rawValue: ETIMEDOUT) ?? Error.Unknown
+            }
+
         }
     }
 

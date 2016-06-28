@@ -37,6 +37,11 @@ import SwiftUtilities
  *  A GCD based UDP listener.
  */
 public class UDPChannel {
+    
+    public enum PreconditionError: ErrorType {
+        case QueueSuspended
+        case QueueNotExist
+    }
 
     public let label: String?
 
@@ -45,7 +50,7 @@ public class UDPChannel {
     public var readHandler: (Datagram -> Void)? = loggingReadHandler
     public var errorHandler: (ErrorType -> Void)? = loggingErrorHandler
 
-    private var resumed: Bool = false
+    public private(set) var resumed: Bool = false
     private let receiveQueue: dispatch_queue_t!
     private let sendQueue: dispatch_queue_t!
     private var source: dispatch_source_t!
@@ -146,9 +151,16 @@ public class UDPChannel {
         }
     }
 
-    public func send(data: DispatchData <Void>, address: Address! = nil, callback: Result <Void> -> Void) {
-        precondition(sendQueue != nil, "Cannot send data without a queue")
-        precondition(resumed == true, "Cannot send data on unresumed queue")
+    public func send(data: DispatchData <Void>, address: Address? = nil, callback: Result <Void> -> Void) {
+        guard sendQueue != nil else {
+            callback(.Failure(PreconditionError.QueueNotExist))
+            return
+        }
+        guard resumed else {
+            callback(.Failure(PreconditionError.QueueSuspended))
+            return
+        }
+        
         dispatch_async(sendQueue) {
             [weak self] in
 
@@ -156,8 +168,10 @@ public class UDPChannel {
                 return
             }
             do {
-
-                if let address = address where address.family != strong_self.address.family {
+                // use default address if address parameter is not set
+                let address = address ?? strong_self.address
+                
+                if address.family != strong_self.address.family {
                     throw Error.Generic("Cannot send UDP data down a IPV6 socket with a IPV4 address or vice versa.")
                 }
 
