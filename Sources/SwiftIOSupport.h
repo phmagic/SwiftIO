@@ -13,5 +13,6 @@
 
 extern NSDictionary *getAddressesForInterfaces();
 extern int setNonblocking(int socket, BOOL flag);
+extern void fdSet(int fd, fd_set* fdset);
 
 #endif /* SwiftIOSupport_h */

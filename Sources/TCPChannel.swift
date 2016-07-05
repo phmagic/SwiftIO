@@ -34,6 +34,10 @@ import Dispatch
 import SwiftUtilities
 
 public class TCPChannel: Connectable {
+    public enum Error: ErrorType {
+        case IncorrectState(String)
+        case Unknown
+    }
 
     public let label: String?
     public let address: Address
@@ -80,7 +84,10 @@ public class TCPChannel: Connectable {
     }
 
     public func connect(callback: Result <Void> -> Void) {
-
+        connect(timeout: 30, callback: callback)
+    }
+    
+    public func connect(timeout timeout: Int, callback: Result <Void> -> Void) {
         dispatch_async(queue) {
             [weak self, address] in
 
@@ -89,7 +96,7 @@ public class TCPChannel: Connectable {
             }
 
             if strong_self.state.value != .Disconnected {
-                callback(.Failure(Error.Generic("Cannot connect channel in state \(strong_self.state.value)")))
+                callback(.Failure(Error.IncorrectState("Cannot connect channel in state \(strong_self.state.value)")))
                 return
             }
 
@@ -102,7 +109,8 @@ public class TCPChannel: Connectable {
                 socket = try Socket(domain: address.family.rawValue, type: SOCK_STREAM, protocol: IPPROTO_TCP)
 
                 strong_self.configureSocket?(socket)
-                try socket.connect(address)
+                try socket.connect(address, timeout: timeout)
+                
                 strong_self.socket = socket
                 strong_self.state.value = .Connected
                 strong_self.createStream()
@@ -115,18 +123,21 @@ public class TCPChannel: Connectable {
                 callback(.Failure(error))
             }
         }
+        
     }
 
     public func disconnect(callback: Result <Void> -> Void) {
+        retrier?.cancel()
+        retrier = nil
+        
         dispatch_async(queue) {
             [weak self] in
 
             guard let strong_self = self else {
                 return
             }
-
-            if strong_self.state.value == .Disconnected {
-                callback(.Failure(Error.Generic("Cannot disconnect channel in state \(strong_self.state.value)")))
+            if Set([.Disconnected, .Disconnecting]).contains(strong_self.state.value) {
+                callback(.Failure(Error.IncorrectState("Cannot disconnect channel in state \(strong_self.state.value)")))
                 return
             }
 
@@ -189,7 +200,6 @@ public class TCPChannel: Connectable {
         retrier.resume()
     }
 
-
     // MARK: -
 
     public func write(data: DispatchData <Void>, callback: Result <Void> -> Void) {
@@ -237,7 +247,7 @@ public class TCPChannel: Connectable {
                 strong_self.readCallback?(Result.Failure(Errno(rawValue: error)!))
                 return
             }
-            switch (done, dispatch_data_get_size(data) > 0) {
+            switch (done, dispatch_data_get_size(data!) > 0) {
                 case (false, _), (true, true):
                     let dispatchData = DispatchData <Void> (data: data)
                     strong_self.readCallback?(Result.Success(dispatchData))
