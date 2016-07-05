@@ -68,5 +68,5 @@ int setNonblocking(int socket, BOOL flag) {
 }
 
 void fdSet(int fd, fd_set* fdset) {
-    __DARWIN_FD_SET(fd, fdset);
+    FD_SET(fd, fdset);
 }

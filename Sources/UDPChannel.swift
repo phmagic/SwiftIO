@@ -50,7 +50,7 @@ public class UDPChannel {
     public var readHandler: (Datagram -> Void)? = loggingReadHandler
     public var errorHandler: (ErrorType -> Void)? = loggingErrorHandler
 
-    public private(set) var resumed: Bool = false
+    private var resumed: Bool = false
     private let receiveQueue: dispatch_queue_t!
     private let sendQueue: dispatch_queue_t!
     private var source: dispatch_source_t!
