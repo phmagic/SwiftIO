@@ -83,6 +83,7 @@ public extension Socket {
             
             // put descriptor in write set for monitoring set
             var writeFileDescriptors = fd_set()
+            fdZero(&writeFileDescriptors)
             fdSet(descriptor, &writeFileDescriptors)
             
             // This connect call should error out with code EINPROGRESS, if any other error occurs, throw it
@@ -91,19 +92,49 @@ public extension Socket {
                 Darwin.close(descriptor)
                 throw Errno(rawValue: errno) ?? Error.Unknown
             }
+            // If connect succeeded immediately
+            if ret == 0 {
+                return
+            }
             
             // Check for writeability and block until either descriptor is writable or timed out
             var timeval = Darwin.timeval(tv_sec: timeout, tv_usec: 0)
             ret = select(descriptor + 1, nil, &writeFileDescriptors, nil, &timeval)
-            if ret == -1 {
-                Darwin.close(descriptor)
-                throw Errno(rawValue: errno) ?? Error.Unknown
-            }
             // If the descriptor is not in the write set anymore, that means the select call has timed out, tear things down and throw timed out error
-            if __darwin_fd_isset(descriptor, &writeFileDescriptors) == 0 {
+            if fdIsSet(descriptor, &writeFileDescriptors) == 0 {
+                // Socket not writable
                 Darwin.close(descriptor)
                 throw Errno(rawValue: ETIMEDOUT) ?? Error.Unknown
             }
+            
+            switch ret {
+            case -1:
+                // Error occurred during select
+                Darwin.close(descriptor)
+                throw Errno(rawValue: errno) ?? Error.Unknown
+                
+            case 1:
+                // select returned successfully with 1 descriptor
+                // Now check error flags in socket options
+                var so_error: Int32 = 0
+                var len = socklen_t(sizeof(Int32))
+                Darwin.getsockopt(descriptor, SOL_SOCKET, SO_ERROR, &so_error, &len)
+                
+                // There is error
+                if so_error != 0 {
+                    Darwin.close(descriptor)
+                    throw Errno(rawValue: so_error) ?? Error.Unknown
+                }
+                
+            case 0:
+                // Connection has timed out
+                Darwin.close(descriptor)
+                throw Errno(rawValue: ETIMEDOUT) ?? Error.Unknown
+            default:
+                break
+            }
+
+
 
         }
     }
