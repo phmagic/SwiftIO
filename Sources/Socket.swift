@@ -94,6 +94,8 @@ public extension Socket {
             }
             // If connect succeeded immediately
             if ret == 0 {
+                // Set socket back to a blocking socket
+                try setNonBlocking(false)
                 return
             }
             
@@ -134,7 +136,8 @@ public extension Socket {
                 break
             }
 
-
+            // Set socket back to a blocking socket
+            try setNonBlocking(false)
 
         }
     }
