@@ -166,7 +166,7 @@ public func getaddrinfo(hostname: String?, service: String? = nil, hints: addrin
 
 public func getaddrinfo(hostname: String?, service: String? = nil, hints: addrinfo) throws -> [Address] {
     var addresses: [Address] = []
-    
+
     try getaddrinfo(hostname, service: service, hints: hints) {
         let addr = sockaddr_storage(addr: $0.memory.ai_addr, length: Int($0.memory.ai_addrlen))
         let address = Address(sockaddr: addr)

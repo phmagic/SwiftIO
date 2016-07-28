@@ -86,7 +86,7 @@ public class TCPChannel: Connectable {
     public func connect(callback: Result <Void> -> Void) {
         connect(timeout: 30, callback: callback)
     }
-    
+
     public func connect(timeout timeout: Int, callback: Result <Void> -> Void) {
         dispatch_async(queue) {
             [weak self, address] in
@@ -110,7 +110,7 @@ public class TCPChannel: Connectable {
 
                 strong_self.configureSocket?(socket)
                 try socket.connect(address, timeout: timeout)
-                
+
                 strong_self.socket = socket
                 strong_self.state.value = .Connected
                 strong_self.createStream()
@@ -123,13 +123,13 @@ public class TCPChannel: Connectable {
                 callback(.Failure(error))
             }
         }
-        
+
     }
 
     public func disconnect(callback: Result <Void> -> Void) {
         retrier?.cancel()
         retrier = nil
-        
+
         dispatch_async(queue) {
             [weak self] in
 

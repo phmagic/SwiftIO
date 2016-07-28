@@ -328,7 +328,7 @@ public extension Address {
         }
 
 
-        
+
         if result == false {
             throw Error.Generic("Not an address")
         }

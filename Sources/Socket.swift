@@ -72,20 +72,20 @@ public extension Socket {
     func connect(address: Address) throws {
         try connect(address, timeout: 30)
     }
-    
+
     func connect(address: Address, timeout: Int) throws {
         // Set the socket to be non-blocking
         try setNonBlocking(true)
-        
+
         var addr = sockaddr_storage(address: address)
         try withUnsafePointer(&addr) {
             addrPtr in
-            
+
             // put descriptor in write set for monitoring set
             var writeFileDescriptors = fd_set()
             fdZero(&writeFileDescriptors)
             fdSet(descriptor, &writeFileDescriptors)
-            
+
             // This connect call should error out with code EINPROGRESS, if any other error occurs, throw it
             var ret = Darwin.connect(descriptor, UnsafePointer<sockaddr>(addrPtr), socklen_t(addr.ss_len))
             if ret == -1 && errno != EINPROGRESS {
@@ -98,7 +98,7 @@ public extension Socket {
                 try setNonBlocking(false)
                 return
             }
-            
+
             // Check for writeability and block until either descriptor is writable or timed out
             var timeval = Darwin.timeval(tv_sec: timeout, tv_usec: 0)
             ret = select(descriptor + 1, nil, &writeFileDescriptors, nil, &timeval)
@@ -108,26 +108,26 @@ public extension Socket {
                 Darwin.close(descriptor)
                 throw Errno(rawValue: ETIMEDOUT) ?? Error.Unknown
             }
-            
+
             switch ret {
             case -1:
                 // Error occurred during select
                 Darwin.close(descriptor)
                 throw Errno(rawValue: errno) ?? Error.Unknown
-                
+
             case 1:
                 // select returned successfully with 1 descriptor
                 // Now check error flags in socket options
                 var so_error: Int32 = 0
                 var len = socklen_t(sizeof(Int32))
                 Darwin.getsockopt(descriptor, SOL_SOCKET, SO_ERROR, &so_error, &len)
-                
+
                 // There is error
                 if so_error != 0 {
                     Darwin.close(descriptor)
                     throw Errno(rawValue: so_error) ?? Error.Unknown
                 }
-                
+
             case 0:
                 // Connection has timed out
                 Darwin.close(descriptor)

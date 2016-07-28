@@ -21,11 +21,11 @@ internal extension NSCharacterSet {
     class func asciiLetterCharacterSet() -> NSCharacterSet {
         return asciiLowercaseLetterCharacterSet() + asciiUppercaseLetterCharacterSet()
     }
-    
+
     class func asciiLowercaseLetterCharacterSet() -> NSCharacterSet {
         return NSCharacterSet(charactersInString: "abcdefghijklmnopqrstuvwxyz")
     }
-    
+
     class func asciiUppercaseLetterCharacterSet() -> NSCharacterSet {
         return NSCharacterSet(charactersInString: "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     }
@@ -128,7 +128,7 @@ internal extension NSScanner {
             return true
         }
     }
-    
+
     /// Scan a "domain". Domain is considered a sequence of hostnames seperated by dots.
     func scanDomain(inout intoString: String?) -> Bool {
         let savedLocation = scanLocation
@@ -148,7 +148,7 @@ internal extension NSScanner {
         intoString = (string as NSString).substringWithRange(range)
         return true
     }
-    
+
     /// Scan a "hostname".
     func scanHostname(inout intoString: String?) -> Bool {
         return with() {
@@ -189,7 +189,7 @@ internal extension NSScanner {
             if scanner.atEnd == false {
                 return false
             }
-           
+
         }
         else if scanIPV4Address(&address) == true {
             // Nothing to do here

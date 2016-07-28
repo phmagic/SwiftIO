@@ -37,7 +37,7 @@ import SwiftUtilities
  *  A GCD based UDP listener.
  */
 public class UDPChannel {
-    
+
     public enum PreconditionError: ErrorType {
         case QueueSuspended
         case QueueNotExist
@@ -160,7 +160,7 @@ public class UDPChannel {
             callback(.Failure(PreconditionError.QueueSuspended))
             return
         }
-        
+
         dispatch_async(sendQueue) {
             [weak self] in
 
@@ -170,7 +170,7 @@ public class UDPChannel {
             do {
                 // use default address if address parameter is not set
                 let address = address ?? strong_self.address
-                
+
                 if address.family != strong_self.address.family {
                     throw Error.Generic("Cannot send UDP data down a IPV6 socket with a IPV4 address or vice versa.")
                 }

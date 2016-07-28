@@ -76,7 +76,7 @@ public extension sockaddr_in {
 
     /**
     Create a sockaddr_in from a sockaddr_storage
-    
+
     - Precondition: Family of the sock addr _must_ be AF_INET.
     */
     init(_ addr: sockaddr_storage) {
@@ -92,7 +92,7 @@ public extension sockaddr_in6 {
 
     /**
     Create a sockaddr_in6 from a sockaddr_storage
-    
+
     - Precondition: Family of the sock addr _must_ be AF_INET6.
     */
     init(_ addr: sockaddr_storage) {
@@ -137,8 +137,3 @@ extension sockaddr_storage: CustomStringConvertible {
     }
 
 }
-
-
-
-
-
