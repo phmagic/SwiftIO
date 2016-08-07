@@ -494,6 +494,7 @@
 				TargetAttributes = {
 					45B9DE8B1B753363009FD963 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
 					};
 					45DD2DAA1B76AD850002994A = {
 						CreatedOnToolsVersion = 7.0;
@@ -505,6 +506,7 @@
 					};
 					45DEC6AA1B0E8FEE00B7C234 = {
 						CreatedOnToolsVersion = 6.3.2;
+						LastSwiftMigration = 0800;
 					};
 					45E240051B0E8A700001F5B9 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -730,6 +732,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.UnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -747,6 +750,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.UnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -818,6 +822,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -842,6 +847,7 @@
 				PRODUCT_NAME = SwiftIO;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
