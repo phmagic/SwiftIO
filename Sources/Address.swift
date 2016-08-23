@@ -31,6 +31,8 @@
 import Darwin
 
 import SwiftUtilities
+import Foundation
+
 
 /**
  *  An internet address.
@@ -293,7 +295,8 @@ public extension Address {
             hints.ai_family = ProtocolFamily.INET6.rawValue
 
         }
-        return try getaddrinfo(hostname, service: service, hints: hints)
+        let addresses = try getaddrinfo(hostname, service: service, hints: hints)
+        return addresses
     }
 }
 
@@ -315,29 +318,54 @@ public extension Address {
     init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws {
 
         var hostname: String?
-        var portString: String?
+        var service: String?
 
-        let result = scanAddress(address, address: &hostname, port: &portString)
-        if port != nil {
-            if portString != nil {
+        let result = scanAddress(address, address: &hostname, service: &service)
+        if let port = port {
+            if service != nil {
                 fatalError("Specified port in both address string and parameter")
             }
             else {
-            portString = String(port!)
+                service = String(port)
             }
         }
-
-
 
         if result == false {
             throw Error.Generic("Not an address")
         }
 
-        let addresses: [Address] = try Address.addresses(hostname!, service: portString, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
-        guard let address = addresses.first else {
+        let addresses: [Address] = try Address.addresses(hostname!, service: service, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
+
+        guard var address = addresses.first else {
             throw Error.Generic("Could not create address")
         }
+
+        // Workaround issue in iOS 9 & OSX 11 with IPv6 networks.
+        //
+        // getaddrinfo() can return a sockaddr with a nil port if it is given a
+        // numeric service name _and_ the device is connected to an IPv6 network.
+        //
+        // Workaround is to manually set the port under these circumstances.
+        //
+        // See https://developer.apple.com/videos/play/wwdc2015/719/ for how to set up a Mac for testing IPv6.
+        if let service = service, let port = UInt16(service) where address.port == nil && Address.workaroundGetAddrInfo == true {
+            address = address.addressWithPort(port)
+            print(address)
+        }
+
         self = address
+
+        assert(port == nil || String(port!) == service)
     }
+
+    static let workaroundGetAddrInfo: Bool = {
+        #if os(iOS)
+            let operatingSystemVersion = NSProcessInfo.processInfo().operatingSystemVersion
+            return operatingSystemVersion.minorVersion < 10
+        #elseif os(OSX)
+            let operatingSystemVersion = NSProcessInfo.processInfo().operatingSystemVersion
+            return operatingSystemVersion.minorVersion < 12
+        #endif
+    }()
 
 }

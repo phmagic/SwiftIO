@@ -207,16 +207,17 @@ internal extension NSScanner {
 
 // MARK: -
 
-public func scanAddress(string: String, inout address: String?, inout port: String?) -> Bool {
+public func scanAddress(string: String, inout address: String?, inout service: String?) -> Bool {
     let scanner = NSScanner(string: string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()))
     scanner.charactersToBeSkipped = nil
-    var result = scanner.scanAddress(&address, port: &port)
+    var result = scanner.scanAddress(&address, port: &service)
     if scanner.atEnd == false {
         result = false
     }
     if result == false {
         address = nil
-        port = nil
+        service = nil
     }
     return result
 }
+
