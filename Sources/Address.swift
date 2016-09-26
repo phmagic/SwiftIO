@@ -43,8 +43,8 @@ public struct Address {
 
     /// Enum representing the INET or INET6 address. Generally you can avoid this type.
     public enum InetAddress {
-        case INET(in_addr)
-        case INET6(in6_addr)
+        case inet(in_addr)
+        case inet6(in6_addr)
     }
 
     public let inetAddress: InetAddress
@@ -68,7 +68,7 @@ public struct Address {
 
      - parameter port: _native endian_ port number
      */
-    public func addressWithPort(port: UInt16) -> Address {
+    public func addressWithPort(_ port: UInt16) -> Address {
         return Address(inetAddress: inetAddress, port: port)
     }
 
@@ -81,9 +81,9 @@ extension Address: Equatable {
 
 public func == (lhs: Address, rhs: Address) -> Bool {
     switch (lhs.inetAddress, rhs.inetAddress) {
-        case (.INET(let lhs_addr), .INET(let rhs_addr)):
+        case (.inet(let lhs_addr), .inet(let rhs_addr)):
             return lhs_addr == rhs_addr && lhs.port == rhs.port
-        case (.INET6(let lhs_addr), .INET6(let rhs_addr)):
+        case (.inet6(let lhs_addr), .inet6(let rhs_addr)):
             return lhs_addr == rhs_addr && lhs.port == rhs.port
         default:
             return false
@@ -116,9 +116,9 @@ public func < (lhs: Address, rhs: Address) -> Bool {
     ]
     for comparison in comparisons {
         switch comparison {
-            case .Lesser:
+            case .lesser:
                 return true
-            case .Greater:
+            case .greater:
                 return false
             default:
                 break
@@ -133,17 +133,17 @@ extension Address: CustomStringConvertible {
     public var description: String {
         if let port = port {
             switch family {
-                case .INET:
+                case .inet:
                     return "\(address):\(port)"
-                case .INET6:
+                case .inet6:
                     return "[\(address)]:\(port)"
             }
         }
         else {
             switch family {
-                case .INET:
+                case .inet:
                     return address
-                case .INET6:
+                case .inet6:
                     return "[\(address)]"
             }
         }
@@ -160,9 +160,9 @@ extension Address {
     public var address: String {
         return tryElseFatalError() {
             switch inetAddress {
-                case .INET(var addr):
+                case .inet(var addr):
                     return try inet_ntop(addressFamily: self.family.rawValue, address: &addr)
-                case .INET6(var addr):
+                case .inet6(var addr):
                     return try inet_ntop(addressFamily: self.family.rawValue, address: &addr)
             }
         }
@@ -180,7 +180,7 @@ extension Address {
      - parameter port: _native endian_ port number
      */
     public init(addr: in_addr, port: UInt16? = nil) {
-        inetAddress = .INET(addr)
+        inetAddress = .inet(addr)
         self.port = port
     }
 
@@ -192,7 +192,7 @@ extension Address {
      */
     public init(addr: UInt32, port: UInt16? = nil) {
         let addr = in_addr(s_addr: addr.networkEndian)
-        inetAddress = .INET(addr)
+        inetAddress = .inet(addr)
         self.port = port
     }
 
@@ -203,13 +203,13 @@ extension Address {
      - parameter port: _native endian_ port number
      */
     public init(addr: in6_addr, port: UInt16? = nil) {
-        inetAddress = .INET6(addr)
+        inetAddress = .inet6(addr)
         self.port = port
     }
 
     public func to_in_addr() -> in_addr? {
         switch inetAddress {
-            case .INET(let addr):
+            case .inet(let addr):
                 return addr
             default:
                 return nil
@@ -218,7 +218,7 @@ extension Address {
 
     public func to_in6_addr() -> in6_addr? {
         switch inetAddress {
-            case .INET6(let addr):
+            case .inet6(let addr):
                 return addr
             default:
                 return nil
@@ -227,9 +227,9 @@ extension Address {
 
     public var family: ProtocolFamily {
         switch inetAddress {
-            case .INET:
+            case .inet:
                 return ProtocolFamily(rawValue: AF_INET)!
-            case .INET6:
+            case .inet6:
                 return ProtocolFamily(rawValue: AF_INET6)!
         }
     }
@@ -242,13 +242,13 @@ public extension Address {
                 var src = sockaddr
                 var dst = sockaddr_in()
                 unsafeCopy(destination: &dst, source: &src)
-                inetAddress = .INET(dst.sin_addr)
+                inetAddress = .inet(dst.sin_addr)
                 port = dst.sin_port != 0 ? UInt16(networkEndian: dst.sin_port) : nil
             case AF_INET6:
                 var src = sockaddr
                 var dst = sockaddr_in6()
                 unsafeCopy(destination: &dst, source: &src)
-                inetAddress = .INET6(dst.sin6_addr)
+                inetAddress = .inet6(dst.sin6_addr)
                 port = dst.sin6_port != 0 ? UInt16(networkEndian: dst.sin6_port) : nil
             default:
                 fatalError("Invalid sockaddr family")
@@ -263,9 +263,9 @@ public extension sockaddr_storage {
             fatalError("No port")
         }
         switch address.inetAddress {
-            case .INET(let addr):
+            case .inet(let addr):
                 self = sockaddr_storage(addr: addr, port: port)
-            case .INET6(let addr):
+            case .inet6(let addr):
                 self = sockaddr_storage(addr: addr, port: port)
         }
     }
@@ -276,7 +276,7 @@ public extension sockaddr_storage {
 
 public extension Address {
 
-    static func addresses(hostname: String, service: String? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws -> [Address] {
+    static func addresses(_ hostname: String, service: String? = nil, protocol:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws -> [Address] {
         var hints = addrinfo()
         if let `protocol` = `protocol` {
             hints.ai_protocol = `protocol`.rawValue
@@ -289,13 +289,13 @@ public extension Address {
         }
         if mappedIPV4 == true {
             hints.ai_flags |= AI_V4MAPPED
-            guard family == nil || family == ProtocolFamily.INET6 else {
+            guard family == nil || family == ProtocolFamily.inet6 else {
                 fatalError("Cannot specify an IPV4 mapped IPV6 address if you insist on an IPV4 address.")
             }
-            hints.ai_family = ProtocolFamily.INET6.rawValue
+            hints.ai_family = ProtocolFamily.inet6.rawValue
 
         }
-        let addresses = try getaddrinfo(hostname, service: service, hints: hints)
+        let addresses = try getaddrinfo(hostname: hostname, service: service, hints: hints)
         return addresses
     }
 }
@@ -315,7 +315,7 @@ public extension Address {
         try Address("[::1]:80")
         ```
      */
-    init(address: String, port: UInt16? = nil, `protocol`:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws {
+    init(address: String, port: UInt16? = nil, protocol:InetProtocol? = nil, family: ProtocolFamily? = ProtocolFamily.preferred, passive: Bool = false, mappedIPV4: Bool = false) throws {
 
         var hostname: String?
         var service: String?
@@ -331,13 +331,13 @@ public extension Address {
         }
 
         if result == false {
-            throw Error.Generic("Not an address")
+            throw Error.generic("Not an address")
         }
 
         let addresses: [Address] = try Address.addresses(hostname!, service: service, protocol: `protocol`, family: family, passive: passive, mappedIPV4: mappedIPV4)
 
         guard var address = addresses.first else {
-            throw Error.Generic("Could not create address")
+            throw Error.generic("Could not create address")
         }
 
         // Workaround issue in iOS 9 & OSX 11 with IPv6 networks.
@@ -348,7 +348,7 @@ public extension Address {
         // Workaround is to manually set the port under these circumstances.
         //
         // See https://developer.apple.com/videos/play/wwdc2015/719/ for how to set up a Mac for testing IPv6.
-        if let service = service, let port = UInt16(service) where address.port == nil && Address.workaroundGetAddrInfo == true {
+        if let service = service, let port = UInt16(service) , address.port == nil && Address.workaroundGetAddrInfo == true {
             address = address.addressWithPort(port)
             print(address)
         }
@@ -360,10 +360,10 @@ public extension Address {
 
     static let workaroundGetAddrInfo: Bool = {
         #if os(iOS)
-            let operatingSystemVersion = NSProcessInfo.processInfo().operatingSystemVersion
+            let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
             return operatingSystemVersion.minorVersion < 10
         #elseif os(OSX)
-            let operatingSystemVersion = NSProcessInfo.processInfo().operatingSystemVersion
+            let operatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
             return operatingSystemVersion.minorVersion < 12
         #endif
     }()
