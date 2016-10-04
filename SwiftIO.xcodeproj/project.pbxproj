@@ -65,7 +65,7 @@
 		455EE33C1D9C359500734966 /* sockaddr_storage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E1051CDD20E200CC1ED8 /* sockaddr_storage+Extensions.swift */; };
 		455EE33D1D9C359500734966 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E1061CDD20E200CC1ED8 /* Socket.swift */; };
 		455EE33E1D9C359500734966 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E1071CDD20E200CC1ED8 /* SocketOptions.swift */; };
-		455EE33F1D9C359500734966 /* SwiftIOSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 4589E1091CDD20E200CC1ED8 /* SwiftIOSupport.h */; };
+		455EE33F1D9C359500734966 /* SwiftIOSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 4589E1091CDD20E200CC1ED8 /* SwiftIOSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		455EE3401D9C359500734966 /* SwiftIOSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 4589E10A1CDD20E200CC1ED8 /* SwiftIOSupport.m */; };
 		455EE3411D9C359500734966 /* TCPChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E10B1CDD20E200CC1ED8 /* TCPChannel.swift */; };
 		455EE3421D9C359500734966 /* TCPListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589E10C1CDD20E200CC1ED8 /* TCPListener.swift */; };
